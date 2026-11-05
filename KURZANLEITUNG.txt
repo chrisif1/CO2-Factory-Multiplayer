@@ -1,27 +1,10 @@
-CO2 FACTORY MULTIPLAYER – 2 BIS 8 GERAETE
-========================================
+CO2 Factory Multiplayer V1.3
 
-IM WLAN / LAN
-1. Dieses ZIP vollständig entpacken.
-2. Node.js LTS (ab Version 20) von https://nodejs.org installieren.
-3. START-WINDOWS.bat doppelklicken (alternativ: node server.js).
-4. Auf dem Host-PC http://localhost:3000 öffnen.
-5. Andere Geräte nutzen die im Serverfenster angezeigte Netzwerkadresse.
-6. Ein Unternehmen erstellt den Raum; alle anderen treten per sechsstelligen Code bei.
-7. Die Spielleitung startet ab zwei Personen.
-
-UEBER DAS INTERNET
-Die Anwendung auf einem öffentlich erreichbaren Node.js-Server mit HTTPS
-bereitstellen, z. B. in einem Node.js-Web-Service. Startbefehl: npm start.
-Der Host erstellt dann den Raum unter der öffentlichen HTTPS-Adresse.
-Hinweis: Ein öffentlicher Server / eine öffentliche URL ist NICHT in diesem
-ZIP enthalten. Die Einrichtung ist in README.md beschrieben.
-
-WICHTIG
-- Das Serverfenster offen lassen (LAN).
-- Keine EXE und keine Browserinstallation für Mitspieler erforderlich.
-- Speicherstand auf dem Host: storage/<Raumcode>.json.
-- Getestet: 2 Browser-Sitzungen, Zugwechsel, 20 Ereignisformeln und
-  Berechnungen, 40 Felder, Diagramme.
-
-Details und Sicherheitshinweise stehen in README.md.
+START-WINDOWS.bat starten oder npm start. Node.js ab Version 20 erforderlich.
+Browser: http://localhost:3000
+Spielraum erstellen, Link teilen, mindestens zwei Unternehmen beitreten lassen, starten.
+Jeder Spieler bedient nur seinen eigenen Zug und trifft die Auswahl im Feld-Popup.
+Ereignisse werden automatisch angewendet.
+Alle Felder lassen sich zum Lesen öffnen.
+Ereigniskarten-Tab und Parameterbereich sind deaktiviert.
+Schulden führen nicht zum Ausscheiden.

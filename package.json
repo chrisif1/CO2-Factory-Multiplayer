@@ -1,8 +1,8 @@
 {
   "name": "co2-factory-multiplayer",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
-  "description": "CO₂ Factory Multiplayer V1.2 – 2–8 Spieler, verbindliche Ereignisse, Feld-Popups",
+  "description": "CO₂ Factory Multiplayer V1.3 – mobile Feld-Popups und verbindliche Ereignisse",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

@@ -32,7 +32,7 @@
       "number": 3,
       "name": "Ereignis",
       "type": "Ereigniskarte",
-      "description": "Nächste Ereigniskarte ziehen und sofort genau einmal anwenden. Danach Karte bestätigen. Alle 20 Karten stehen im Tabellenblatt „Ereigniskarten“.",
+      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
       "capital": 0,
       "annual": 0,
       "scope": [
@@ -151,7 +151,7 @@
       "number": 9,
       "name": "Ereignis",
       "type": "Ereigniskarte",
-      "description": "Nächste Ereigniskarte ziehen und sofort genau einmal anwenden. Danach Karte bestätigen. Alle 20 Karten stehen im Tabellenblatt „Ereigniskarten“.",
+      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
       "capital": 0,
       "annual": 0,
       "scope": [
@@ -284,7 +284,7 @@
       "number": 16,
       "name": "Ereignis",
       "type": "Ereigniskarte",
-      "description": "Nächste Ereigniskarte ziehen und sofort genau einmal anwenden. Danach Karte bestätigen. Alle 20 Karten stehen im Tabellenblatt „Ereigniskarten“.",
+      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
       "capital": 0,
       "annual": 0,
       "scope": [
@@ -417,7 +417,7 @@
       "number": 23,
       "name": "Ereignis",
       "type": "Ereigniskarte",
-      "description": "Nächste Ereigniskarte ziehen und sofort genau einmal anwenden. Danach Karte bestätigen. Alle 20 Karten stehen im Tabellenblatt „Ereigniskarten“.",
+      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
       "capital": 0,
       "annual": 0,
       "scope": [
@@ -536,7 +536,7 @@
       "number": 29,
       "name": "Ereignis",
       "type": "Ereigniskarte",
-      "description": "Nächste Ereigniskarte ziehen und sofort genau einmal anwenden. Danach Karte bestätigen. Alle 20 Karten stehen im Tabellenblatt „Ereigniskarten“.",
+      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
       "capital": 0,
       "annual": 0,
       "scope": [
@@ -655,7 +655,7 @@
       "number": 35,
       "name": "Ereignis",
       "type": "Ereigniskarte",
-      "description": "Nächste Ereigniskarte ziehen und sofort genau einmal anwenden. Danach Karte bestätigen. Alle 20 Karten stehen im Tabellenblatt „Ereigniskarten“.",
+      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
       "capital": 0,
       "annual": 0,
       "scope": [

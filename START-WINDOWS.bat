@@ -13,3 +13,4 @@ echo Auf diesem PC http://localhost:3000 oeffnen.
 echo Die Netzwerkadresse steht gleich unter dieser Meldung.
 node server.js
 pause
+

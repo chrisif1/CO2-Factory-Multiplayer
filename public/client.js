@@ -7,7 +7,7 @@ const fmt=(n,d=2)=>new Intl.NumberFormat('de-DE',{maximumFractionDigits:d}).form
 const clean=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safeNum=(n,d=0)=>Number.isFinite(Number(n))?Number(n):d;
 const STORE='co2_factory_multiplayer_access_v1';
-let access=null,room=null,DATA=null,view='board',pollBusy=false,actionBusy=false,lastSeen=-1,chartSelection='all',alertTimer=null,dieTimer=null,connectionLost=false,lastOpenedPopupKey=null,modalFocusReturn=null;
+let access=null,room=null,DATA=null,view='board',pollBusy=false,actionBusy=false,lastSeen=-1,chartSelection='all',alertTimer=null,dieTimer=null,connectionLost=false,lastOpenedPopupKey=null,modalFocusReturn=null,popupMode='action';
 function safeLocalSet(key,value){try{localStorage.setItem(key,value)}catch{}}
 function safeLocalGet(key){try{return localStorage.getItem(key)}catch{return null}}
 function toast(message,error=false){const el=$('notification');el.textContent=message;el.className='notification'+(error?' error-toast':'');el.hidden=false;if(alertTimer)clearTimeout(alertTimer);alertTimer=setTimeout(()=>el.hidden=true,4500);}
@@ -21,7 +21,7 @@ async function api(url,method='GET',body=null,tokenOverride=null){
  return data;
 }
 const endpoint=()=>`/api/rooms/${access.code}`;
-function setActiveTab(next){view=next;for(const b of document.querySelectorAll('[data-view]'))b.classList.toggle('active',b.dataset.view===next);
+function setActiveTab(next){if(!['board','stats'].includes(next))return;view=next;for(const b of document.querySelectorAll('[data-view]'))b.classList.toggle('active',b.dataset.view===next);
  for(const tab of ['board','stats','cards','settings'])$(tab+'View').hidden=tab!==next;
  if(room){if(next==='stats')renderStats();if(next==='cards')renderCards();if(next==='settings')renderSettings();}}
 function switchEntry(create){$('createForm').hidden=!create;$('joinForm').hidden=create;$('createTab').classList.toggle('selected',create);$('joinTab').classList.toggle('selected',!create);$('createTab').setAttribute('aria-selected',String(create));$('joinTab').setAttribute('aria-selected',String(!create));$('homeNotice').hidden=true;}
@@ -48,8 +48,8 @@ function leave(){closeFieldPopup();lastOpenedPopupKey=null;if(!confirm('Diesen S
 $('switchRoomBtn').addEventListener('click',leave);
 async function poll(){if(!access||pollBusy)return;pollBusy=true;try{const r=await api(endpoint());connected(true);if(!room||r.revision!==room.revision){const previous=lastSeen;room=r;lastSeen=r.lastEvent?.id??lastSeen;render();if(previous>=0&&r.lastEvent&&r.lastEvent.id>previous)animateEvent(r.lastEvent);}else room=r;
  }catch(err){connected(false);if(err.message.includes('Kein gültiger Zugang')){toast('Dieser Zugang ist nicht mehr gültig. Bitte erneut beitreten.',true);access=null;room=null;safeLocalSet(STORE,'');render();}}finally{pollBusy=false}}
-async function postAction(body){if(actionBusy||!access)return;actionBusy=true;setBusy(true);try{const r=await api(endpoint()+'/action','POST',body);const previous=lastSeen;room=r;lastSeen=r.lastEvent?.id??lastSeen;connected(true);render();if(previous>=0&&r.lastEvent&&r.lastEvent.id>previous)animateEvent(r.lastEvent);}catch(err){toast(err.message,true)}finally{actionBusy=false;setBusy(false)}}
-function setBusy(b){$('rollBtn').disabled=b||!myTurn()||room?.phase!=='roll';$('nextBtn').disabled=b||!myTurn()||room?.phase!=='end';for(const button of document.querySelectorAll('#actionButtons button,#fieldPopupButtons button'))button.disabled=b||button.dataset.disabled==='true';}
+async function postAction(body){if(actionBusy||!access)return;actionBusy=true;setBusy(true);try{const r=await api(endpoint()+'/action','POST',body);const previous=lastSeen;room=r;lastSeen=r.lastEvent?.id??lastSeen;connected(true);render();if(previous>=0&&r.lastEvent&&r.lastEvent.id>previous)animateEvent(r.lastEvent);}catch(err){toast(err.message,true);if(!$('fieldPopup').hidden){$('fieldPopupError').textContent=err.message;$('fieldPopupError').hidden=false;}}finally{actionBusy=false;setBusy(false)}}
+function setBusy(b){$('rollBtn').disabled=b||!myTurn()||room?.phase!=='roll';$('nextBtn').disabled=b||!myTurn()||room?.phase!=='end';for(const button of document.querySelectorAll('#actionButtons button,#fieldPopupButtons button'))button.disabled=b||button.dataset.disabled==='true';if(!b&&!$('fieldPopup').hidden&&!$('fieldPopup').contains(document.activeElement))$('fieldPopupClose').focus({preventScroll:true});}
 function myTurn(){return room&&room.started&&!room.gameOver&&room.players[room.turn]?.id===room.actorId;}
 function render(){
  if(!access||!room){$('home').hidden=false;$('waiting').hidden=true;$('playing').hidden=true;return;}
@@ -67,7 +67,7 @@ function renderLobby(){const c=room.config;$('roomCode').textContent=room.code;$
 }
 $('copyInvite').addEventListener('click',async()=>{const val=$('shareUrl').value;try{await navigator.clipboard.writeText(val);toast('Einladungslink kopiert.')}catch{$('shareUrl').focus();$('shareUrl').select();toast('Link markieren und mit Strg+C kopieren.')}});
 $('beginBtn').addEventListener('click',()=>postAction({type:'start'}));
-function renderHeader(){const p=room.players[room.turn];$('turnNumber').textContent=`SPIELZUG ${room.turnNumber}`;$('turnTitle').textContent=room.gameOver?'Endwertung':`Am Zug: ${p.name}`;
+function renderHeader(){const p=room.players[room.turn];$('mobileTurnName').textContent=`Spieler ${p.id+1} · ${p.name}`;$('mobileTurnField').textContent=`Feld ${currentFieldNumber()}`;$('turnNumber').textContent=`SPIELZUG ${room.turnNumber}`;$('turnTitle').textContent=room.gameOver?'Endwertung':`Am Zug: Spieler ${p.id+1} · ${p.name}`;
  $('turnHint').textContent=room.gameOver?'Alle Unternehmen haben abgeschlossen.':`Geschäftsjahr ${Math.min(room.config.maxYears,p.years+1)} von ${room.config.maxYears} · Feld ${p.pos+1} · ${myTurn()?'Du bist am Zug':'Warten auf Mitspieler'}`;
  $('inGameCode').textContent=room.code;
  const phaseLabel={roll:'Bereit zum Würfeln',decision:'Entscheidung erforderlich',end:'Zug abgeschlossen',detention:'CO₂-Audit',over:'Spielende'};
@@ -79,14 +79,25 @@ function renderHeader(){const p=room.players[room.turn];$('turnNumber').textCont
  if(room.dice>0)$('dieFace').textContent=DICE[room.dice-1];
 }
 function fieldCoords(ix){if(ix<=10)return[10,10-ix];if(ix<=20)return[20-ix,0];if(ix<=30)return[0,ix-20];return[ix-30,10]}
+function hideFieldTooltip(){const tip=$('fieldTooltip');if(tip)tip.hidden=true;}
+function showFieldTooltip(element,field){
+ if(!matchMedia('(min-width:781px) and (hover:hover) and (pointer:fine)').matches||!$('fieldPopup').hidden)return;
+ const tip=$('fieldTooltip');tip.textContent=field.description||field.name;tip.hidden=false;
+ const r=element.getBoundingClientRect(),h=tip.getBoundingClientRect().height,w=tip.getBoundingClientRect().width;
+ const left=Math.max(12,Math.min(innerWidth-w-12,r.left+r.width/2-w/2));
+ let top=r.top-h-12;if(top<12)top=r.bottom+12;top=Math.max(12,Math.min(innerHeight-h-12,top));
+ tip.style.left=left+'px';tip.style.top=top+'px';
+}
+document.addEventListener('scroll',hideFieldTooltip,true);window.addEventListener('resize',hideFieldTooltip);
 function renderBoard(){
+ hideFieldTooltip();
  const b=$('boardGrid');b.querySelectorAll('.cell').forEach(x=>x.remove());const current=room.players[room.turn];
  DATA.fields.forEach((f,idx)=>{const [r,c]=fieldCoords(idx);const el=document.createElement('div');
  const style={'Investition':'invest','Ereigniskarte':'event','Entscheidung':'decision','Audit':'audit','Versetzung zum Audit':'goaudit','CO₂-Preis':'tax','Förderung':'bonus','Wissenstransfer':'bonus'};
  const desc=(f.description||'').replace(/\s+/g,' ').trim();
  const shortDesc=desc.length>120?desc.slice(0,117)+'…':desc;
  const imgSrc=f.type==='Ereigniskarte'?'/img/event.svg':`/img/${String(f.number).padStart(2,'0')}.svg`;
- el.className=`cell ${style[f.type]||''} ${current.pos===idx&&!room.gameOver?'current':''}`;el.style.gridRow=String(r+1);el.style.gridColumn=String(c+1);el.title=`Feld ${f.number}: ${f.name} — ${shortDesc}`;el.setAttribute('data-tooltip',shortDesc);el.setAttribute('tabindex','0');
+ el.className=`cell ${style[f.type]||''} ${current.pos===idx&&!room.gameOver?'current':''}`;el.style.gridRow=String(r+1);el.style.gridColumn=String(c+1);el.setAttribute('aria-describedby','fieldTooltip');el.addEventListener('pointerenter',()=>showFieldTooltip(el,f));el.addEventListener('pointerleave',hideFieldTooltip);el.addEventListener('focus',()=>showFieldTooltip(el,f));el.addEventListener('blur',hideFieldTooltip);el.setAttribute('tabindex','0');el.setAttribute('role','button');el.setAttribute('aria-label',`Feld ${f.number}: ${f.name} öffnen`);el.addEventListener('click',()=>openFieldPopup(true,f.number));el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openFieldPopup(true,f.number);}});
  let chips='';room.players.forEach((p,i)=>{if(p.pos===idx)chips+=`<span class="token" style="--c:${COLORS[i]}" title="Spieler ${i+1}: ${clean(p.name)}" aria-label="Spieler ${i+1}: ${clean(p.name)}">${i+1}</span>`});
  el.innerHTML=`<span class="num">${f.number}</span><img class="field-img" src="${imgSrc}" alt="${clean(f.name)}"><div class="field-name">${clean(f.name)}</div><div class="tokens">${chips}</div>`;b.append(el);
  });
@@ -98,29 +109,32 @@ function renderPlayers(){const box=$('playersList');box.textContent='';room.play
  $('playerTotal').textContent=`${room.players.length}/${room.config.maxPlayers}`;
 }
 function renderLog(){const el=$('gameLog');el.textContent='';room.logs.slice(0,25).forEach(t=>{const p=document.createElement('p');p.textContent=t;el.append(p)})}
-function controls(title,html,buttons){$('actionTitle').textContent=title;$('fieldTag').textContent=`Feld ${(room.lastEvent?.kind==='roll'&&room.lastEvent?.playerId===room.actorId?room.lastEvent.landedField:room.players[room.turn]?.pos+1)||1}`;$('actionDescription').innerHTML=html;
+function landing(){const p=room?.players[room.turn];if(room?.landing?.playerId===p?.id)return room.landing;const e=room?.lastEvent;return e?.kind==='roll'&&e.playerId===p?.id?{...e,fieldNumber:e.landedField||p.pos+1}:null;}
+function currentFieldNumber(){return landing()?.fieldNumber||room.players[room.turn].pos+1;}
+function controls(title,html,buttons){$('actionTitle').textContent=title;$('fieldTag').textContent=`Feld ${currentFieldNumber()}`;$('actionDescription').innerHTML=html;
  const buildButton=o=>{const btn=document.createElement('button');btn.type='button';if(o.primary)btn.className='primary';if(o.detail){btn.classList.add('button-choice');btn.innerHTML=`<strong>${clean(o.label)}</strong><small>${clean(o.detail)}</small>`;}else btn.textContent=o.label;
   btn.disabled=!!o.disabled;btn.dataset.disabled=String(!!o.disabled);btn.addEventListener('click',o.action);return btn;};
- for(const id of ['actionButtons','fieldPopupButtons']){const wrap=$(id);wrap.textContent='';buttons.forEach(o=>wrap.append(buildButton(o)));}
- $('fieldPopupTitle').textContent=title;$('fieldPopupDescription').innerHTML=html;
+ for(const id of (popupMode==='action'?['actionButtons','fieldPopupButtons']:['actionButtons'])){const wrap=$(id);wrap.textContent='';buttons.forEach(o=>wrap.append(buildButton(o)));}
+ if(popupMode==='action'){$('fieldPopupTitle').textContent=title.replace(/ · (Investition|Unternehmensentscheidung)$/,'');$('fieldPopupDescription').innerHTML=html;setPopupField(currentFieldNumber());}
  $('fieldPopupOpen').hidden=!myTurn()||room?.gameOver;
 }
 function renderAction(){const p=room.players[room.turn],f=DATA.fields[p.pos],active=myTurn();
  if(room.gameOver){const viable=room.players.filter(p=>p.years>=room.config.maxYears).sort((a,b)=>a.cumulative-b.cumulative||b.cash-a.cash);const leader=viable[0];
- const ranking=viable.map((v,i)=>`<p><strong>${i+1}. ${clean(v.name)}</strong> · ${fmt(v.cumulative)} t kumuliert · ${euro(v.cash)}</p>`).join('');controls('Spiel beendet',leader?`<p>🏆 Sieger: <strong>${clean(leader.name)}</strong> mit ${fmt(leader.cumulative)} t CO₂e.</p>${ranking}`:'<p>Kein zahlungsfähiges Unternehmen hat die Zieljahre erreicht.</p>',[]);return;}
+ const ranking=viable.map((v,i)=>`<p><strong>${i+1}. ${clean(v.name)}</strong> · ${fmt(v.cumulative)} t kumuliert · ${euro(v.cash)}</p>`).join('');controls('Spiel beendet',leader?`<p>🏆 Sieger: <strong>${clean(leader.name)}</strong> mit ${fmt(leader.cumulative)} t CO₂e.</p>${ranking}`:'<p>Noch kein Unternehmen hat die Zieljahre erreicht.</p>',[]);return;}
  if(!active){controls('Gemeinsamer Spielstand',`<p><strong>${clean(p.name)}</strong> ist am Zug. Die Bewegung und Entscheidungen erscheinen hier automatisch.</p>`,[]);return;}
  if(room.phase==='roll'){controls('Würfeln',`<p>Du bist dran. Würfle und lande auf einem von 40 Feldern.</p>`,[{label:'🎲 Würfeln',primary:true,action:()=>postAction({type:'roll'})}]);return;}
  if(room.phase==='detention'){controls('Audit-Aufenthalt',`<p>Nach der Versetzung zum Audit kannst du für <strong>${euro(room.auditReleaseFee)}</strong> eine Sofortberatung bezahlen oder einen Zug aussetzen.</p>`,[
- {label:`${euro(room.auditReleaseFee)} zahlen und würfeln`,primary:true,disabled:p.cash<room.auditReleaseFee,action:()=>postAction({type:'detention',choice:'pay'})},
+ {label:`${euro(room.auditReleaseFee)} zahlen und würfeln`,primary:true,disabled:room.auditReleaseFee>0&&p.cash<room.auditReleaseFee,action:()=>postAction({type:'detention',choice:'pay'})},
  {label:'Zug aussetzen',action:()=>postAction({type:'detention',choice:'skip'})}]);return;}
  if(room.phase==='end'){
-   const ev=room.lastEvent,landed=ev?.kind==='roll'&&ev?.playerId===p.id?DATA.fields[(ev.landedField||p.pos+1)-1]:f;
+   const ev=landing(),landed=ev?DATA.fields[ev.fieldNumber-1]:f;
    let details=`<p>${clean(landed.description||'')}</p>`;
-   if(ev?.kind==='roll'&&ev?.playerId===p.id){
+   if(ev){
       if(ev.eventId){const card=DATA.cards[ev.eventId-1],e=ev.eventResult;
         details+=`<div class="event-result"><span class="event-stamp">EREIGNISKARTE · VERPFLICHTEND</span><h4>${clean(card.title)}</h4><p>${clean(card.action)}</p><p><strong>Automatisch angewendet:</strong> ${e?.valid?'Ja':'Voraussetzung nicht erfüllt – ohne Wirkung'} · Kapital ${e?.cash>=0?'+':''}${euro(e?.cash||0)}</p><p>Scope-Wirkung: ${(e?.scope||[0,0,0]).map((x,i)=>`S${i+1} ${x>=0?'+':''}${fmt(x,3)} t`).join(' · ')}</p></div>`;
       }else details+=`<p class="field-result">${clean(ev.message||'')}</p>`;
    }
+   if(ev?.resolution)details+=`<p class="field-result"><strong>Deine Auswahl:</strong> ${clean(ev.resolution)}</p>`;
    if(p.cash<0)details+=`<p><strong>Hinweis:</strong> Dein Unternehmen hat ${euro(p.cash)} Kapital. Du bleibst im Spiel und kannst weiter würfeln.</p>`;
    controls(landed.name,details,[{label:'Zug beenden →',primary:true,action:()=>postAction({type:'end'})}]);return;
  }
@@ -128,7 +142,7 @@ function renderAction(){const p=room.players[room.turn],f=DATA.fields[p.pos],act
  if(q.kind==='invest'){
   const v=DATA.fields[q.index],cost=Math.max(0,-safeNum(v.capital)),owned=p.owned.includes(v.number);
   controls(`${v.name} · Investition`,`<p>${clean(v.description)}</p><p><strong>Einmalige Kosten:</strong> ${euro(cost)} · <strong>Jahresergebnis:</strong> ${v.annual>=0?'+':''}${euro(v.annual)}/Jahr</p><p><strong>Scope-Effekt:</strong> ${v.scope.map((x,i)=>`S${i+1} ${x>0?'+':''}${fmt(x)} t`).join(' · ')}</p>`,[
-    {label:owned?'Bereits gekauft':`Investieren (${euro(cost)})`,primary:true,disabled:owned||p.cash<cost,action:()=>postAction({type:'invest',choice:'buy'})},
+    {label:owned?'Bereits gekauft':`Investieren (${euro(cost)})`,primary:true,disabled:owned||(cost>0&&p.cash<cost),action:()=>postAction({type:'invest',choice:'buy'})},
     {label:'Verzichten',action:()=>postAction({type:'invest',choice:'pass'})}]);return;
  }
  if(q.kind==='choose'){
@@ -147,34 +161,67 @@ function animateEvent(e){
    // Die Ereigniskarte erscheint nur dem aktiven Spieler im Feld-Popup.
  }
 }
-function openFieldPopup(manual=false){
- if(!myTurn()||!room?.started||room.gameOver)return;
- const ev=room.lastEvent,landed=ev?.kind==='roll'&&ev?.playerId===room.actorId?ev.landedField:null;
- const fieldNumber=landed||room.players[room.turn].pos+1;
+function setPopupField(fieldNumber){
  const f=DATA.fields[fieldNumber-1];if(!f)return;
  $('fieldPopupNumber').textContent=`FELD ${fieldNumber}`;
  $('fieldPopupImg').src=f.type==='Ereigniskarte'?'/img/event.svg':`/img/${String(fieldNumber).padStart(2,'0')}.svg`;
  $('fieldPopupImg').alt=f.name;
- const el=$('fieldPopup');modalFocusReturn=manual?document.activeElement:null;el.hidden=false;document.body.classList.add('modal-open');
- $('fieldPopupCard').classList.remove('revealed');void $('fieldPopupCard').offsetWidth;
- if(f.type==='Ereigniskarte'&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){$('fieldPopupCard').classList.add('revealed');}
- $('fieldPopupClose').focus();
+ $('fieldPopupHint').textContent=popupMode==='action'?`Spieler ${room.turn+1} · ${room.players[room.turn].name}`:'Feld ansehen · Spielstand bleibt unverändert';
 }
-function closeFieldPopup(){const el=$('fieldPopup');if(!el.hidden){el.hidden=true;document.body.classList.remove('modal-open');if(modalFocusReturn?.focus)modalFocusReturn.focus();}modalFocusReturn=null;}
+function openFieldPopup(manual=false,fieldNumber=null){
+ hideFieldTooltip();
+ if(!room?.started)return;
+ const number=fieldNumber||currentFieldNumber(),f=DATA.fields[number-1];if(!f)return;
+ popupMode=myTurn()&&(!fieldNumber||number===currentFieldNumber())&&room.phase!=='roll'?'action':'inspect';
+ if(popupMode==='action')renderAction();
+ else{
+   $('fieldPopupTitle').textContent=f.name;
+   let html=`<p>${clean(f.description||'')}</p>`;
+   if(f.type==='Investition')html+=`<div class="inspection-facts"><span>Investition<strong>${euro(Math.max(0,-safeNum(f.capital)))}</strong></span><span>Jahresergebnis<strong>${f.annual>=0?'+':''}${euro(f.annual)}</strong></span></div><p>Scope-Effekt: ${f.scope.map((x,i)=>`S${i+1} ${x>0?'+':''}${fmt(x)} t`).join(' · ')}</p>`;
+   if(f.type==='Entscheidung')html+=f.options.map(o=>`<div class="inspection-option"><strong>${clean(o.name)}</strong><p>Kapital ${o.cash>=0?'+':''}${euro(o.cash)} · jährlich ${o.annual>=0?'+':''}${euro(o.annual)}<br>${o.scope.map((x,i)=>`S${i+1} ${x>0?'+':''}${fmt(x)} t`).join(' · ')}</p></div>`).join('');
+   if(f.type==='Ereigniskarte')html+='<p class="field-result">Beim Betreten wird eine Ereigniskarte gezogen und automatisch angewendet.</p>';
+   if(!room.gameOver)html+=`<p class="helper">Auswählen kann nur Spieler ${room.turn+1} (${clean(room.players[room.turn].name)}) auf dem erreichten Feld.</p>`;
+   $('fieldPopupDescription').innerHTML=html;
+   $('fieldPopupButtons').innerHTML='';
+   const button=document.createElement('button');button.type='button';button.className='primary';button.textContent='Zurück zum Spiel';button.addEventListener('click',closeFieldPopup);$('fieldPopupButtons').append(button);
+ }
+ setPopupField(number);
+ const el=$('fieldPopup'),wasOpen=!el.hidden;if(!wasOpen)modalFocusReturn=document.activeElement;
+ el.hidden=false;document.body.classList.add('modal-open');$('fieldPopupError').hidden=true;
+ for(const id of ['home','waiting','playing'])$(id).inert=true;
+ $('fieldPopupCard').classList.remove('revealed');
+ if(!wasOpen&&f.type==='Ereigniskarte'&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){void $('fieldPopupCard').offsetWidth;$('fieldPopupCard').classList.add('revealed');}
+ if(!wasOpen){$('fieldPopupBox').scrollTop=0;$('fieldPopupClose').focus();}
+}
+function closeFieldPopup(){
+ const el=$('fieldPopup');if(el.hidden)return;
+ el.hidden=true;document.body.classList.remove('modal-open');for(const id of ['home','waiting','playing'])$(id).inert=false;
+ if(modalFocusReturn?.isConnected)modalFocusReturn.focus();else $('fieldPopupOpen').focus();
+ modalFocusReturn=null;popupMode='action';
+}
 function maybeShowFieldPopup(){
+ if(popupMode==='inspect'&&!$('fieldPopup').hidden)return;
  if(!myTurn()||room.gameOver){closeFieldPopup();return;}
- const e=room.lastEvent,p=room.players[room.turn];
- const landed=e?.kind==='roll'&&e.playerId===p.id&&(room.phase==='decision'||room.phase==='end');
- const waiting=room.phase==='detention'||room.phase==='decision';
- if(!landed&&!waiting)return;
- const key=`${room.code}-${room.turnNumber}-${e?.landedField||p.pos+1}`;
+ if(room.phase==='roll'){closeFieldPopup();return;}
+ const arrived=landing(),waiting=room.phase==='detention'||room.phase==='decision';
+ if(!arrived&&!waiting)return;
+ const key=`${room.code}-${room.turnNumber}-${currentFieldNumber()}-${room.phase==='detention'?'audit':'landed'}`;
  if(lastOpenedPopupKey===key)return;
  lastOpenedPopupKey=key;openFieldPopup();
 }
 $('fieldPopupOpen').addEventListener('click',()=>openFieldPopup(true));
 $('fieldPopupClose').addEventListener('click',closeFieldPopup);
 $('fieldPopup').addEventListener('click',e=>{if(e.target===$('fieldPopup'))closeFieldPopup()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('fieldPopup').hidden){closeFieldPopup();}});
+document.addEventListener('keydown',e=>{
+ if($('fieldPopup').hidden)return;
+ if(e.key==='Escape'){e.preventDefault();closeFieldPopup();return;}
+ if(e.key==='Tab'){
+  const focusable=[...$('fieldPopup').querySelectorAll('button:not(:disabled),[tabindex="0"],a[href]')].filter(x=>!x.hidden);
+  const first=focusable[0],last=focusable[focusable.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}
+ }
+});
 for(const b of document.querySelectorAll('[data-view]'))b.addEventListener('click',()=>setActiveTab(b.dataset.view));
 $('chartPlayer').addEventListener('change',()=>{chartSelection=$('chartPlayer').value;renderStats()});
 function renderStats(){
@@ -222,3 +269,4 @@ async function initialize(){
 }
 initialize();
 })();
+

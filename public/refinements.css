@@ -1,0 +1,82 @@
+/* V1.3: touch-friendly field dialogs and stable mobile sizing. */
+html{scrollbar-gutter:auto}
+body{overflow-wrap:break-word}
+.nav-tabs{background:var(--canvas)}
+.cell{cursor:pointer!important;touch-action:manipulation}
+.cell .field-img{object-fit:contain;background:#fff9}
+.cell .num{z-index:1;line-height:1.1}
+.token{display:inline-flex;flex-shrink:0;align-items:center;justify-content:center}
+.tokens{gap:5px;padding:3px 0;min-height:32px}
+.field-name{hyphens:auto;overflow-wrap:normal;font-size:10px;line-height:1.15}
+.field-popup-overlay{padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));backdrop-filter:blur(5px)}
+.field-popup-box{max-height:calc(100dvh - 32px);padding:0;scrollbar-width:thin;isolation:isolate}
+.field-popup-head{position:sticky;top:0;z-index:3;background:#fff;padding:12px 20px;margin:0;border-bottom:1px solid var(--line)}
+.field-popup-card{margin:16px 20px 0;grid-template-columns:100px minmax(0,1fr)}
+.field-popup-card img{width:100px;height:88px;object-fit:contain;background:#fff}
+.field-popup-card h2{overflow-wrap:anywhere;hyphens:auto}
+.field-popup-description{margin:16px 20px;font-size:15px;line-height:1.55}
+.field-popup-actions{position:sticky;bottom:-1px;z-index:2;background:#fff;padding:14px 20px 18px;box-shadow:0 -7px 18px #173b330b}
+.field-popup-actions button{white-space:normal;overflow-wrap:anywhere;max-width:100%;border-width:2px}
+.field-popup-actions .button-choice{padding:13px 14px;min-width:0}
+.field-popup-actions:has(.button-choice){position:static}
+.field-popup-actions .button-choice small{font-size:12px;line-height:1.45;opacity:1;color:#48625c}
+.field-popup-actions button:disabled{opacity:.58;background:#f1f4f3}
+.field-popup-box>.error{margin:12px 20px}
+.inspection-facts{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:#f0f7f4;border:1px solid #d2e3dc;border-radius:10px;padding:12px;font-size:12px}
+.inspection-facts strong{display:block;font-size:17px}
+.inspection-option{border:1px solid var(--line);padding:12px;border-radius:9px;margin:10px 0}
+.inspection-option p{font-size:13px;margin-bottom:0}
+.player-head>span:first-child{display:flex;align-items:center;min-width:0;overflow-wrap:anywhere}
+.player-head .indicator{flex-shrink:0}
+.player-metrics{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr)}
+.player-metrics strong{text-align:right;overflow-wrap:anywhere}
+.mobile-board-caption{display:none}
+.action-top{flex-wrap:wrap}
+@media(max-width:780px){
+ .cell[data-tooltip]::after,.cell[data-tooltip]::before{display:none!important}
+ .layout{max-width:100%;padding:10px}
+ .identity{flex-wrap:nowrap;gap:10px;align-items:center}
+ .brand small{font-size:10px;max-width:155px}
+ .fh-logo{width:140px;max-width:42%}
+ .top{margin-bottom:12px}
+ .nav-tabs{flex-wrap:nowrap;gap:3px;margin:6px 0 12px}
+ .nav-tabs button{padding:9px 11px}
+ .game-summary h2{font-size:21px;line-height:1.25;overflow-wrap:anywhere}
+ .game-layout,.primary-column{min-width:0}
+ .board-frame{max-width:100%;scrollbar-width:thin;border:2px solid #a8beb6}
+ .board{min-width:720px;grid-template-rows:repeat(11,minmax(85px,auto));gap:5px}
+ .cell{min-height:85px}
+ .field-img{height:36px}
+ .field-name{font-size:9px;line-height:1.12;min-height:21px}
+ .tokens{gap:4px;min-height:30px}
+ .token{width:24px;height:24px;font-size:13px}
+ .cell .num{font-size:11px;left:2px;top:2px}
+ .mobile-board-caption{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 8px;padding:5px 2px 9px}
+ .mobile-board-caption strong{font-size:13px;overflow-wrap:anywhere}
+ .mobile-board-caption>span{font-size:12px;color:var(--teal);font-weight:800}
+ .mobile-board-caption small{grid-column:1/-1;color:var(--secondary);font-size:11px}
+ .primary-column .action{padding:15px;margin-bottom:10px}
+ .scope-pills{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .field-popup-overlay{padding:10px}
+ .field-popup-box{width:100%;max-width:580px;max-height:calc(100dvh - 20px);border-radius:16px}
+ .field-popup-head{padding:10px 14px}
+ .popup-close{min-width:44px;min-height:44px}
+ .field-popup-card{margin:12px 14px 0;padding:10px;grid-template-columns:66px minmax(0,1fr);gap:12px}
+ .field-popup-card img{width:66px;height:66px}
+ .field-popup-card h2{font-size:19px;line-height:1.22}
+ .popup-hint{font-size:11px;overflow-wrap:anywhere}
+ .field-popup-description{font-size:14px;line-height:1.5;margin:13px 14px}
+ .field-popup-actions{padding:12px 14px 15px;display:grid;grid-template-columns:1fr;gap:8px}
+ .field-popup-actions button{padding:12px;min-height:48px;width:100%}
+ .field-popup-box>.error{margin:10px 14px}
+ .field-popup-actions .button-choice small{font-size:11px}
+ .event-result{padding:11px}
+ .player-metrics{font-size:13px}
+ .hero h1{font-size:36px}
+}
+@media(max-width:360px){.brand span{font-size:18px}.field-popup-card{grid-template-columns:52px minmax(0,1fr);gap:8px}.field-popup-card img{width:52px;height:56px}.field-popup-card h2{font-size:17px}.field-popup-description{font-size:13px}}
+@media(max-height:520px) and (orientation:landscape){.field-popup-box{max-width:760px}.field-popup-card{grid-template-columns:52px minmax(0,1fr);margin-top:8px}.field-popup-card img{width:52px;height:48px}.field-popup-card h2{font-size:18px}.field-popup-actions{position:static}.field-popup-description{margin-top:8px}}
+
+/* Tooltip portal lives outside the scrolling board frame. */
+.cell::before,.cell::after{display:none!important}
+.field-tooltip{position:fixed;z-index:95;max-width:min(290px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:hidden;padding:11px 14px;border:1px solid #628b80;border-radius:11px;background:#173e38;color:#fff;box-shadow:0 8px 25px #0b302b35;font-size:13px;line-height:1.5;pointer-events:none}

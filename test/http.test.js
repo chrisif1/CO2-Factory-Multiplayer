@@ -30,3 +30,4 @@ test('HTTP: Browserassets, 2 Clients, Spielstart, Autorisierung, persistierter R
   assert.ok(fs.existsSync(path.join(dir,code+'.json')));
  }finally{proc.kill();fs.rmSync(dir,{recursive:true,force:true});}
 });
+

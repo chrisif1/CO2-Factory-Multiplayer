@@ -1,0 +1,12 @@
+CO2 Factory Multiplayer V1.3
+
+Start: START-WINDOWS.bat bzw. npm start. Node.js ab Version 20.
+
+Auf GitHub/Render: Inhalt dieses Ordners hochladen, einschließlich public/refinements.css.
+Keine Spielstände oder Zugangsdaten sind im Paket enthalten.
+
+CO2-Abgaben: Basispreis x relevante Tonnen x Startkapital / 1.000.000.
+Ereignisse werden automatisch und genau einmal angewendet.
+Nur die Person am Zug erhält das Aktions-Popup und darf darin entscheiden.
+Alle können Felder zum Lesen öffnen.
+Negatives Kapital führt nicht zum Ausscheiden.

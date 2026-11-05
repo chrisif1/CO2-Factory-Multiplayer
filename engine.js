@@ -11,8 +11,8 @@ const scopes = p=>p.base.map((v,i)=>Math.max(0,v+p.temp[i]));
 const footprint = p=>sum(scopes(p));
 // Die CO₂-bezogenen Kosten werden an das Startkapital angepasst.
 // Referenz: 1.000.000 € = 100 % der bisherigen Sätze.
-// Unter- und Obergrenze schützen vor 0-€-Sätzen und extremen Strafwerten.
-const co2Factor = room=>Math.max(0.1,Math.min(10,room.config.initialCash/1000000));
+// Der Faktor folgt dem gewählten Startkapital, auch bei 0 € und über 10 Mio. €.
+const co2Factor = room=>room.config.initialCash/1000000;
 const co2Charge = (room,baseRate,tons)=>money(Math.max(0,tons)*baseRate*co2Factor(room));
 const auditReleaseFee = room=>money(40000*co2Factor(room));
 const shuffle = a=>{const b=a.slice();for(let i=b.length-1;i>0;i--){const j=crypto.randomInt(i+1);[b[j],b[i]]=[b[i],b[j]];}return b;};
@@ -20,7 +20,7 @@ const token = ()=>crypto.randomBytes(24).toString('hex');
 const safeName = (s,fallback) => String(s||'').trim().replace(/[\u0000-\u001f\u007f]/g,'').slice(0,36)||fallback;
 function createRoom(code, name, input={}){
  const cfg={maxPlayers: Math.trunc(number(input.maxPlayers,8,2,8)), maxYears: Math.trunc(number(input.maxYears,8,1,20)), initialCash:number(input.initialCash,1000000,0,1e11), annualIncome:number(input.annualIncome,200000,-1e10,1e10), starting:[number(input.s1,250,0,1e7),number(input.s2,300,0,1e7),number(input.s3,450,0,1e7)],goal:number(input.goal,400,0,1e8)};
- const hostToken=token();const room={code,createdAt:Date.now(),updatedAt:Date.now(),revision:1,started:false,gameOver:false,config:cfg,hostToken,players:[],turn:0,turnNumber:1,dice:0,phase:'lobby',pending:null,deck:shuffle(Array.from({length:20},(_,i)=>i+1)),cursor:0,params:{...DEFAULT_PARAMS},logs:[],trends:[],history:[],lastEvent:null};
+ const hostToken=token();const room={code,createdAt:Date.now(),updatedAt:Date.now(),revision:1,started:false,gameOver:false,config:cfg,hostToken,players:[],turn:0,turnNumber:1,dice:0,phase:'lobby',pending:null,deck:shuffle(Array.from({length:20},(_,i)=>i+1)),cursor:0,params:{...DEFAULT_PARAMS},logs:[],trends:[],history:[],lastEvent:null,landing:null};
  const player=joinRoom(room,name);player.token=hostToken;return room;
 }
 function joinRoom(room,name){
@@ -95,12 +95,7 @@ function action(room,actorToken,input={},options={}){
   if(room.players.length<2)throw Error('Mindestens zwei Spieler müssen beitreten.');
   room.started=true;room.phase='roll';change(room,'start','Das Spiel wurde gestartet.');return;
  }
- if(type==='setParam'){
-  if(!host)throw Error('Nur die Spielleitung darf Parameter anpassen.');
-  const key=String(input.key||'');if(!(key in DEFAULT_PARAMS))throw Error('Unbekannter Parameter.');
-  const v=Number(input.value);if(!Number.isFinite(v)||v<0||v>1e10)throw Error('Parameter außerhalb des gültigen Bereichs.');
-  room.params[key]=v;change(room,'param','Ein Berechnungsparameter wurde aktualisiert.');return;
- }
+ if(type==='setParam')throw Error('Parameter sind in dieser Spielversion gesperrt.');
  if(!room.started||room.gameOver)throw Error('Es läuft kein Spiel.');
  const p=room.players[room.turn];
  if(actor.id!==p.id)throw Error('Du bist noch nicht am Zug.');
@@ -108,7 +103,7 @@ function action(room,actorToken,input={},options={}){
   if(room.phase!=='detention')throw Error('Kein Audit-Aufenthalt aktiv.');
   if(input.choice==='pay'){
    const fee=auditReleaseFee(room);
-   if(p.cash<fee)throw Error('Kapital für Sofortberatung reicht nicht aus.');
+   if(fee>0&&p.cash<fee)throw Error('Kapital für Sofortberatung reicht nicht aus.');
    p.cash-=fee;p.detained=false;room.phase='roll';record(room,p,'Sofortberatung');change(room,'auditPay',`${p.name} zahlt ${money(fee)} € für die Sofortberatung.`);return;
   }
   if(input.choice==='skip'){
@@ -148,6 +143,7 @@ function action(room,actorToken,input={},options={}){
    }
   }
   const msg=`${p.name} würfelt ${die} auf Feld ${p.pos+1}${closing?` · Jahr ${closing.year}: ${money(closing.emitted)} t CO₂e`:''}${details?` · ${details}`:''}.`;
+  room.landing={fieldNumber:landedField,playerId:p.id,turnNumber:room.turnNumber,eventId,eventResult,closing,message:msg,resolution:null};
   change(room,'roll',msg,{die,playerId:p.id,eventId,eventResult,closing,landedField});return;
  }
  if(type==='invest'){
@@ -155,13 +151,13 @@ function action(room,actorToken,input={},options={}){
   const field=FIELDS[room.pending.index],cost=Math.max(0,-Number(field.capital));
   if(input.choice==='buy'){
    if(p.owned.includes(field.number))throw Error('Investition bereits gekauft.');
-   if(p.cash<cost)throw Error('Nicht genügend Kapital.');
+   if(cost>0&&p.cash<cost)throw Error('Nicht genügend Kapital.');
    p.cash+=Number(field.capital)||0;p.annual+=Number(field.annual)||0;changeScope(p,field.scope,true);p.owned.push(field.number);
    record(room,p,`Investition ${field.number}`);
    change(room,'invest',`${p.name} kauft ${field.name} für ${money(cost)} €.`);
   }else if(input.choice==='pass')change(room,'invest',`${p.name} verzichtet auf ${field.name}.`);
   else throw Error('Ungültige Investitionsoption.');
-  room.phase='end';room.pending=null;return;
+  room.phase='end';room.pending=null;if(room.landing)room.landing.resolution=room.lastEvent.message;return;
  }
  if(type==='choose'){
   if(room.phase!=='decision'||room.pending?.kind!=='choose')throw Error('Keine offene Unternehmensentscheidung.');
@@ -170,7 +166,7 @@ function action(room,actorToken,input={},options={}){
   if(p.decisions.includes(field.number))throw Error('Entscheidung bereits getroffen.');
   const o=field.options[ix];if(o.cash<0&&p.cash< -o.cash)throw Error('Für diese Entscheidung reicht das Kapital nicht aus.');
   p.cash+=o.cash;p.annual+=o.annual;changeScope(p,o.scope,true);p.decisions.push(field.number);record(room,p,`Entscheidung ${field.number}`);
-  room.phase='end';room.pending=null;change(room,'choose',`${p.name}: ${field.name} – ${o.name}.`);return;
+  room.phase='end';room.pending=null;change(room,'choose',`${p.name}: ${field.name} – ${o.name}.`);if(room.landing)room.landing.resolution=room.lastEvent.message;return;
  }
  if(type==='event')throw Error('Ereigniskarten werden automatisch angewendet und können nicht abgelehnt werden.');
  if(type==='end'){
@@ -178,7 +174,7 @@ function action(room,actorToken,input={},options={}){
   const n=room.players.length;let next=-1;
   for(let k=1;k<=n;k++){const i=(room.turn+k)%n,v=room.players[i];if(!v.finished){next=i;break;}}
   if(next<0){room.gameOver=true;room.phase='over';change(room,'over','Spiel beendet – alle Unternehmen haben ihre Geschäftsjahre abgeschlossen.');return;}
-  room.turn=next;room.turnNumber++;room.dice=0;room.phase=room.players[next].detained?'detention':'roll';room.pending=null;
+  room.turn=next;room.turnNumber++;room.dice=0;room.landing=null;room.phase=room.players[next].detained?'detention':'roll';room.pending=null;
   change(room,'next',`Jetzt ist ${room.players[next].name} am Zug.`,{playerId:next});return;
  }
  throw Error('Aktion nicht bekannt.');
@@ -187,6 +183,7 @@ function publicRoom(room,who){
  const players=room.players.map(p=>{const {token,...publicP}=p;return {...publicP,bankrupt:false,scope:scopes(p),co2:footprint(p)};});
  let pending=null;const actor=room.players.find(p=>p.token===who);const current=room.players[room.turn];
  if(room.pending){pending={...room.pending};if(pending.kind==='event')pending.effect=eventEffect(room,pending.card,current);}
- return {code:room.code,revision:room.revision,started:room.started,gameOver:room.gameOver,config:room.config,players,turn:room.turn,turnNumber:room.turnNumber,dice:room.dice,phase:room.phase,pending,params:room.params,co2Factor:co2Factor(room),auditReleaseFee:auditReleaseFee(room),logs:room.logs,trends:room.trends,history:room.history,lastEvent:room.lastEvent,actorId:actor?.id??null,host:who===room.hostToken};
+ return {code:room.code,revision:room.revision,started:room.started,gameOver:room.gameOver,config:room.config,players,turn:room.turn,turnNumber:room.turnNumber,dice:room.dice,phase:room.phase,pending,params:room.params,co2Factor:co2Factor(room),auditReleaseFee:auditReleaseFee(room),logs:room.logs,trends:room.trends,history:room.history,lastEvent:room.lastEvent,landing:room.landing||null,actorId:actor?.id??null,host:who===room.hostToken};
 }
 module.exports={DATA,FIELDS,CARDS,DEFAULT_PARAMS,createRoom,joinRoom,action,publicRoom,eventEffect,scopes,footprint,yearClose,co2Factor,co2Charge,auditReleaseFee};
+

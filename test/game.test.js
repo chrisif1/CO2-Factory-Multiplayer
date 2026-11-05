@@ -79,8 +79,8 @@ test('Unternehmensentscheidung mit Schulden: kostenlose oder positive Optionen e
  E.action(r,actor(r),{type:'choose',option:2});
  assert.equal(p.cash,-20000);assert.equal(r.phase,'end');
 });
-test('Parameteränderungen sind Host-gebunden',()=>{
- const r=lobby();start(r);assert.throws(()=>E.action(r,r.players[1].token,{type:'setParam',key:'5',value:1000}),/Spielleitung/);
- E.action(r,r.players[0].token,{type:'setParam',key:'5',value:1000});assert.equal(r.params['5'],1000);
- assert.throws(()=>E.action(r,r.players[0].token,{type:'setParam',key:'5',value:-10}),/außerhalb/);
+test('Berechnungsparameter sind für Host und Gäste gesperrt',()=>{
+ const r=lobby();start(r);const original=r.params['5'];
+ for(const p of r.players)assert.throws(()=>E.action(r,p.token,{type:'setParam',key:'5',value:1000}),/gesperrt/);
+ assert.equal(r.params['5'],original);
 });

@@ -1,0 +1,25 @@
+✔ Spielraum 2–8 Spieler und host-only Start (4.3515ms)
+✔ Aktueller Spieler darf würfeln, andere werden blockiert (0.9459ms)
+✔ Investition verändert Kapital, Ergebnis und CO₂ und ist exklusiv pro Unternehmen (0.4159ms)
+✔ 20 Pflicht-Ereignisse: Wirkung direkt beim Würfeln und keine Ablehnungsoption (1.9353ms)
+✔ Überqueren von Start bucht genau ein Jahr, Ende nach vereinbarter Dauer (0.4487ms)
+✔ Negatives Kapital beendet keinen Spielzug und erlaubt das Weiterspielen (0.4844ms)
+✔ CO₂-Preis und Audit proportional zum Startkapital, Referenz 1 Mio. € (1.1192ms)
+✔ Unternehmensentscheidung mit Schulden: kostenlose oder positive Optionen erlaubt (0.2911ms)
+✔ Berechnungsparameter sind für Host und Gäste gesperrt (0.3083ms)
+✔ HTTP: Browserassets, 2 Clients, Spielstart, Autorisierung, persistierter Raum (207.0477ms)
+✔ CO₂-Kosten skalieren exakt bei 0, kleinem und sehr hohem Startkapital (4.9882ms)
+✔ Alle 20 Ereignisse werden genau einmal ausgeführt; fremde Spieler bleiben gesperrt (4.65ms)
+✔ Feldbezug bleibt bei gesperrten Parametern und nach Auswahl erhalten (0.7218ms)
+✔ Audit-Versetzung behält Landefeld 31 und separate tatsächliche Position (0.3997ms)
+✔ Kostenlose Investitionen funktionieren auch mit negativem Kapital (0.4573ms)
+✔ 8 Spieler mit Schulden spielen bis zur regulären Endwertung (3.4582ms)
+✔ Navigation bietet nur Spielbrett und CO₂/Budget an (0.7711ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 329.1744
