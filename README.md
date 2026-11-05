@@ -1,37 +1,51 @@
-# CO₂ Factory Multiplayer V1.3
+# CO₂ Factory Multiplayer V1.4
 
 ## Starten
 
-Node.js ab Version 20 installieren. Unter Windows `START-WINDOWS.bat` öffnen,
-unter macOS/Linux `START-MAC-LINUX.sh` ausführen oder im Spielordner `npm start` starten.
-Im Browser `http://localhost:3000` aufrufen. Andere Geräte im selben WLAN verwenden
-die beim Start angezeigte LAN-Adresse. Für die Internetversion die Spieldateien
-im bestehenden GitHub/Render-Projekt aktualisieren; die ZIP selbst nicht hochladen.
+Node.js ab Version 20. `START-WINDOWS.bat`, `START-MAC-LINUX.sh` oder `npm start` ausführen.
+Im Browser `http://localhost:3000` öffnen. Es sind keine zusätzlichen npm-Pakete erforderlich.
 
-## Änderungen
+## Neue Funktionen
 
-- CO₂-Abgaben, Auditgebühren, CO₂-Preisschock und Audit-Sofortberatung skalieren mit dem Startkapital.
-- Formel: relevante Tonnen × Basissatz × Startkapital / 1.000.000 €. 500.000 € entsprechen 50 %, 2 Mio. € entsprechen 200 %.
-- Ereignisse wirken beim Betreten sofort, verpflichtend und genau einmal. Wenn eine fachliche Voraussetzung fehlt, bleibt der Effekt automatisch aus.
-- Keine sichtbaren Ereigniskartennummern; die Feldnummer bleibt sichtbar.
-- Größere, zentrierte Spielernummern und kräftigere Feldrahmen.
-- Jedes Feld lässt sich per Klick, Antippen oder Tastatur in einem Popup ansehen.
-- Automatische Aktions-Popups und Auswahltasten erhält nur die Person am Zug. Die Berechtigungen prüft zusätzlich der Server.
-- Nach einer Auswahl bleibt der Feldbezug erhalten. Audit-Versetzungen unterscheiden Landefeld und tatsächliche Position.
-- Schulden führen nicht zum Ausscheiden. Kostenlose Investitionen und kostenlose oder positive Entscheidungen bleiben möglich; nicht finanzierbare Ausgaben sind gesperrt.
-- Ereigniskarten-Tab und Parameterbereich sind deaktiviert. Die Navigation bietet Spielbrett und CO₂/Budget; Berechnungsparameter sind serverseitig gesperrt. Startkapital und andere Startwerte werden weiterhin beim Erstellen festgelegt.
-- Hover-Hinweise liegen außerhalb des scrollbaren Brettrahmens und werden innerhalb des Fensters positioniert. Auf Mobilgeräten werden Felder angetippt.
-- Große Auswahlflächen, scrollbare Dialoge, Tastaturfokus und Berücksichtigung reduzierter Animationen.
+- FH-Logo aus der Oberfläche und dem Paket entfernt.
+- Rechteckiges Brett mit 15 Spalten, 7 Reihen und allen 40 Feldern. Das Brett nutzt die verfügbare Fensterhöhe und bleibt im Querformat vollständig sichtbar.
+- Unternehmenskarten liegen in der Brettmitte. Vollständige Kennzahlen und das Protokoll sind über die Schaltflächen oben erreichbar.
+- Beim Erstellen die Rolle wählen: **Spielleitung – ohne mitzuspielen** oder **Spielleitung – selbst mitspielen**.
+- Im Professorenmodus erhält die Spielleitung keine Figur, kein Kapital, keinen Platz in der Zugfolge und kein Spielergebnis. Bis zu acht Unternehmen können zusätzlich teilnehmen.
+- Nur die Spielleitung darf starten und vor dem Start Spielerplätze freigeben. Nur die jeweiligen Spieler dürfen ihre Züge bedienen.
+- QR-Code in der Lobby: scannen, Unternehmensnamen eingeben, beitreten. Der QR-Code enthält ausschließlich den Einladungslink mit Raumcode, keinen Spieler- oder Hostzugang.
+- Der QR-Code wird lokal erzeugt. Keine externe QR-Webseite und kein Internetdienst sind dafür nötig.
+- Wer während der Partie „Spiel verlassen“ bestätigt, scheidet aus. Die Figur verschwindet und das Unternehmen wird in der Zugfolge und Endwertung übersprungen. Bei Ausstieg der aktiven Person wird eine offene Entscheidung verworfen und das nächste aktive Unternehmen kann sofort würfeln.
+- Wenn alle Unternehmen abgeschlossen haben oder ausgestiegen sind, endet die Partie. Vor Spielbeginn gibt ein Ausstieg den Spielerplatz frei.
 
-## Aktualisierung auf Render
+## QR-Code und Netzwerk
+
+Auf der Render-Seite verwendet der QR-Code die aufgerufene Webadresse.
+Beim lokalen Aufruf über localhost wird eine LAN-Adresse des Servers vorgeschlagen.
+Mitspieler müssen sich dann im selben erreichbaren WLAN/LAN befinden.
+Wenn mehrere Netzwerkadapter vorhanden sind, die richtige Adresse in der Lobby auswählen.
+Ein abgeschottetes Hochschul-Gastnetz kann direkte Geräteverbindungen verhindern; dann die
+öffentlich erreichbare Render-Seite verwenden.
+Beitreten ist wie bisher vor Spielbeginn möglich. Der Professor startet nach mindestens zwei beigetretenen Unternehmen.
+
+## Bestehende Spielregeln
+
+CO₂-Abgaben, Auditkosten und CO₂-Preisschock skalieren mit dem Startkapital
+(Referenz: 1 Mio. € = 100 %). Ereignisse wirken sofort, verpflichtend und genau einmal.
+Negatives Kapital führt nicht zum Ausscheiden. Nicht finanzierbare Ausgaben bleiben gesperrt;
+kostenlose oder positive Optionen sind weiterhin möglich. Entscheidungs-Popups gehören nur
+der Person am Zug. Alle können Felder lesend öffnen. Ereigniskarten-Tab und Parameterbereich
+bleiben deaktiviert. Hover-Hinweise werden außerhalb des Brettrahmens angezeigt.
+
+## Update auf GitHub/Render
 
 Den Inhalt dieses Ordners in das Hauptverzeichnis des bestehenden Projekts übernehmen.
-`public/` vollständig mit hochladen, einschließlich `refinements.css`, `client.js`,
-`game-data.json`, Logo und `img/`. Startbefehl: `npm start`.
-Die laufende Live-Version wird durch den Download dieser ZIP noch nicht aktualisiert.
+`public/` vollständig aktualisieren, einschließlich `landscape.css` und `qrcode.js`.
+Die ZIP selbst nicht als einzelne Datei hochladen. Startbefehl: `npm start`.
+Der Download des Pakets ändert die bisherige Live-Seite noch nicht.
 
-## Prüfungen
+## Prüfung
 
-`npm test` führt die automatisierten Tests aus. Ergebnisse und Browserprüfung stehen in
-`TESTBERICHT.md`; Vorschau-Bilder befinden sich im Ordner `vorschau/`.
-Das Paket enthält keine Spielstände oder Spielerzugänge.
+`npm test`. Einzelheiten stehen in `TESTBERICHT.md`, Konsolenergebnis in `TESTERGEBNISSE.txt`.
+Vorschaubilder liegen unter `vorschau/`. Das Paket enthält keine Spielstände oder Zugangsdaten.
+QR-Quellcode und Lizenzhinweis: `THIRD_PARTY_NOTICES.md`.

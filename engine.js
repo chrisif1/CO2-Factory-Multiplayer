@@ -19,9 +19,9 @@ const shuffle = a=>{const b=a.slice();for(let i=b.length-1;i>0;i--){const j=cryp
 const token = ()=>crypto.randomBytes(24).toString('hex');
 const safeName = (s,fallback) => String(s||'').trim().replace(/[\u0000-\u001f\u007f]/g,'').slice(0,36)||fallback;
 function createRoom(code, name, input={}){
- const cfg={maxPlayers: Math.trunc(number(input.maxPlayers,8,2,8)), maxYears: Math.trunc(number(input.maxYears,8,1,20)), initialCash:number(input.initialCash,1000000,0,1e11), annualIncome:number(input.annualIncome,200000,-1e10,1e10), starting:[number(input.s1,250,0,1e7),number(input.s2,300,0,1e7),number(input.s3,450,0,1e7)],goal:number(input.goal,400,0,1e8)};
- const hostToken=token();const room={code,createdAt:Date.now(),updatedAt:Date.now(),revision:1,started:false,gameOver:false,config:cfg,hostToken,players:[],turn:0,turnNumber:1,dice:0,phase:'lobby',pending:null,deck:shuffle(Array.from({length:20},(_,i)=>i+1)),cursor:0,params:{...DEFAULT_PARAMS},logs:[],trends:[],history:[],lastEvent:null,landing:null};
- const player=joinRoom(room,name);player.token=hostToken;return room;
+ const cfg={hostOnly:input.hostOnly===true,maxPlayers: Math.trunc(number(input.maxPlayers,8,2,8)), maxYears: Math.trunc(number(input.maxYears,8,1,20)), initialCash:number(input.initialCash,1000000,0,1e11), annualIncome:number(input.annualIncome,200000,-1e10,1e10), starting:[number(input.s1,250,0,1e7),number(input.s2,300,0,1e7),number(input.s3,450,0,1e7)],goal:number(input.goal,400,0,1e8)};
+ const hostToken=token();const room={code,createdAt:Date.now(),updatedAt:Date.now(),revision:1,started:false,gameOver:false,config:cfg,hostToken,hostName:safeName(name,'Spielleitung'),players:[],turn:0,turnNumber:1,dice:0,phase:'lobby',pending:null,deck:shuffle(Array.from({length:20},(_,i)=>i+1)),cursor:0,params:{...DEFAULT_PARAMS},logs:[],trends:[],history:[],lastEvent:null,landing:null};
+ if(!cfg.hostOnly){const player=joinRoom(room,name);player.token=hostToken;}return room;
 }
 function joinRoom(room,name){
  if(room.started)throw Error('Das Spiel hat bereits begonnen.');
@@ -84,11 +84,31 @@ function eventEffect(room,id,p){
  }
  return e;
 }
+function advanceTurn(room){
+ const n=room.players.length;let next=-1;
+ for(let k=1;k<=n;k++){const i=(room.turn+k)%n,p=room.players[i];if(!p.finished&&!p.withdrawn){next=i;break;}}
+ room.pending=null;room.landing=null;room.dice=0;
+ if(next<0){room.gameOver=true;room.phase='over';change(room,'over','Spiel beendet – alle Unternehmen haben abgeschlossen oder sind ausgestiegen.');return;}
+ room.turn=next;room.turnNumber++;room.phase=room.players[next].detained?'detention':'roll';
+ change(room,'next',`Jetzt ist ${room.players[next].name} am Zug.`,{playerId:next});
+}
 function action(room,actorToken,input={},options={}){
  const actor=room.players.find(p=>p.token===actorToken);
- if(!actor)throw Error('Ungültiger Spielerzugang.');
  const host=actorToken===room.hostToken;
+ if(!actor&&!host)throw Error('Ungültiger Spielerzugang.');
  const type=String(input.type||'');
+ if(type==='leave'){
+  if(!actor||room.gameOver||actor.withdrawn)return;
+  if(!room.started){
+   const id=actor.id;room.players.splice(id,1);room.players.forEach((p,i)=>p.id=i);room.trends.splice(id,1);
+   if(host)room.config.hostOnly=true;
+   change(room,'leave',`${actor.name} hat den Spielraum verlassen.`);return;
+  }
+  actor.withdrawn=true;actor.finished=true;actor.detained=false;
+  change(room,'withdraw',`${actor.name} ist ausgestiegen und scheidet aus.`,{playerId:actor.id});
+  if(actor.id===room.turn||!room.players.some(p=>!p.finished&&!p.withdrawn))advanceTurn(room);
+  return;
+ }
  if(type==='start'){
   if(!host)throw Error('Nur die Spielleitung darf starten.');
   if(room.started)throw Error('Das Spiel läuft bereits.');
@@ -97,7 +117,9 @@ function action(room,actorToken,input={},options={}){
  }
  if(type==='setParam')throw Error('Parameter sind in dieser Spielversion gesperrt.');
  if(!room.started||room.gameOver)throw Error('Es läuft kein Spiel.');
+ if(actor?.withdrawn)throw Error('Du bist bereits ausgestiegen.');
  const p=room.players[room.turn];
+ if(!actor)throw Error('Die Spielleitung nimmt nicht am Spiel teil.');
  if(actor.id!==p.id)throw Error('Du bist noch nicht am Zug.');
  if(type==='detention'){
   if(room.phase!=='detention')throw Error('Kein Audit-Aufenthalt aktiv.');
@@ -171,11 +193,7 @@ function action(room,actorToken,input={},options={}){
  if(type==='event')throw Error('Ereigniskarten werden automatisch angewendet und können nicht abgelehnt werden.');
  if(type==='end'){
   if(room.phase!=='end')throw Error('Der Zug ist noch nicht abgeschlossen.');
-  const n=room.players.length;let next=-1;
-  for(let k=1;k<=n;k++){const i=(room.turn+k)%n,v=room.players[i];if(!v.finished){next=i;break;}}
-  if(next<0){room.gameOver=true;room.phase='over';change(room,'over','Spiel beendet – alle Unternehmen haben ihre Geschäftsjahre abgeschlossen.');return;}
-  room.turn=next;room.turnNumber++;room.dice=0;room.landing=null;room.phase=room.players[next].detained?'detention':'roll';room.pending=null;
-  change(room,'next',`Jetzt ist ${room.players[next].name} am Zug.`,{playerId:next});return;
+  advanceTurn(room);return;
  }
  throw Error('Aktion nicht bekannt.');
 }
@@ -183,7 +201,7 @@ function publicRoom(room,who){
  const players=room.players.map(p=>{const {token,...publicP}=p;return {...publicP,bankrupt:false,scope:scopes(p),co2:footprint(p)};});
  let pending=null;const actor=room.players.find(p=>p.token===who);const current=room.players[room.turn];
  if(room.pending){pending={...room.pending};if(pending.kind==='event')pending.effect=eventEffect(room,pending.card,current);}
- return {code:room.code,revision:room.revision,started:room.started,gameOver:room.gameOver,config:room.config,players,turn:room.turn,turnNumber:room.turnNumber,dice:room.dice,phase:room.phase,pending,params:room.params,co2Factor:co2Factor(room),auditReleaseFee:auditReleaseFee(room),logs:room.logs,trends:room.trends,history:room.history,lastEvent:room.lastEvent,landing:room.landing||null,actorId:actor?.id??null,host:who===room.hostToken};
+ return {code:room.code,revision:room.revision,started:room.started,gameOver:room.gameOver,config:room.config,players,turn:room.turn,turnNumber:room.turnNumber,dice:room.dice,phase:room.phase,pending,params:room.params,co2Factor:co2Factor(room),auditReleaseFee:auditReleaseFee(room),logs:room.logs,trends:room.trends,history:room.history,lastEvent:room.lastEvent,landing:room.landing||null,actorId:actor?.id??null,hostName:room.hostName||room.players[0]?.name||'Spielleitung',host:who===room.hostToken};
 }
 module.exports={DATA,FIELDS,CARDS,DEFAULT_PARAMS,createRoom,joinRoom,action,publicRoom,eventEffect,scopes,footprint,yearClose,co2Factor,co2Charge,auditReleaseFee};
 

@@ -1,8 +1,8 @@
 {
   "name": "co2-factory-multiplayer",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "private": true,
-  "description": "CO₂ Factory Multiplayer V1.3 – mobile Feld-Popups und verbindliche Ereignisse",
+  "description": "CO₂ Factory Multiplayer – Querformat, Professorenmodus und QR-Code",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

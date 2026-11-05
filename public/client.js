@@ -7,7 +7,7 @@ const fmt=(n,d=2)=>new Intl.NumberFormat('de-DE',{maximumFractionDigits:d}).form
 const clean=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safeNum=(n,d=0)=>Number.isFinite(Number(n))?Number(n):d;
 const STORE='co2_factory_multiplayer_access_v1';
-let access=null,room=null,DATA=null,view='board',pollBusy=false,actionBusy=false,lastSeen=-1,chartSelection='all',alertTimer=null,dieTimer=null,connectionLost=false,lastOpenedPopupKey=null,modalFocusReturn=null,popupMode='action';
+let access=null,room=null,DATA=null,view='board',pollBusy=false,actionBusy=false,lastSeen=-1,chartSelection='all',joinBase=location.origin,lastQrUrl='',alertTimer=null,dieTimer=null,connectionLost=false,lastOpenedPopupKey=null,modalFocusReturn=null,popupMode='action';
 function safeLocalSet(key,value){try{localStorage.setItem(key,value)}catch{}}
 function safeLocalGet(key){try{return localStorage.getItem(key)}catch{return null}}
 function toast(message,error=false){const el=$('notification');el.textContent=message;el.className='notification'+(error?' error-toast':'');el.hidden=false;if(alertTimer)clearTimeout(alertTimer);alertTimer=setTimeout(()=>el.hidden=true,4500);}
@@ -31,7 +31,7 @@ $('createForm').addEventListener('submit',async ev=>{
  ev.preventDefault();const form=ev.currentTarget,vals=Object.fromEntries(new FormData(form));const name=String(vals.name).trim();
  if(!name)return showHomeError('Bitte gib einen Unternehmensnamen ein.');
  const button=form.querySelector('button[type="submit"]');button.disabled=true;
- try{const result=await api('/api/rooms','POST',{name,config:{maxPlayers:vals.maxPlayers,maxYears:vals.maxYears,initialCash:vals.initialCash,annualIncome:vals.annualIncome,s1:vals.s1,s2:vals.s2,s3:vals.s3,goal:vals.goal}});
+ try{const result=await api('/api/rooms','POST',{name,config:{hostOnly:vals.mode==='host',maxPlayers:vals.maxPlayers,maxYears:vals.maxYears,initialCash:vals.initialCash,annualIncome:vals.annualIncome,s1:vals.s1,s2:vals.s2,s3:vals.s3,goal:vals.goal}});
    attach(result);toast('Spielraum wurde erstellt. Teile jetzt den Einladungslink.');}
  catch(err){showHomeError(err.message)}finally{button.disabled=false}
 });
@@ -43,8 +43,19 @@ $('joinForm').addEventListener('submit',async ev=>{
  catch(err){showHomeError(err.message)}finally{btn.disabled=false}
 });
 function showHomeError(s){$('homeNotice').textContent=s;$('homeNotice').hidden=false;}
-function attach(result){access={code:result.code,token:result.token,playerId:result.playerId};safeLocalSet(STORE,JSON.stringify(access));lastSeen=result.room?.lastEvent?.id??-1;room=result.room;history.replaceState(null,'',`/?room=${result.code}`);$('switchRoomBtn').hidden=false;connected(true);render();}
-function leave(){closeFieldPopup();lastOpenedPopupKey=null;if(!confirm('Diesen Spielraum auf diesem Gerät verlassen? Der reservierte Platz bleibt im laufenden Spiel bestehen.'))return;access=null;room=null;lastSeen=-1;safeLocalSet(STORE,'');history.replaceState(null,'','/');$('home').hidden=false;$('waiting').hidden=true;$('playing').hidden=true;$('switchRoomBtn').hidden=true;toast('Lokale Verbindung zum Raum beendet.');}
+function attach(result){window.scrollTo(0,0);access={code:result.code,token:result.token,playerId:result.playerId};safeLocalSet(STORE,JSON.stringify(access));lastSeen=result.room?.lastEvent?.id??-1;room=result.room;history.replaceState(null,'',`/?room=${result.code}`);$('switchRoomBtn').hidden=false;connected(true);render();}
+async function leave(){
+ if(!access||actionBusy)return;
+ const playing=room?.started&&!room.gameOver&&room.actorId!==null;
+ if(!confirm(playing?'Wirklich aussteigen? Dein Unternehmen scheidet aus. Ist es gerade am Zug, spielt sofort das nächste aktive Unternehmen weiter.':'Diesen Spielraum auf diesem Gerät verlassen?'))return;
+ actionBusy=true;
+ try{await api(endpoint()+'/action','POST',{type:'leave'});}
+ catch(err){toast('Ausstieg konnte noch nicht bestätigt werden: '+err.message,true);return;}
+ finally{actionBusy=false;}
+ closeFieldPopup();lastOpenedPopupKey=null;access=null;room=null;lastSeen=-1;safeLocalSet(STORE,'');history.replaceState(null,'','/');setActiveTab('board');
+ $('home').hidden=false;$('waiting').hidden=true;$('playing').hidden=true;$('switchRoomBtn').hidden=true;document.body.classList.remove('is-playing');
+ toast(playing?'Du bist ausgestiegen. Die übrigen Unternehmen spielen weiter.':'Spielraum verlassen.');
+}
 $('switchRoomBtn').addEventListener('click',leave);
 async function poll(){if(!access||pollBusy)return;pollBusy=true;try{const r=await api(endpoint());connected(true);if(!room||r.revision!==room.revision){const previous=lastSeen;room=r;lastSeen=r.lastEvent?.id??lastSeen;render();if(previous>=0&&r.lastEvent&&r.lastEvent.id>previous)animateEvent(r.lastEvent);}else room=r;
  }catch(err){connected(false);if(err.message.includes('Kein gültiger Zugang')){toast('Dieser Zugang ist nicht mehr gültig. Bitte erneut beitreten.',true);access=null;room=null;safeLocalSet(STORE,'');render();}}finally{pollBusy=false}}
@@ -52,6 +63,7 @@ async function postAction(body){if(actionBusy||!access)return;actionBusy=true;se
 function setBusy(b){$('rollBtn').disabled=b||!myTurn()||room?.phase!=='roll';$('nextBtn').disabled=b||!myTurn()||room?.phase!=='end';for(const button of document.querySelectorAll('#actionButtons button,#fieldPopupButtons button'))button.disabled=b||button.dataset.disabled==='true';if(!b&&!$('fieldPopup').hidden&&!$('fieldPopup').contains(document.activeElement))$('fieldPopupClose').focus({preventScroll:true});}
 function myTurn(){return room&&room.started&&!room.gameOver&&room.players[room.turn]?.id===room.actorId;}
 function render(){
+ document.body.classList.toggle('is-playing',!!access&&!!room?.started);
  if(!access||!room){$('home').hidden=false;$('waiting').hidden=true;$('playing').hidden=true;return;}
  $('home').hidden=true;$('switchRoomBtn').hidden=false;
  if(!room.started){$('waiting').hidden=false;$('playing').hidden=true;renderLobby();return;}
@@ -59,9 +71,9 @@ function render(){
  if(view==='stats')renderStats();else if(view==='cards')renderCards();else if(view==='settings')renderSettings();
  setBusy(actionBusy);
 }
-function renderLobby(){const c=room.config;$('roomCode').textContent=room.code;$('shareUrl').value=location.origin+'/?room='+room.code;$('playerCountTitle').textContent=`Spieler im Raum (${room.players.length}/${c.maxPlayers})`;
- const box=$('lobbyPlayers');box.textContent='';room.players.forEach((p,i)=>{const row=document.createElement('div');row.className='lobby-player';const left=document.createElement('div');left.className='left';const circ=document.createElement('span');circ.className='seat';circ.style.background=COLORS[i];circ.textContent=String(i+1);left.append(circ,document.createTextNode(p.name+(i===0?' · Spielleitung':'')));row.append(left);
- if(room.host&&i!==0){const kick=document.createElement('button');kick.className='subtle';kick.type='button';kick.textContent='Entfernen';kick.addEventListener('click',()=>postAction({type:'kick',playerId:p.id}));row.append(kick)}box.append(row)});
+function renderLobby(){const c=room.config;$('roomCode').textContent=room.code;$('shareUrl').value=joinBase+'/?room='+room.code;renderJoinQr();$('hostRoleInfo').textContent=room.config.hostOnly?`Spielleitung: ${room.hostName} · spielt nicht mit`:'Spielleitung spielt selbst mit';$('playerCountTitle').textContent=`Spieler im Raum (${room.players.length}/${c.maxPlayers})`;
+ const box=$('lobbyPlayers');box.textContent='';room.players.forEach((p,i)=>{const row=document.createElement('div');row.className='lobby-player';const left=document.createElement('div');left.className='left';const circ=document.createElement('span');circ.className='seat';circ.style.background=COLORS[i];circ.textContent=String(i+1);left.append(circ,document.createTextNode(p.name+(i===0&&!room.config.hostOnly?' · Spielleitung':'')));row.append(left);
+ if(room.host&&(room.config.hostOnly||i!==0)){const kick=document.createElement('button');kick.className='subtle';kick.type='button';kick.textContent='Entfernen';kick.addEventListener('click',()=>postAction({type:'kick',playerId:p.id}));row.append(kick)}box.append(row)});
  $('lobbyConfig').innerHTML=`<dl><dt>Geschäftsjahre</dt><dd>${c.maxYears}</dd><dt>Maximale Spielerzahl</dt><dd>${c.maxPlayers}</dd><dt>Startkapital</dt><dd>${euro(c.initialCash)}</dd><dt>CO₂-Ziel</dt><dd>${fmt(c.goal)} t</dd></dl>`;
  $('beginBtn').hidden=!room.host;$('beginBtn').disabled=room.players.length<2;$('waitHostText').hidden=!!room.host;
 }
@@ -76,9 +88,9 @@ function renderHeader(){const p=room.players[room.turn];$('mobileTurnName').text
  $('centerInstruction').textContent=room.gameOver?'Im Verlauf-Tab findest du die Ergebnisse.':`${myTurn()?'Dein Zug':'Gemeinsames Brett'} · Jahr ${p.years+1}/${room.config.maxYears} · Feld ${p.pos+1}`;
  $('miniScopes').innerHTML=(p.scope||[0,0,0]).map((v,i)=>`<span>Scope ${i+1}<b>${fmt(v)} t</b></span>`).join('');
  $('rollBtn').disabled=!myTurn()||room.phase!=='roll';$('nextBtn').disabled=!myTurn()||room.phase!=='end';
- if(room.dice>0)$('dieFace').textContent=DICE[room.dice-1];
+ $('dieFace').textContent=room.dice>0?DICE[room.dice-1]:'–';$('roleBadge').textContent=room.host&&room.config.hostOnly?'SPIELLEITUNG':`SPIELER ${room.actorId+1}`;$('centerPopupBtn').hidden=!myTurn()||!['decision','detention'].includes(room.phase);$('playersToggle').textContent=`Unternehmen (${room.players.length})`;
 }
-function fieldCoords(ix){if(ix<=10)return[10,10-ix];if(ix<=20)return[20-ix,0];if(ix<=30)return[0,ix-20];return[ix-30,10]}
+function fieldCoords(ix){if(ix<15)return[6,14-ix];if(ix<21)return[20-ix,0];if(ix<35)return[0,ix-20];return[ix-34,14]}
 function hideFieldTooltip(){const tip=$('fieldTooltip');if(tip)tip.hidden=true;}
 function showFieldTooltip(element,field){
  if(!matchMedia('(min-width:781px) and (hover:hover) and (pointer:fine)').matches||!$('fieldPopup').hidden)return;
@@ -98,14 +110,15 @@ function renderBoard(){
  const shortDesc=desc.length>120?desc.slice(0,117)+'…':desc;
  const imgSrc=f.type==='Ereigniskarte'?'/img/event.svg':`/img/${String(f.number).padStart(2,'0')}.svg`;
  el.className=`cell ${style[f.type]||''} ${current.pos===idx&&!room.gameOver?'current':''}`;el.style.gridRow=String(r+1);el.style.gridColumn=String(c+1);el.setAttribute('aria-describedby','fieldTooltip');el.addEventListener('pointerenter',()=>showFieldTooltip(el,f));el.addEventListener('pointerleave',hideFieldTooltip);el.addEventListener('focus',()=>showFieldTooltip(el,f));el.addEventListener('blur',hideFieldTooltip);el.setAttribute('tabindex','0');el.setAttribute('role','button');el.setAttribute('aria-label',`Feld ${f.number}: ${f.name} öffnen`);el.addEventListener('click',()=>openFieldPopup(true,f.number));el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openFieldPopup(true,f.number);}});
- let chips='';room.players.forEach((p,i)=>{if(p.pos===idx)chips+=`<span class="token" style="--c:${COLORS[i]}" title="Spieler ${i+1}: ${clean(p.name)}" aria-label="Spieler ${i+1}: ${clean(p.name)}">${i+1}</span>`});
+ let chips='';room.players.forEach((p,i)=>{if(p.pos===idx&&!p.withdrawn)chips+=`<span class="token" style="--c:${COLORS[i]}" title="Spieler ${i+1}: ${clean(p.name)}" aria-label="Spieler ${i+1}: ${clean(p.name)}">${i+1}</span>`});
+ const occupants=room.players.filter(p=>p.pos===idx&&!p.withdrawn).length;el.classList.toggle('occupied',occupants>0);el.classList.toggle('crowded',occupants>4);
  el.innerHTML=`<span class="num">${f.number}</span><img class="field-img" src="${imgSrc}" alt="${clean(f.name)}"><div class="field-name">${clean(f.name)}</div><div class="tokens">${chips}</div>`;b.append(el);
  });
 }
-function renderPlayers(){const box=$('playersList');box.textContent='';room.players.forEach((p,i)=>{
+function renderPlayers(){renderBoardPlayers();const box=$('playersList');box.textContent='';room.players.forEach((p,i)=>{
  const node=document.createElement('div');node.className='player-card'+(i===room.turn?' active':'')+(p.finished?' done':'');
  const v=p.scope||[0,0,0];const start=room.config.starting.reduce((s,x)=>s+x,0);
- node.innerHTML=`<div class="player-head"><span><span class="indicator" style="--c:${COLORS[i]}">${i+1}</span>${clean(p.name)}</span><span>${p.finished?'Fertig':p.cash<0?'Schulden':p.years+'/'+room.config.maxYears}</span></div><div class="player-metrics"><span>Kapital</span><strong>${euro(p.cash)}</strong><span>CO₂e/Jahr</span><strong>${fmt(p.co2)} t</strong><span>Scope 1 / 2 / 3</span><strong>${v.map(x=>fmt(x)).join(' / ')}</strong><span>Kumuliert</span><strong>${fmt(p.cumulative)} t</strong><span>Jahresergebnis</span><strong>${euro(p.annual)}</strong></div><div class="player-progress"><span style="width:${start>0?Math.max(0,Math.min(100,(1-p.co2/start)*100)):0}%"></span></div>`;box.append(node)});
+ node.innerHTML=`<div class="player-head"><span><span class="indicator" style="--c:${COLORS[i]}">${i+1}</span>${clean(p.name)}</span><span>${p.withdrawn?'Ausgestiegen':p.finished?'Fertig':p.cash<0?'Schulden':p.years+'/'+room.config.maxYears}</span></div><div class="player-metrics"><span>Kapital</span><strong>${euro(p.cash)}</strong><span>CO₂e/Jahr</span><strong>${fmt(p.co2)} t</strong><span>Scope 1 / 2 / 3</span><strong>${v.map(x=>fmt(x)).join(' / ')}</strong><span>Kumuliert</span><strong>${fmt(p.cumulative)} t</strong><span>Jahresergebnis</span><strong>${euro(p.annual)}</strong></div><div class="player-progress"><span style="width:${start>0?Math.max(0,Math.min(100,(1-p.co2/start)*100)):0}%"></span></div>`;box.append(node)});
  $('playerTotal').textContent=`${room.players.length}/${room.config.maxPlayers}`;
 }
 function renderLog(){const el=$('gameLog');el.textContent='';room.logs.slice(0,25).forEach(t=>{const p=document.createElement('p');p.textContent=t;el.append(p)})}
@@ -119,7 +132,7 @@ function controls(title,html,buttons){$('actionTitle').textContent=title;$('fiel
  $('fieldPopupOpen').hidden=!myTurn()||room?.gameOver;
 }
 function renderAction(){const p=room.players[room.turn],f=DATA.fields[p.pos],active=myTurn();
- if(room.gameOver){const viable=room.players.filter(p=>p.years>=room.config.maxYears).sort((a,b)=>a.cumulative-b.cumulative||b.cash-a.cash);const leader=viable[0];
+ if(room.gameOver){const viable=room.players.filter(p=>!p.withdrawn&&p.years>=room.config.maxYears).sort((a,b)=>a.cumulative-b.cumulative||b.cash-a.cash);const leader=viable[0];$('centerPlayer').textContent=leader?`🏆 ${leader.name}`:'Endwertung';$('centerInstruction').textContent=leader?`Sieger · ${fmt(leader.cumulative)} t CO₂e kumuliert · ${euro(leader.cash)}`:'Alle Unternehmen haben abgeschlossen.';
  const ranking=viable.map((v,i)=>`<p><strong>${i+1}. ${clean(v.name)}</strong> · ${fmt(v.cumulative)} t kumuliert · ${euro(v.cash)}</p>`).join('');controls('Spiel beendet',leader?`<p>🏆 Sieger: <strong>${clean(leader.name)}</strong> mit ${fmt(leader.cumulative)} t CO₂e.</p>${ranking}`:'<p>Noch kein Unternehmen hat die Zieljahre erreicht.</p>',[]);return;}
  if(!active){controls('Gemeinsamer Spielstand',`<p><strong>${clean(p.name)}</strong> ist am Zug. Die Bewegung und Entscheidungen erscheinen hier automatisch.</p>`,[]);return;}
  if(room.phase==='roll'){controls('Würfeln',`<p>Du bist dran. Würfle und lande auf einem von 40 Feldern.</p>`,[{label:'🎲 Würfeln',primary:true,action:()=>postAction({type:'roll'})}]);return;}
@@ -169,7 +182,7 @@ function setPopupField(fieldNumber){
  $('fieldPopupHint').textContent=popupMode==='action'?`Spieler ${room.turn+1} · ${room.players[room.turn].name}`:'Feld ansehen · Spielstand bleibt unverändert';
 }
 function openFieldPopup(manual=false,fieldNumber=null){
- hideFieldTooltip();
+ hideFieldTooltip();if($('dashboardDialog').open)$('dashboardDialog').close();
  if(!room?.started)return;
  const number=fieldNumber||currentFieldNumber(),f=DATA.fields[number-1];if(!f)return;
  popupMode=myTurn()&&(!fieldNumber||number===currentFieldNumber())&&room.phase!=='roll'?'action':'inspect';
@@ -256,7 +269,30 @@ function renderSettings(){if(!room||paramRevision===room.revision)return;paramRe
   row.append(label,input);list.append(row);
  }
 }
+function renderBoardPlayers(){
+ $('boardPlayers').style.setProperty('--score-rows',String(Math.ceil(room.players.length/2)));
+ $('boardPlayerCount').textContent=room.players.length+'/'+room.config.maxPlayers;
+ $('boardPlayers').innerHTML=room.players.map((p,i)=>`<div class="board-player${i===room.turn?' active':''}${p.finished?' finished':''}" title="${clean(p.name)}"><span class="board-seat" style="--c:${COLORS[i]}">${i+1}</span><div><strong>${clean(p.name)}${p.withdrawn?' · ausgestiegen':''}</strong><span class="board-player-cash${p.cash<0?' debt':''}">${euro(p.cash)}</span><small>${fmt(p.co2,0)} t CO₂e · ${p.withdrawn?'Ausgestiegen':p.finished?'Fertig':`Jahr ${Math.min(p.years+1,room.config.maxYears)}/${room.config.maxYears}`}</small></div></div>`).join('');
+}
+function renderJoinQr(){
+ const url=$('shareUrl').value;if(url===lastQrUrl)return;lastQrUrl=url;
+ try{const qr=qrcode(0,'M');qr.addData(url);qr.make();$('joinQr').innerHTML=qr.createSvgTag({cellSize:6,margin:24,scalable:true});}
+ catch{$('joinQr').textContent='Bitte Link oder Raumcode verwenden.';}
+ $('qrHint').textContent=/^https?:\/\/(localhost|127\.0\.0\.1)(:|\/)/.test(url)?'Server über seine WLAN-Adresse öffnen':'Mit der Handykamera öffnen';
+}
+async function initializeJoinBase(){
+ if(!['localhost','127.0.0.1','[::1]'].includes(location.hostname))return;
+ try{const r=await fetch('/api/network'),v=await r.json();if(v.lanOrigins?.length){joinBase=v.lanOrigins[0];const select=$('joinOrigin');for(const origin of v.lanOrigins)select.add(new Option(origin,origin));$('joinOriginWrap').hidden=false;}}
+ catch{}
+}
+$('joinOrigin').addEventListener('change',()=>{joinBase=$('joinOrigin').value;if(room)renderLobby();});
+$('hostMode').addEventListener('change',()=>{const host=$('hostMode').value==='host';$('hostNameLabel').textContent=host?'Name der Spielleitung':'Dein Unternehmensname';$('hostModeHint').textContent=host?'Du leitest das Spiel und verfolgst alle Unternehmen, ohne eine eigene Spielfigur.':'Du leitest das Spiel und nimmst als Unternehmen teil.';if(['Professor','Unternehmen 1'].includes($('hostNameInput').value))$('hostNameInput').value=host?'Professor':'Unternehmen 1';});
+$('centerPopupBtn').addEventListener('click',()=>openFieldPopup(true));
+function openDashboard(log=false){$('dashboardTitle').textContent=log?'Spielprotokoll':'Unternehmen';$('dashboardDialog').showModal();if(log)$('gameLog').scrollIntoView({block:'nearest'});}
+$('playersToggle').addEventListener('click',()=>openDashboard(false));$('logToggle').addEventListener('click',()=>openDashboard(true));$('dashboardClose').addEventListener('click',()=>$('dashboardDialog').close());
+$('dashboardDialog').addEventListener('click',e=>{if(e.target===$('dashboardDialog')){const r=$('dashboardDialog').getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)$('dashboardDialog').close();}});
 async function initialize(){
+ await initializeJoinBase();
  try{DATA=await (await fetch('/game-data.json')).json();}catch{showHomeError('Spieldaten konnten nicht geladen werden. Bitte Server prüfen.');return;}
  const fromUrl=new URLSearchParams(location.search).get('room')?.trim().toUpperCase();
  if(fromUrl&&/^[A-HJ-NP-Z2-9]{6}$/.test(fromUrl)){$('codeInput').value=fromUrl;switchEntry(false)}

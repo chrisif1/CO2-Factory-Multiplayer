@@ -1,10 +1,11 @@
-CO2 Factory Multiplayer V1.3
+CO2 Factory V1.4
 
-START-WINDOWS.bat starten oder npm start. Node.js ab Version 20 erforderlich.
-Browser: http://localhost:3000
-Spielraum erstellen, Link teilen, mindestens zwei Unternehmen beitreten lassen, starten.
-Jeder Spieler bedient nur seinen eigenen Zug und trifft die Auswahl im Feld-Popup.
-Ereignisse werden automatisch angewendet.
-Alle Felder lassen sich zum Lesen öffnen.
-Ereigniskarten-Tab und Parameterbereich sind deaktiviert.
-Schulden führen nicht zum Ausscheiden.
+START-WINDOWS.bat bzw. npm start. Browser: http://localhost:3000
+Beim Erstellen die Rolle Spielleitung ohne mitzuspielen auswählen.
+Teilnehmer scannen den QR-Code und geben ihren Unternehmensnamen ein.
+Für lokale Runden müssen alle Geräte im selben erreichbaren WLAN sein.
+Ab zwei Unternehmen darf die Spielleitung starten; bis zu acht sind möglich.
+Das rechteckige Brett passt sich an PC, Tablet und Handyquerformat an.
+Felder antippen/klicken für vollständige Texte und Entscheidungen.
+Unternehmen und Protokoll oben öffnen für weitere Kennzahlen.
+Wer Spiel verlassen bestätigt, scheidet aus; das nächste aktive Unternehmen spielt weiter.

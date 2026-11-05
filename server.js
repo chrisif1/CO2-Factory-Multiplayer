@@ -37,12 +37,12 @@ function limited(req){
 }
 function staticFile(req,res,url){
  let file=url.pathname==='/'?'/index.html':url.pathname;
- if(!/^\/(?:index\.html|style\.css|refinements\.css|client\.js|game-data\.json|logo-fh-ooe\.png|img\/(?:\d{2}|event)\.svg)$/.test(file))return fault(res,404,'Datei nicht gefunden.');
+ if(!/^\/(?:index\.html|style\.css|refinements\.css|client\.js|qrcode\.js|landscape\.css|game-data\.json|img\/(?:\d{2}|event)\.svg)$/.test(file))return fault(res,404,'Datei nicht gefunden.');
  const fullname=path.resolve(BASE,'.'+file);if(!fullname.startsWith(BASE+path.sep))return fault(res,404,'Datei nicht gefunden.');
  const mime=file.endsWith('.html')?'text/html; charset=utf-8':file.endsWith('.css')?'text/css; charset=utf-8':file.endsWith('.js')?'text/javascript; charset=utf-8':file.endsWith('.json')?'application/json; charset=utf-8':file.endsWith('.svg')?'image/svg+xml':'image/png';
  fs.readFile(fullname,(err,data)=>{
   if(err)return fault(res,404,'Datei nicht gefunden.');
-  res.writeHead(200,{'Content-Type':mime,'X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','X-Frame-Options':'DENY','Cache-Control':file==='/index.html'?'no-store':'public, max-age=600',
+  res.writeHead(200,{'Content-Type':mime,'X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','X-Frame-Options':'DENY','Cache-Control':file.endsWith('.html')||file.endsWith('.css')||file.endsWith('.js')?'no-store':'public, max-age=600',
     'Content-Security-Policy':"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"});
   res.end(data);
  });
@@ -51,13 +51,18 @@ const server=http.createServer(async(req,res)=>{
  let url;try{url=new URL(req.url,'http://localhost');}catch{return fault(res,400,'Ungültige Adresse.');}
  const pathname=url.pathname;
  try{
+  if(req.method==='GET'&&pathname==='/api/network'){
+   const lanOrigins=[];for(const iface of Object.values(os.networkInterfaces()))for(const a of iface||[]){if(a.family==='IPv4'&&!a.internal&&!a.address.startsWith('169.254.'))lanOrigins.push(`http://${a.address}:${PORT}`);}
+   lanOrigins.sort((a,b)=>Number(b.includes('192.168.'))-Number(a.includes('192.168.')));
+   return send(res,200,{lanOrigins:[...new Set(lanOrigins)]});
+  }
   if(req.method==='GET'&&pathname==='/api/health')return send(res,200,{ok:true,rooms:rooms.size});
   if(req.method==='POST'&&pathname==='/api/rooms'){
    if(limited(req))return fault(res,429,'Zu viele neue Spielräume. Später erneut versuchen.');
    if(rooms.size>=100)return fault(res,503,'Maximale Anzahl aktiver Räume erreicht.');
    const input=await body(req),code=generateCode();const room=E.createRoom(code,input.name,input.config);
    rooms.set(code,room);persist(room);
-   return send(res,201,{code,token:room.hostToken,playerId:0,room:E.publicRoom(room,room.hostToken)});
+   return send(res,201,{code,token:room.hostToken,playerId:room.config.hostOnly?null:0,room:E.publicRoom(room,room.hostToken)});
   }
   const m=/^\/api\/rooms\/([A-HJ-NP-Z2-9]{6})(?:\/(join|action))?$/.exec(pathname);
   if(m){
@@ -69,14 +74,14 @@ const server=http.createServer(async(req,res)=>{
     return send(res,201,{code:room.code,token:p.token,playerId:p.id,room:E.publicRoom(room,p.token)});
    }
    const token=bearer(req);
-   if(!token||!room.players.some(p=>p.token===token))return fault(res,401,'Kein gültiger Zugang für diesen Spielraum.');
+   if(!token||(token!==room.hostToken&&!room.players.some(p=>p.token===token)))return fault(res,401,'Kein gültiger Zugang für diesen Spielraum.');
    if(req.method==='GET'&&!operation)return send(res,200,E.publicRoom(room,token));
    if(req.method==='POST'&&operation==='action'){
     const input=await body(req);
     if(input.type==='kick'){
      if(token!==room.hostToken||room.started)return fault(res,403,'Nur die Spielleitung kann vor Spielbeginn Plätze freigeben.');
      const id=Number(input.playerId);
-     if(!Number.isInteger(id)||id<=0||id>=room.players.length)return fault(res,400,'Ungültiger Platz.');
+     if(!Number.isInteger(id)||id<0||(!room.config.hostOnly&&id===0)||id>=room.players.length)return fault(res,400,'Ungültiger Platz.');
      room.players.splice(id,1);room.players.forEach((p,i)=>p.id=i);
      room.trends=room.trends.filter((_,i)=>i!==id);
      room.revision++;room.updatedAt=Date.now();room.lastEvent={id:room.revision,kind:'kick',message:'Ein Platz wurde freigegeben.'};

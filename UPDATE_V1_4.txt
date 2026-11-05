@@ -1,0 +1,3 @@
+V1.4: Rechteckiges Brett (15 x 7), reiner Professoren-Host und QR-Code.
+FH-Logo entfernt. Oberfläche für Querformat ohne Brettscrollen.
+Alle Spieldateien einschließlich public/landscape.css und public/qrcode.js aktualisieren.
