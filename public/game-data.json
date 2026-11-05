@@ -1,0 +1,1427 @@
+{
+  "fields": [
+    {
+      "number": 1,
+      "name": "Geschäftsjahr",
+      "type": "Geschäftsjahr",
+      "description": "Beim Überqueren: Geschäftsjahr +1; Jahresergebnis (200 000 € als Basis plus laufende Maßnahmen-/Entscheidungseffekte) zum Kapital addieren. Aktuelle jährliche Scope-1/2/3-Summe zu den kumulierten Emissionen addieren.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Landung auf Start bucht nur einmal. Nach dem 8. Jahresabschluss wird das Unternehmen eingefroren; keine weitere Zielfeldaktion. Startkapital, Startemissionen, Ziel und Gesamtbudget sind vor Spielbeginn einstellbar."
+    },
+    {
+      "number": 2,
+      "name": "LED-Beleuchtung",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 30 000 €. Dauerhafte nominale Reduktion: 10 t CO₂e/Jahr.",
+      "capital": -30000,
+      "annual": 8000,
+      "scope": [
+        0,
+        -10,
+        0
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 3,
+      "name": "Ereignis",
+      "type": "Ereigniskarte",
+      "description": "Nächste Ereigniskarte ziehen und sofort genau einmal anwenden. Danach Karte bestätigen. Alle 20 Karten stehen im Tabellenblatt „Ereigniskarten“.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen."
+    },
+    {
+      "number": 4,
+      "name": "Druckluft optimieren",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 50 000 €. Dauerhafte nominale Reduktion: 25 t CO₂e/Jahr.",
+      "capital": -50000,
+      "annual": 15000,
+      "scope": [
+        0,
+        -25,
+        0
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 5,
+      "name": "Produktionsprogramm",
+      "type": "Entscheidung",
+      "description": "Ein unerwarteter Serienauftrag trifft ein. Wie plant ihr Kapazität, Energieverbrauch und Gewinn?",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Eine Option wählen; nicht bezahlbare Optionen gesperrt. Bei späterem Besuch erneut möglich. Geld sofort; Scope- und Ergebnisänderungen dauerhaft. Jeder Scope mindestens 0.",
+      "options": [
+        {
+          "name": "Zusatzauftrag sofort fertigen",
+          "cash": 110000,
+          "annual": 25000,
+          "scope": [
+            30,
+            20,
+            40
+          ],
+          "reason": "Zusätzliche Schichten, höherer Energie- und Materialbedarf."
+        },
+        {
+          "name": "Klimafreundliche Fertigung priorisieren",
+          "cash": -70000,
+          "annual": 7000,
+          "scope": [
+            -10,
+            -25,
+            -15
+          ],
+          "reason": "Langsamere, aber ressourcenschonende Prozessgestaltung."
+        },
+        {
+          "name": "Auftrag ablehnen",
+          "cash": 0,
+          "annual": 0,
+          "scope": [
+            0,
+            0,
+            0
+          ],
+          "reason": "Keine wirtschaftlichen oder ökologischen Änderungen."
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "name": "Photovoltaik",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 150 000 €. Dauerhafte nominale Reduktion: 100 t CO₂e/Jahr.",
+      "capital": -150000,
+      "annual": 35000,
+      "scope": [
+        0,
+        -100,
+        0
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 7,
+      "name": "CO₂-Preis",
+      "type": "CO₂-Preis",
+      "description": "Sofort 100 €/t × aktuelle jährliche Gesamt-CO₂e bezahlen.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Zusätzliche Spielabgabe beim Betreten. Keine zusätzliche Emissions- oder Jahresbuchung. Reduzierte jährliche Emissionen senken diese Zahlung."
+    },
+    {
+      "number": 8,
+      "name": "Wärmerückgewinnung",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 120 000 €. Dauerhafte nominale Reduktion: 70 t CO₂e/Jahr.",
+      "capital": -120000,
+      "annual": 22000,
+      "scope": [
+        -70,
+        0,
+        0
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 9,
+      "name": "Ereignis",
+      "type": "Ereigniskarte",
+      "description": "Nächste Ereigniskarte ziehen und sofort genau einmal anwenden. Danach Karte bestätigen. Alle 20 Karten stehen im Tabellenblatt „Ereigniskarten“.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen."
+    },
+    {
+      "number": 10,
+      "name": "Effiziente Maschinen",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 250 000 €. Dauerhafte nominale Reduktion: 120 t CO₂e/Jahr.",
+      "capital": -250000,
+      "annual": 45000,
+      "scope": [
+        -60,
+        -60,
+        0
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 11,
+      "name": "CO₂-Audit",
+      "type": "Audit",
+      "description": "CO₂ prüfen. Grenze = gerundet max(Ziel, Startemissionen − Absenkung × (abgeschlossene Jahre + 1)). Gebühr = max(0, aktuelle jährliche Emissionen − Grenze) × 100 €/t.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Absenkung bei individuell gewählten Werten: max(0, (Startemissionen − Ziel)/8). Standard: 75 t/Jahr, erste Grenze 925 t. Normaler Besuch ohne Aussetzen; aus Feld 31 zusätzlich Audit-Aufenthalt. Keine CO₂-Buchung."
+    },
+    {
+      "number": 12,
+      "name": "Elektrische Stapler",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 80 000 €. Dauerhafte nominale Reduktion: 30 t CO₂e/Jahr.",
+      "capital": -80000,
+      "annual": 8000,
+      "scope": [
+        -30,
+        0,
+        0
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 13,
+      "name": "Lieferantenstrategie",
+      "type": "Entscheidung",
+      "description": "Die Einkaufsabteilung muss den Stahlbezug und die Materialqualität neu organisieren.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Eine Option wählen; nicht bezahlbare Optionen gesperrt. Bei späterem Besuch erneut möglich. Geld sofort; Scope- und Ergebnisänderungen dauerhaft. Jeder Scope mindestens 0.",
+      "options": [
+        {
+          "name": "Zertifiziertes Rezyklat beschaffen",
+          "cash": -90000,
+          "annual": -5000,
+          "scope": [
+            0,
+            0,
+            -65
+          ],
+          "reason": "Höhere Beschaffungskosten, geringerer vorgelagerter Fußabdruck."
+        },
+        {
+          "name": "Günstigen Primärstahl einkaufen",
+          "cash": 50000,
+          "annual": 0,
+          "scope": [
+            0,
+            0,
+            80
+          ],
+          "reason": "Kurzfristiger Preisvorteil mit höherem Scope-3-Fußabdruck."
+        },
+        {
+          "name": "Regionalen Lieferanten entwickeln",
+          "cash": -45000,
+          "annual": -5000,
+          "scope": [
+            0,
+            0,
+            -35
+          ],
+          "reason": "Kürzere Transportketten und Lieferantenaudit."
+        }
+      ]
+    },
+    {
+      "number": 14,
+      "name": "Routenzug",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 100 000 €. Dauerhafte nominale Reduktion: 40 t CO₂e/Jahr.",
+      "capital": -100000,
+      "annual": 16000,
+      "scope": [
+        -15,
+        0,
+        -25
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 15,
+      "name": "Grünstromvertrag",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 0 €. Dauerhafte nominale Reduktion: 180 t CO₂e/Jahr.",
+      "capital": 0,
+      "annual": -70000,
+      "scope": [
+        0,
+        -180,
+        0
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 16,
+      "name": "Ereignis",
+      "type": "Ereigniskarte",
+      "description": "Nächste Ereigniskarte ziehen und sofort genau einmal anwenden. Danach Karte bestätigen. Alle 20 Karten stehen im Tabellenblatt „Ereigniskarten“.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen."
+    },
+    {
+      "number": 17,
+      "name": "Klimaarme Lieferanten",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 150 000 €. Dauerhafte nominale Reduktion: 120 t CO₂e/Jahr.",
+      "capital": -150000,
+      "annual": -12000,
+      "scope": [
+        0,
+        0,
+        -120
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 18,
+      "name": "Qualifizierung & KVP",
+      "type": "Entscheidung",
+      "description": "Die Belegschaft kann die Produktion verbessern. In welches Qualifizierungsprogramm investiert ihr?",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Eine Option wählen; nicht bezahlbare Optionen gesperrt. Bei späterem Besuch erneut möglich. Geld sofort; Scope- und Ergebnisänderungen dauerhaft. Jeder Scope mindestens 0.",
+      "options": [
+        {
+          "name": "KVP-Training für alle Schichten",
+          "cash": -40000,
+          "annual": 10000,
+          "scope": [
+            -6,
+            -18,
+            -10
+          ],
+          "reason": "Dauerhafte Verbesserungen bei Ausschuss und Energie."
+        },
+        {
+          "name": "Energieschulung durchführen",
+          "cash": -28000,
+          "annual": 6000,
+          "scope": [
+            0,
+            -25,
+            0
+          ],
+          "reason": "Betriebsnahe Reduktion des Stromverbrauchs."
+        },
+        {
+          "name": "Schulung auf später verschieben",
+          "cash": 0,
+          "annual": 0,
+          "scope": [
+            0,
+            0,
+            0
+          ],
+          "reason": "Keine direkten Effekte."
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "name": "Recyclingmaterial",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 100 000 €. Dauerhafte nominale Reduktion: 100 t CO₂e/Jahr.",
+      "capital": -100000,
+      "annual": 18000,
+      "scope": [
+        0,
+        0,
+        -100
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 20,
+      "name": "Halle dämmen",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 110 000 €. Dauerhafte nominale Reduktion: 50 t CO₂e/Jahr.",
+      "capital": -110000,
+      "annual": 20000,
+      "scope": [
+        -50,
+        0,
+        0
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 21,
+      "name": "Innovationsförderung",
+      "type": "Förderung",
+      "description": "Innovationsförderung erhalten: +60 000 €.",
+      "capital": 60000,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Bei jedem Besuch; keine Investition oder andere Voraussetzung nötig. Keine direkte CO₂-Wirkung."
+    },
+    {
+      "number": 22,
+      "name": "Effiziente Antriebe",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 65 000 €. Dauerhafte nominale Reduktion: 35 t CO₂e/Jahr.",
+      "capital": -65000,
+      "annual": 12000,
+      "scope": [
+        0,
+        -35,
+        0
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 23,
+      "name": "Ereignis",
+      "type": "Ereigniskarte",
+      "description": "Nächste Ereigniskarte ziehen und sofort genau einmal anwenden. Danach Karte bestätigen. Alle 20 Karten stehen im Tabellenblatt „Ereigniskarten“.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen."
+    },
+    {
+      "number": 24,
+      "name": "Predictive Maintenance",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 60 000 €. Dauerhafte nominale Reduktion: 20 t CO₂e/Jahr.",
+      "capital": -60000,
+      "annual": 15000,
+      "scope": [
+        -10,
+        -10,
+        0
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 25,
+      "name": "Fertigungssteuerung",
+      "type": "Entscheidung",
+      "description": "Engpässe im Maschinenpark verändern Auslastung, Rüstzeiten und Liefertermine.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Eine Option wählen; nicht bezahlbare Optionen gesperrt. Bei späterem Besuch erneut möglich. Geld sofort; Scope- und Ergebnisänderungen dauerhaft. Jeder Scope mindestens 0.",
+      "options": [
+        {
+          "name": "Losgrößen und Rüstzeiten optimieren",
+          "cash": -30000,
+          "annual": 18000,
+          "scope": [
+            -20,
+            -10,
+            0
+          ],
+          "reason": "Weniger Leerlauf und Energiebedarf pro Jahr."
+        },
+        {
+          "name": "Expressaufträge bevorzugen",
+          "cash": 70000,
+          "annual": 30000,
+          "scope": [
+            35,
+            22,
+            15
+          ],
+          "reason": "Mehr Geschäft, jedoch höherer Maschinen- und Materialeinsatz."
+        },
+        {
+          "name": "Digitale Feinplanung einführen",
+          "cash": -125000,
+          "annual": 16000,
+          "scope": [
+            -10,
+            -45,
+            -8
+          ],
+          "reason": "Besseres Scheduling und weniger Leerlauf."
+        }
+      ]
+    },
+    {
+      "number": 26,
+      "name": "Transporte auf Schiene",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 90 000 €. Dauerhafte nominale Reduktion: 60 t CO₂e/Jahr.",
+      "capital": -90000,
+      "annual": 5000,
+      "scope": [
+        0,
+        0,
+        -60
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 27,
+      "name": "CO₂-Preis",
+      "type": "CO₂-Preis",
+      "description": "Sofort 100 €/t × aktuelle jährliche Gesamt-CO₂e bezahlen.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Zusätzliche Spielabgabe beim Betreten. Keine zusätzliche Emissions- oder Jahresbuchung. Reduzierte jährliche Emissionen senken diese Zahlung."
+    },
+    {
+      "number": 28,
+      "name": "Mehrwegverpackung",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 45 000 €. Dauerhafte nominale Reduktion: 35 t CO₂e/Jahr.",
+      "capital": -45000,
+      "annual": 12000,
+      "scope": [
+        0,
+        0,
+        -35
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 29,
+      "name": "Ereignis",
+      "type": "Ereigniskarte",
+      "description": "Nächste Ereigniskarte ziehen und sofort genau einmal anwenden. Danach Karte bestätigen. Alle 20 Karten stehen im Tabellenblatt „Ereigniskarten“.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen."
+    },
+    {
+      "number": 30,
+      "name": "Emissionsarmer Stahl",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 180 000 €. Dauerhafte nominale Reduktion: 130 t CO₂e/Jahr.",
+      "capital": -180000,
+      "annual": -20000,
+      "scope": [
+        0,
+        0,
+        -130
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 31,
+      "name": "Zum Audit",
+      "type": "Versetzung zum Audit",
+      "description": "Sofort auf Feld 11 versetzen und Audit durchführen. Im nächsten eigenen Zug: 40 000 € Sofortberatung zahlen und normal würfeln ODER genau einen Zug aussetzen.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Versetzung bucht kein Geschäftsjahr und keine Emissionen. Auditgebühr wird sofort fällig. Sofortberatung nur bei ausreichendem Kapital; danach Aufenthalt aufgehoben."
+    },
+    {
+      "number": 32,
+      "name": "Digitale Planung",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 70 000 €. Dauerhafte nominale Reduktion: 40 t CO₂e/Jahr.",
+      "capital": -70000,
+      "annual": 20000,
+      "scope": [
+        -10,
+        -10,
+        -20
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 33,
+      "name": "Transport & Distribution",
+      "type": "Entscheidung",
+      "description": "Der Transportmix für Rohmaterial und Auslieferung muss festgelegt werden.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Eine Option wählen; nicht bezahlbare Optionen gesperrt. Bei späterem Besuch erneut möglich. Geld sofort; Scope- und Ergebnisänderungen dauerhaft. Jeder Scope mindestens 0.",
+      "options": [
+        {
+          "name": "Bahnanteil deutlich erhöhen",
+          "cash": -95000,
+          "annual": -10000,
+          "scope": [
+            0,
+            0,
+            -70
+          ],
+          "reason": "Weniger Lkw-Tonnenkilometer, möglicherweise teurere Logistik."
+        },
+        {
+          "name": "Sendungen bündeln",
+          "cash": -45000,
+          "annual": 12000,
+          "scope": [
+            0,
+            0,
+            -35
+          ],
+          "reason": "Weniger Transportfahrten und niedrigere Betriebskosten."
+        },
+        {
+          "name": "Luftfracht für Expresskunden",
+          "cash": 90000,
+          "annual": 6000,
+          "scope": [
+            0,
+            0,
+            120
+          ],
+          "reason": "Zusatzgeschäft mit erheblich höherem Transportfußabdruck."
+        }
+      ]
+    },
+    {
+      "number": 34,
+      "name": "Wärmepumpe",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 160 000 €. Dauerhafte nominale Reduktion: 90 t CO₂e/Jahr.",
+      "capital": -160000,
+      "annual": 25000,
+      "scope": [
+        -90,
+        0,
+        0
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 35,
+      "name": "Ereignis",
+      "type": "Ereigniskarte",
+      "description": "Nächste Ereigniskarte ziehen und sofort genau einmal anwenden. Danach Karte bestätigen. Alle 20 Karten stehen im Tabellenblatt „Ereigniskarten“.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen."
+    },
+    {
+      "number": 36,
+      "name": "Prozessoptimierung",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 85 000 €. Dauerhafte nominale Reduktion: 40 t CO₂e/Jahr.",
+      "capital": -85000,
+      "annual": 18000,
+      "scope": [
+        -20,
+        -20,
+        0
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 37,
+      "name": "Produktdesign & Kreislauf",
+      "type": "Entscheidung",
+      "description": "Das Getriebe wird überarbeitet. Die Konstruktionsentscheidung beeinflusst Materialbedarf und Recycling.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Eine Option wählen; nicht bezahlbare Optionen gesperrt. Bei späterem Besuch erneut möglich. Geld sofort; Scope- und Ergebnisänderungen dauerhaft. Jeder Scope mindestens 0.",
+      "options": [
+        {
+          "name": "Leichtbaukonstruktion entwickeln",
+          "cash": -170000,
+          "annual": 9000,
+          "scope": [
+            0,
+            0,
+            -110
+          ],
+          "reason": "Reduzierte Masse in zugekauften Materialien."
+        },
+        {
+          "name": "Demontierbares Design umsetzen",
+          "cash": -100000,
+          "annual": 7000,
+          "scope": [
+            0,
+            0,
+            -75
+          ],
+          "reason": "Einfachere Materialtrennung und Sekundärrohstoffe."
+        },
+        {
+          "name": "Bewährtes Design beibehalten",
+          "cash": 50000,
+          "annual": 0,
+          "scope": [
+            0,
+            0,
+            30
+          ],
+          "reason": "Geringerer Entwicklungsaufwand; materialintensivere Ausführung."
+        }
+      ]
+    },
+    {
+      "number": 38,
+      "name": "Materialarmes Design",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 130 000 €. Dauerhafte nominale Reduktion: 80 t CO₂e/Jahr.",
+      "capital": -130000,
+      "annual": 22000,
+      "scope": [
+        0,
+        0,
+        -80
+      ],
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+    },
+    {
+      "number": 39,
+      "name": "Wissenstransfer",
+      "type": "Wissenstransfer",
+      "description": "Wissenstransfer-Bonus erhalten: +20.000 €.",
+      "capital": 20000,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Bei jedem Besuch; keine weitere Voraussetzung. Keine direkte CO₂-Wirkung."
+    },
+    {
+      "number": 40,
+      "name": "Wissenstransfer",
+      "type": "Wissenstransfer",
+      "description": "Wissenstransfer-Bonus erhalten: +20.000 €.",
+      "capital": 20000,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Bei jedem Besuch; keine weitere Voraussetzung. Keine direkte CO₂-Wirkung."
+    }
+  ],
+  "cards": [
+    {
+      "number": 1,
+      "title": "CO₂-Preisschock",
+      "action": "Der CO₂-Preis steigt unerwartet. Bezahle zusätzlich 50 € je aktueller jährlicher Tonne CO₂e.",
+      "capital": 0,
+      "price": 50,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Zahlung = 50 €/t × aktuelle jährliche Gesamt-CO₂e. Emissionsmenge selbst bleibt unverändert.",
+      "duration": "Geldwirkung einmalig, sofort.",
+      "formula": "Keine CO₂-Wirkung: ΔScope 1/2/3 = 0. Nur monetäre Bewertung des vorhandenen Footprints.",
+      "assumptions": "50 €/t ist eine Spielannahme; im realen Modell kann ein gewählter CO₂-Schattenpreis eingesetzt werden.",
+      "reason": "Ein CO₂-Preis ändert nicht automatisch die physische Emissionsmenge; er bewertet sie finanziell.",
+      "source": "https://ghgprotocol.org/calculation-tools-faq"
+    },
+    {
+      "number": 2,
+      "title": "Energiekrise",
+      "action": "Strom und Erdgas werden teurer. Bezahle die zusätzliche Jahresbelastung für den aktuellen Verbrauch.",
+      "capital": -108000,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Kosten = Stromverbrauch × Strompreisaufschlag + Erdgasverbrauch × Gaspreisaufschlag.",
+      "duration": "Geldwirkung einmalig für das aktuelle Geschäftsjahr.",
+      "formula": "CO₂-Wirkung = 0. Finanzwirkung wird aus realen Energieverbräuchen berechnet.",
+      "assumptions": "1.200.000 kWh Strom; 300.000 kWh Gas; +0,08 €/kWh Strom; +0,04 €/kWh Gas.",
+      "reason": "Eine Preisänderung verändert ohne Verhaltens-/Produktionsänderung nicht den physischen Energieverbrauch.",
+      "source": "https://ghgprotocol.org/calculation-tools-faq"
+    },
+    {
+      "number": 3,
+      "title": "Klimabewusster Großkunde",
+      "action": "Liegt der aktuelle Footprint bei höchstens 600 t CO₂e/Jahr, erhältst du einen Auftrag/Bonus von 100.000 €.",
+      "capital": 100000,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Bonus nur bei ≤600 t CO₂e/Jahr; sonst 0 €. Der Auftrag wird hier als reine Marktprämie modelliert.",
+      "duration": "Geldwirkung einmalig, sofort.",
+      "formula": "CO₂-Wirkung = 0, solange keine zusätzliche Produktionsmenge ausgelöst wird. Bei echtem Mehrvolumen muss dieses separat bilanziert werden.",
+      "assumptions": "600 t Grenzwert und 100.000 € Bonus sind Spielparameter.",
+      "reason": "Ein Kundenbonus ist keine Emissionsminderung. Zusätzliche Produktion darf nicht stillschweigend emissionsfrei behandelt werden.",
+      "source": "https://ghgprotocol.org/calculation-tools-faq"
+    },
+    {
+      "number": 4,
+      "title": "Lieferant wird grüner",
+      "action": "Ein Stahllieferant senkt seinen Produkt-Footprint. Der betroffene Stahlanteil verursacht künftig weniger Scope 3.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        -19.62
+      ],
+      "conditions": "Wirkung auf eingekaufte Güter (Scope 3). Nur auf den tatsächlich von diesem Lieferanten bezogenen Stahlanteil anwenden.",
+      "duration": "Dauerhafte Änderung ab Ziehen der Karte.",
+      "formula": "ΔCO₂ = Stahlmenge × Lieferantenanteil × EF_Stahl × EF-Verbesserung / 1000.",
+      "assumptions": "300.000 kg Stahl; 20 % betroffen; 2,18 kg CO₂e/kg; 15 % geringerer Lieferanten-Footprint.",
+      "reason": "Lieferantenänderungen werden realitätsnah über Menge × Unterschied im produktspezifischen Emissionsfaktor gerechnet.",
+      "source": "https://worldsteel.org/data/world-steel-in-figures/world-steel-in-figures-2026/ | final: Lieferanten-EPD / Excel 02"
+    },
+    {
+      "number": 5,
+      "title": "Maschinenausfall",
+      "action": "Eine Maschine fällt aus. Ohne Predictive Maintenance entstehen Reparatur, Nacharbeit und zusätzlicher Ausschuss.",
+      "capital": -50000,
+      "price": 0,
+      "scope": [
+        0,
+        0.044,
+        1.102
+      ],
+      "conditions": "Mit gekaufter Predictive Maintenance: Karte ohne Reparatur-/Ausschusswirkung. Sonst Parameter anwenden.",
+      "duration": "Einmaliger Effekt im aktuellen Geschäftsjahr.",
+      "formula": "Scope 2 = Nacharbeitsstrom × EF_Strom. Scope 3 = Zusatzschrott × EF_Stahl + Strom-Vorkette.",
+      "assumptions": "400 kWh Nacharbeit; 500 kg zusätzlicher Stahl; Reparaturkosten 50.000 €.",
+      "reason": "Ein Ausfall erzeugt nicht pauschal CO₂, sondern über zusätzliche Energie, Ausschuss und Ersatz-/Reparaturaufwand.",
+      "source": "https://ghgprotocol.org/calculation-tools-faq | https://worldsteel.org/data/world-steel-in-figures/world-steel-in-figures-2026/"
+    },
+    {
+      "number": 6,
+      "title": "Effizienzpreis",
+      "action": "Das Unternehmen gewinnt einen Effizienzpreis: +40.000 €.",
+      "capital": 40000,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Keine zusätzliche Bedingung.",
+      "duration": "Geldwirkung einmalig, sofort.",
+      "formula": "CO₂-Wirkung = 0. Eine Auszeichnung bestätigt Leistung, erzeugt aber nicht selbst eine zusätzliche Minderung.",
+      "assumptions": "40.000 € ist ein Spielwert.",
+      "reason": "Finanzielle Anerkennung und physische Emissionsminderung werden getrennt behandelt.",
+      "source": "Spielregel; keine Emissionsquelle"
+    },
+    {
+      "number": 7,
+      "title": "Lieferkettenstörung",
+      "action": "Ein Zulieferproblem erzwingt Umwege und Sonderfahrten. Zusätzliche LKW-Fahrleistung erhöht Scope 3.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        17.82
+      ],
+      "conditions": "Zusätzliche Drittanbieter-Transporte werden Scope 3 zugerechnet. Bei eigenem LKW wäre Scope 1 anzusetzen.",
+      "duration": "Einmaliger Effekt im aktuellen Geschäftsjahr.",
+      "formula": "ΔCO₂ = zusätzliche LKW-km × EF_LKW / 1000.",
+      "assumptions": "20.000 zusätzliche LKW-km; 0,891 kg CO₂e/km als Fallback-Beispiel.",
+      "reason": "Transportemissionen werden über tatsächliche Distanz/Fahrleistung statt über eine pauschale Tonnageänderung berechnet.",
+      "source": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026 | final: Excel 02 / tatsächlicher Spediteur"
+    },
+    {
+      "number": 8,
+      "title": "Energieberatung",
+      "action": "Eine geförderte Energieberatung identifiziert sofort umsetzbare Quick Wins und senkt den Strombedarf.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        -3.96,
+        -1.08
+      ],
+      "conditions": "Wirkung nur auf Stromverbrauch; keine Investition doppelt anrechnen, die bereits separat im Spiel gekauft wurde.",
+      "duration": "Dauerhafte Änderung ab Ziehen; bei realer Umsetzung validieren.",
+      "formula": "ΔScope2 = Strom × Einsparquote × EF_Strom. ΔScope3 = Strom × Einsparquote × Vorketten-EF.",
+      "assumptions": "3 % des Gesamtstroms als konservative Spielannahme.",
+      "reason": "Die Wirkung wird über vermiedene kWh berechnet; die 3 % sind keine allgemeine Branchenkennzahl, sondern eine transparente Annahme.",
+      "source": "https://ghgprotocol.org/calculation-tools-faq | https://secure.umweltbundesamt.at/co2mon/co2mon.html"
+    },
+    {
+      "number": 9,
+      "title": "Druckluftleckage",
+      "action": "Eine Leckage bleibt zunächst unentdeckt. Der Kompressor benötigt mehr Strom.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        0.55,
+        0.15
+      ],
+      "conditions": "Nur anwenden, wenn Druckluft vorhanden ist. Nach einem Geschäftsjahr gilt die Leckage als behoben.",
+      "duration": "Für ein Geschäftsjahr.",
+      "formula": "Mehrverbrauch = Druckluftstrom × 5 %. CO₂ = Mehrverbrauch × Stromfaktoren.",
+      "assumptions": "100.000 kWh/Jahr Druckluft; +5 % Mehrverbrauch.",
+      "reason": "Leckagen wirken über zusätzlichen Kompressorstrom; deshalb wird kein pauschaler CO₂-Wert angesetzt.",
+      "source": "https://ghgprotocol.org/calculation-tools-faq | https://secure.umweltbundesamt.at/co2mon/co2mon.html"
+    },
+    {
+      "number": 10,
+      "title": "Kältewelle",
+      "action": "Ein ungewöhnlich kaltes Jahr erhöht den Heizenergiebedarf.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        3.618,
+        0,
+        0.882
+      ],
+      "conditions": "Nur der für Raumheizung verwendete Erdgasanteil wird erhöht; Prozessgas bleibt unverändert.",
+      "duration": "Für ein Geschäftsjahr.",
+      "formula": "Mehrgas = Erdgas × Heizanteil × 10 %. Scope1/3 = Mehrgas × Gasfaktoren.",
+      "assumptions": "300.000 kWh Gas; 60 % Heizung; +10 % Heizbedarf.",
+      "reason": "Wetter wirkt primär auf Raumwärme. Die Trennung von Raum- und Prozesswärme verhindert Überschätzung.",
+      "source": "https://secure.umweltbundesamt.at/co2mon/co2mon.html"
+    },
+    {
+      "number": 11,
+      "title": "Hitzewelle",
+      "action": "Zusätzliche Kühlung und Lüftung erhöhen den Stromverbrauch.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        1.98,
+        0.54
+      ],
+      "conditions": "Nur auf Kühl-/Lüftungsstrom anwenden.",
+      "duration": "Für ein Geschäftsjahr.",
+      "formula": "Mehrstrom = Kühlung/Lüftung × 15 %. Scope2/3 = Mehrstrom × Stromfaktoren.",
+      "assumptions": "120.000 kWh/Jahr Kühlung/Lüftung; +15 %.",
+      "reason": "Temperaturbedingter Mehrverbrauch wird auf die betroffenen Nebenaggregate begrenzt, nicht auf den gesamten Fabrikstrom.",
+      "source": "https://secure.umweltbundesamt.at/co2mon/co2mon.html"
+    },
+    {
+      "number": 12,
+      "title": "Mitarbeiter-KVP",
+      "action": "Ein Verbesserungsvorschlag reduziert Leerlauf- und Nebenzeiten in der Zerspanung.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        -1.54,
+        -0.42
+      ],
+      "conditions": "Nicht zusätzlich auf bereits durch eine identische Investition eingesparte kWh anwenden.",
+      "duration": "Dauerhafte Änderung ab Ziehen.",
+      "formula": "Stromeinsparung = CNC-Strom × 2 %. CO₂ = vermiedene kWh × Stromfaktoren.",
+      "assumptions": "700.000 kWh/Jahr Zerspanung; 2 % Einsparung.",
+      "reason": "KVP wird als messbare Verbrauchsänderung abgebildet. Die Einsparquote ist bewusst klein und transparent.",
+      "source": "https://ghgprotocol.org/calculation-tools-faq | wissenschaftlicher Hintergrund: Produktions-/KVP-Literatur im Projekt"
+    },
+    {
+      "number": 13,
+      "title": "Ausschussquote sinkt",
+      "action": "Qualitätsverbesserungen senken den materialbedingten Ausschuss um 1 Prozentpunkt.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        -6.540000000000001
+      ],
+      "conditions": "Nur dann als CO₂-Minderung buchen, wenn dadurch tatsächlich weniger Neumaterial eingekauft wird.",
+      "duration": "Dauerhafte Änderung ab Ziehen.",
+      "formula": "Vermiedenes Material = Stahlmenge × 1 %. Scope3-Minderung = vermiedene kg × EF_Stahl / 1000.",
+      "assumptions": "300.000 kg Stahl/Jahr; 1 Prozentpunkt weniger Ausschuss.",
+      "reason": "Materialeinsparung reduziert upstream-Emissionen nur bei tatsächlich vermiedenem Materialeinsatz; Recyclinggutschriften werden nicht doppelt gezählt.",
+      "source": "https://worldsteel.org/data/world-steel-in-figures/world-steel-in-figures-2026/ | final: Excel 01/02"
+    },
+    {
+      "number": 14,
+      "title": "Ausschusswelle",
+      "action": "Ein Qualitätsproblem erhöht den Stahlbedarf durch zusätzlichen Ausschuss um 1 Prozentpunkt.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        6.540000000000001
+      ],
+      "conditions": "Zusätzlichen Materialbedarf nur einmal buchen; Recycling des Schrotts nicht als vollständige Kompensation behandeln.",
+      "duration": "Für ein Geschäftsjahr.",
+      "formula": "Zusatzmaterial = Stahlmenge × 1 %. Scope3 = Zusatzmaterial × EF_Stahl / 1000.",
+      "assumptions": "300.000 kg Stahl/Jahr; +1 Prozentpunkt Ausschuss.",
+      "reason": "Ausschuss verursacht zusätzliche upstream-Materialemissionen, selbst wenn der Schrott später recycelt wird.",
+      "source": "https://worldsteel.org/data/world-steel-in-figures/world-steel-in-figures-2026/ | final: Excel 01/02"
+    },
+    {
+      "number": 15,
+      "title": "Bahnstreik",
+      "action": "Ein Teil der Schienentransporte muss kurzfristig auf LKW verlagert werden.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        10.800000000000002
+      ],
+      "conditions": "Nur die tatsächlich verlagerten t·km ansetzen.",
+      "duration": "Einmaliger Effekt im aktuellen Geschäftsjahr.",
+      "formula": "ΔCO₂ = verlagerte t·km × (EF_Straße − EF_Schiene) / 1000.",
+      "assumptions": "100.000 t·km; Straße 0,135; Schiene 0,027 kg CO₂e/t·km (Fallback).",
+      "reason": "Modalwechsel werden über die Differenz der transportleistungsspezifischen Faktoren berechnet.",
+      "source": "https://environment.govt.nz/assets/publications/Measuring-emissions-guidance-August-2022/Summary-PDF-Measuring-emissions-guidance-August-2022.pdf | final: Excel 02"
+    },
+    {
+      "number": 16,
+      "title": "Spediteur bündelt Transporte",
+      "action": "Der Logistikdienstleister bündelt Sendungen und reduziert die Straßen-Transportleistung.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        -10.125
+      ],
+      "conditions": "Keine Doppelzählung mit der Investition „Transporte auf Schiene“; nur verbleibende LKW-t·km reduzieren.",
+      "duration": "Dauerhafte Änderung ab Ziehen.",
+      "formula": "Einsparung = Straßen-t·km × 15 % × EF_Straße / 1000.",
+      "assumptions": "500.000 t·km/Jahr Straße; 15 % weniger Transportleistung.",
+      "reason": "Transportoptimierung wirkt über vermiedene Tonnenkilometer; so bleibt die Karte skalierbar.",
+      "source": "https://environment.govt.nz/assets/publications/Measuring-emissions-guidance-August-2022/Summary-PDF-Measuring-emissions-guidance-August-2022.pdf | final: Excel 01/02"
+    },
+    {
+      "number": 17,
+      "title": "Sonnenreiches Jahr",
+      "action": "Bei vorhandener PV-Anlage liegt der Jahresertrag 10 % über Plan und ersetzt zusätzlichen Netzstrom.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        -1.65,
+        -0.45
+      ],
+      "conditions": "Nur wenn die Investition „Photovoltaik“ bereits gekauft wurde. Eigenverbrauch vorausgesetzt.",
+      "duration": "Für ein Geschäftsjahr.",
+      "formula": "Zusätzlicher PV-Eigenverbrauch = PV-Erzeugung × 10 %. Minderung = kWh × Stromfaktoren.",
+      "assumptions": "150.000 kWh/Jahr PV; +10 % nutzbarer Ertrag.",
+      "reason": "CO₂-Wirkung entsteht nur, wenn zusätzlicher PV-Strom tatsächlich Netzbezug verdrängt.",
+      "source": "https://secure.umweltbundesamt.at/co2mon/co2mon.html | final: gemessene PV-Erzeugung / Excel 01"
+    },
+    {
+      "number": 18,
+      "title": "PV-Wechselrichterausfall",
+      "action": "Bei vorhandener PV-Anlage gehen 10 % des geplanten Jahresertrags verloren und müssen durch Netzstrom ersetzt werden.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        1.65,
+        0.45
+      ],
+      "conditions": "Nur wenn Photovoltaik vorhanden ist. Bei sofortiger Reparatur Parameter entsprechend reduzieren.",
+      "duration": "Für ein Geschäftsjahr.",
+      "formula": "Fehlender PV-Ertrag = PV-Erzeugung × 10 %. Mehremission = Ersatz-Netzstrom × Stromfaktoren.",
+      "assumptions": "150.000 kWh/Jahr PV; −10 % Ertrag.",
+      "reason": "Der Ausfall wird nicht als pauschale Emission, sondern als zusätzlicher Netzstrombezug bilanziert.",
+      "source": "https://secure.umweltbundesamt.at/co2mon/co2mon.html | final: PV-Messdaten / Excel 01"
+    },
+    {
+      "number": 19,
+      "title": "Kältemittelleckage",
+      "action": "Eine Klimaanlage verliert Kältemittel. Die Nachfüllmenge wird als direkte Scope-1-Emission bilanziert.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        4.176,
+        0,
+        0
+      ],
+      "conditions": "Nur bei tatsächlich treibhauswirksamem Kältemittel. Im finalen Modell Stoff und GWP der Anlage verwenden.",
+      "duration": "Einmaliger Effekt im aktuellen Geschäftsjahr.",
+      "formula": "Scope1 = Leckagemenge [kg] × GWP100 [kg CO₂e/kg] / 1000.",
+      "assumptions": "Beispiel: 2 kg Leckage; GWP 2.088 (R410A-Beispiel).",
+      "reason": "Fugitive Kältemittelemissionen werden massenbasiert mit dem GWP bewertet; daher kann schon eine kleine Leckage relevant sein.",
+      "source": "https://www.epa.gov/hfcs/technology-transitions-gwp-reference-table | final: Kältemitteltyp/GWP aus Excel 01/02"
+    },
+    {
+      "number": 20,
+      "title": "Mobilitätsaktion erfolgreich",
+      "action": "Ein Teil der Pkw-Pendelkilometer wird auf Bahn/ÖPNV verlagert.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        -12.5
+      ],
+      "conditions": "Scope 3 Kat. 7. Nur Fahrleistung der Mitarbeitenden berücksichtigen, die tatsächlich verlagert wird.",
+      "duration": "Dauerhafte Änderung ab Ziehen.",
+      "formula": "Minderung = Pkw-pkm × 50 % × (EF_Pkw − EF_ÖPNV) / 1000.",
+      "assumptions": "200.000 relevante Pkw-pkm/Jahr; 50 % Modal Shift; Fallback-Faktoren 0,160 vs. 0,035 kg/pkm.",
+      "reason": "Der Effekt hängt von Personen-km und Verkehrsmittel ab; eine pauschale Mitarbeiterzahl wäre weniger belastbar.",
+      "source": "https://ghgprotocol.org/calculation-tools-faq | final: Excel 02 / Mobilitätsdaten"
+    }
+  ],
+  "parameters": {
+    "5": {
+      "name": "Gesamtstrombezug",
+      "value": 1200000,
+      "unit": "kWh/Jahr",
+      "note": "Energiekrise, Energieberatung"
+    },
+    "6": {
+      "name": "Erdgasverbrauch",
+      "value": 300000,
+      "unit": "kWh/Jahr",
+      "note": "Energiekrise, Kältewelle"
+    },
+    "7": {
+      "name": "Anteil Erdgas für Raumheizung",
+      "value": 0.6,
+      "unit": "Anteil",
+      "note": "Kältewelle"
+    },
+    "8": {
+      "name": "Strom Druckluft",
+      "value": 100000,
+      "unit": "kWh/Jahr",
+      "note": "Druckluftleckage"
+    },
+    "9": {
+      "name": "Strom Kühlung + Lüftung",
+      "value": 120000,
+      "unit": "kWh/Jahr",
+      "note": "Hitzewelle"
+    },
+    "10": {
+      "name": "Strom Zerspanung/CNC",
+      "value": 700000,
+      "unit": "kWh/Jahr",
+      "note": "Prozessverbesserung"
+    },
+    "11": {
+      "name": "Stahlmenge",
+      "value": 300000,
+      "unit": "kg/Jahr",
+      "note": "Lieferant wird grüner, Ausschuss"
+    },
+    "12": {
+      "name": "PV-Erzeugung",
+      "value": 150000,
+      "unit": "kWh/Jahr",
+      "note": "Sonnenreiches Jahr, Wechselrichterausfall"
+    },
+    "13": {
+      "name": "Inbound-Straßentransport",
+      "value": 500000,
+      "unit": "t·km/Jahr",
+      "note": "Transportbündelung"
+    },
+    "14": {
+      "name": "Pendeln per Pkw (relevante Fahrleistung)",
+      "value": 200000,
+      "unit": "Personen-km/Jahr",
+      "note": "Mobilitätsaktion"
+    },
+    "15": {
+      "name": "EF Strom Scope 2",
+      "value": 0.11,
+      "unit": "kg CO₂e/kWh",
+      "note": "alle Stromereignisse"
+    },
+    "16": {
+      "name": "EF Strom Vorkette Scope 3",
+      "value": 0.03,
+      "unit": "kg CO₂e/kWh",
+      "note": "alle Stromereignisse"
+    },
+    "17": {
+      "name": "EF Erdgas Scope 1",
+      "value": 0.201,
+      "unit": "kg CO₂e/kWh",
+      "note": "Kältewelle"
+    },
+    "18": {
+      "name": "EF Erdgas Vorkette Scope 3",
+      "value": 0.049,
+      "unit": "kg CO₂e/kWh",
+      "note": "Kältewelle"
+    },
+    "19": {
+      "name": "EF Stahl",
+      "value": 2.18,
+      "unit": "kg CO₂e/kg",
+      "note": "Lieferant/Ausschuss"
+    },
+    "20": {
+      "name": "EF Straßengüterverkehr",
+      "value": 0.135,
+      "unit": "kg CO₂e/t·km",
+      "note": "Bahnstreik, Bündelung"
+    },
+    "21": {
+      "name": "EF Schienengüterverkehr",
+      "value": 0.027,
+      "unit": "kg CO₂e/t·km",
+      "note": "Bahnstreik"
+    },
+    "22": {
+      "name": "EF Pkw Pendeln",
+      "value": 0.16,
+      "unit": "kg CO₂e/Personen-km",
+      "note": "Mobilitätsaktion"
+    },
+    "23": {
+      "name": "EF ÖPNV/Schiene Pendeln",
+      "value": 0.035,
+      "unit": "kg CO₂e/Personen-km",
+      "note": "Mobilitätsaktion"
+    },
+    "24": {
+      "name": "Strompreisaufschlag Energiekrise",
+      "value": 0.08,
+      "unit": "€/kWh",
+      "note": "Energiekrise"
+    },
+    "25": {
+      "name": "Gaspreisaufschlag Energiekrise",
+      "value": 0.04,
+      "unit": "€/kWh",
+      "note": "Energiekrise"
+    },
+    "26": {
+      "name": "Lieferantenanteil betroffen",
+      "value": 0.2,
+      "unit": "Anteil Stahlmenge",
+      "note": "Lieferant wird grüner"
+    },
+    "27": {
+      "name": "Verbesserung EF Lieferant",
+      "value": 0.15,
+      "unit": "Anteil",
+      "note": "Lieferant wird grüner"
+    },
+    "28": {
+      "name": "Nacharbeitsstrom Maschinenausfall",
+      "value": 400,
+      "unit": "kWh/Ereignis",
+      "note": "Maschinenausfall"
+    },
+    "29": {
+      "name": "Zusätzlicher Stahlschrott Maschinenausfall",
+      "value": 500,
+      "unit": "kg/Ereignis",
+      "note": "Maschinenausfall"
+    },
+    "30": {
+      "name": "Zusätzliche LKW-Fahrleistung Störung",
+      "value": 20000,
+      "unit": "km/Ereignis",
+      "note": "Lieferkettenstörung"
+    },
+    "31": {
+      "name": "EF HGV/LKW pro km",
+      "value": 0.891,
+      "unit": "kg CO₂e/km",
+      "note": "Lieferkettenstörung"
+    },
+    "32": {
+      "name": "Quick-Win-Einsparung Energieberatung",
+      "value": 0.03,
+      "unit": "Anteil Strom",
+      "note": "Energieberatung"
+    },
+    "33": {
+      "name": "Mehrverbrauch Druckluftleckage",
+      "value": 0.05,
+      "unit": "Anteil Druckluftstrom",
+      "note": "Druckluftleckage"
+    },
+    "34": {
+      "name": "Mehrverbrauch Kältewelle",
+      "value": 0.1,
+      "unit": "Anteil Heizgas",
+      "note": "Kältewelle"
+    },
+    "35": {
+      "name": "Mehrverbrauch Hitzewelle",
+      "value": 0.15,
+      "unit": "Anteil Kühlung/Lüftung",
+      "note": "Hitzewelle"
+    },
+    "36": {
+      "name": "Stromeinsparung Prozessverbesserung",
+      "value": 0.02,
+      "unit": "Anteil CNC-Strom",
+      "note": "Mitarbeiter-KVP"
+    },
+    "37": {
+      "name": "Ausschussänderung positiv",
+      "value": 0.01,
+      "unit": "Anteil Stahlmenge",
+      "note": "Ausschuss sinkt"
+    },
+    "38": {
+      "name": "Ausschussänderung negativ",
+      "value": 0.01,
+      "unit": "Anteil Stahlmenge",
+      "note": "Ausschuss steigt"
+    },
+    "39": {
+      "name": "Bahntransport fällt aus",
+      "value": 100000,
+      "unit": "t·km/Ereignis",
+      "note": "Bahnstreik"
+    },
+    "40": {
+      "name": "Transportbündelung",
+      "value": 0.15,
+      "unit": "Anteil Straßen-tkm",
+      "note": "Spediteur bündelt"
+    },
+    "41": {
+      "name": "PV-Ertragsabweichung",
+      "value": 0.1,
+      "unit": "Anteil PV-Erzeugung",
+      "note": "Sonnenjahr/Ausfall"
+    },
+    "42": {
+      "name": "Kältemittelleckage",
+      "value": 2,
+      "unit": "kg/Ereignis",
+      "note": "Kältemittelleck"
+    },
+    "43": {
+      "name": "GWP Kältemittel",
+      "value": 2088,
+      "unit": "kg CO₂e/kg",
+      "note": "Kältemittelleck"
+    },
+    "44": {
+      "name": "Modal Shift Pendeln",
+      "value": 0.5,
+      "unit": "Anteil Pkw-pkm",
+      "note": "Mobilitätsaktion"
+    },
+    "45": {
+      "name": "Reparaturkosten Maschinenausfall",
+      "value": 50000,
+      "unit": "€",
+      "note": "Maschinenausfall"
+    }
+  },
+  "sourceFile": "CO2-Factory_Spielfelder_und_20_Ereigniskarten_realitaetsnah.xlsx",
+  "fieldImages": {
+    "1": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJHZXNjaMOkZnRzamFociI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmcxIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNlYWY2ZjQiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNkN2ViZTciLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxMTIiIHJ4PSIxNCIgZmlsbD0idXJsKCNiZzEpIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjMTc2YjY0IiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiMxNzZiNjQiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7wn4+tPC90ZXh0Pgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iMjkiIGhlaWdodD0iMjEiIHJ4PSI3IiBmaWxsPSIjMTc2YjY0Ii8+PHRleHQgeD0iMjIuNSIgeT0iMjMuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSI+MDE8L3RleHQ+PC9zdmc+",
+    "2": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJMRUQtQmVsZXVjaHR1bmciPgo8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnMiIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZTVmM2VhIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZDFlOGRkIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiByeD0iMTQiIGZpbGw9InVybCgjYmcyKSIvPjxnIG9wYWNpdHk9IjAuMTQiIHN0cm9rZT0iIzE3Nzk2NCIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIj48Y2lyY2xlIGN4PSIxNjAiIGN5PSIxNiIgcj0iNDUiLz48Y2lyY2xlIGN4PSIxNjUiIGN5PSIxOCIgcj0iMjgiLz48cGF0aCBkPSJNLTIwIDg4TDYwIDhNODAgMTMwTDE3MCA0Mk0yMCAxMTBMMTAwIDMwIi8+PC9nPgo8ZyBvcGFjaXR5PSIwLjE1IiBmaWxsPSIjMTc3OTY0Ij48cmVjdCB4PSIxNSIgeT0iNzkiIHdpZHRoPSIxNjAiIGhlaWdodD0iNiIgcng9IjMiLz48cmVjdCB4PSIzNSIgeT0iOTAiIHdpZHRoPSIxMjIiIGhlaWdodD0iNCIgcng9IjIiLz48L2c+Cjx0ZXh0IHg9Ijk2IiB5PSI3NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IlNlZ29lIFVJIEVtb2ppLCBBcHBsZSBDb2xvciBFbW9qaSwgTm90byBDb2xvciBFbW9qaSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI2MSI+8J+SoTwvdGV4dD4KPHJlY3QgeD0iOCIgeT0iOCIgd2lkdGg9IjI5IiBoZWlnaHQ9IjIxIiByeD0iNyIgZmlsbD0iIzE3Nzk2NCIvPjx0ZXh0IHg9IjIyLjUiIHk9IjIzLjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiPjAyPC90ZXh0Pjwvc3ZnPg==",
+    "3": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJFcmVpZ25pcyI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmczIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNmZmY0ZGUiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmOWUzYWIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxMTIiIHJ4PSIxNCIgZmlsbD0idXJsKCNiZzMpIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjYTg3MzI0IiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiNhODczMjQiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7wn4OPPC90ZXh0Pgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iMjkiIGhlaWdodD0iMjEiIHJ4PSI3IiBmaWxsPSIjYTg3MzI0Ii8+PHRleHQgeD0iMjIuNSIgeT0iMjMuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSI+MDM8L3RleHQ+PC9zdmc+",
+    "4": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJEcnVja2x1ZnQgb3B0aW1pZXJlbiI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmc0IiB4Mj0iMSIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNlNWYzZWEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNkMWU4ZGQiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxMTIiIHJ4PSIxNCIgZmlsbD0idXJsKCNiZzQpIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjMTc3OTY0IiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiMxNzc5NjQiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7wn5KoPC90ZXh0Pgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iMjkiIGhlaWdodD0iMjEiIHJ4PSI3IiBmaWxsPSIjMTc3OTY0Ii8+PHRleHQgeD0iMjIuNSIgeT0iMjMuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSI+MDQ8L3RleHQ+PC9zdmc+",
+    "5": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJFbnRzY2hlaWR1bmciPgo8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnNSIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZThmMGZmIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZDRlMWY4Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiByeD0iMTQiIGZpbGw9InVybCgjYmc1KSIvPjxnIG9wYWNpdHk9IjAuMTQiIHN0cm9rZT0iIzNlNjM4ZiIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIj48Y2lyY2xlIGN4PSIxNjAiIGN5PSIxNiIgcj0iNDUiLz48Y2lyY2xlIGN4PSIxNjUiIGN5PSIxOCIgcj0iMjgiLz48cGF0aCBkPSJNLTIwIDg4TDYwIDhNODAgMTMwTDE3MCA0Mk0yMCAxMTBMMTAwIDMwIi8+PC9nPgo8ZyBvcGFjaXR5PSIwLjE1IiBmaWxsPSIjM2U2MzhmIj48cmVjdCB4PSIxNSIgeT0iNzkiIHdpZHRoPSIxNjAiIGhlaWdodD0iNiIgcng9IjMiLz48cmVjdCB4PSIzNSIgeT0iOTAiIHdpZHRoPSIxMjIiIGhlaWdodD0iNCIgcng9IjIiLz48L2c+Cjx0ZXh0IHg9Ijk2IiB5PSI3NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IlNlZ29lIFVJIEVtb2ppLCBBcHBsZSBDb2xvciBFbW9qaSwgTm90byBDb2xvciBFbW9qaSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI2MSI+8J+TiDwvdGV4dD4KPHJlY3QgeD0iOCIgeT0iOCIgd2lkdGg9IjI5IiBoZWlnaHQ9IjIxIiByeD0iNyIgZmlsbD0iIzNlNjM4ZiIvPjx0ZXh0IHg9IjIyLjUiIHk9IjIzLjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiPjA1PC90ZXh0Pjwvc3ZnPg==",
+    "6": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJQaG90b3ZvbHRhaWsiPgo8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnNiIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZTVmM2VhIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZDFlOGRkIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiByeD0iMTQiIGZpbGw9InVybCgjYmc2KSIvPjxnIG9wYWNpdHk9IjAuMTQiIHN0cm9rZT0iIzE3Nzk2NCIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIj48Y2lyY2xlIGN4PSIxNjAiIGN5PSIxNiIgcj0iNDUiLz48Y2lyY2xlIGN4PSIxNjUiIGN5PSIxOCIgcj0iMjgiLz48cGF0aCBkPSJNLTIwIDg4TDYwIDhNODAgMTMwTDE3MCA0Mk0yMCAxMTBMMTAwIDMwIi8+PC9nPgo8ZyBvcGFjaXR5PSIwLjE1IiBmaWxsPSIjMTc3OTY0Ij48cmVjdCB4PSIxNSIgeT0iNzkiIHdpZHRoPSIxNjAiIGhlaWdodD0iNiIgcng9IjMiLz48cmVjdCB4PSIzNSIgeT0iOTAiIHdpZHRoPSIxMjIiIGhlaWdodD0iNCIgcng9IjIiLz48L2c+Cjx0ZXh0IHg9Ijk2IiB5PSI3NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IlNlZ29lIFVJIEVtb2ppLCBBcHBsZSBDb2xvciBFbW9qaSwgTm90byBDb2xvciBFbW9qaSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI2MSI+4piA77iPPC90ZXh0Pgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iMjkiIGhlaWdodD0iMjEiIHJ4PSI3IiBmaWxsPSIjMTc3OTY0Ii8+PHRleHQgeD0iMjIuNSIgeT0iMjMuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSI+MDY8L3RleHQ+PC9zdmc+",
+    "7": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJDT+KCgi1QcmVpcyI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmc3IiB4Mj0iMSIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNmNGVhZjMiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNlOWQyZTciLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxMTIiIHJ4PSIxNCIgZmlsbD0idXJsKCNiZzcpIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjOTA1MTZkIiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiM5MDUxNmQiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7wn5K2PC90ZXh0Pgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iMjkiIGhlaWdodD0iMjEiIHJ4PSI3IiBmaWxsPSIjOTA1MTZkIi8+PHRleHQgeD0iMjIuNSIgeT0iMjMuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSI+MDc8L3RleHQ+PC9zdmc+",
+    "8": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJXw6RybWVyw7xja2dld2lubnVuZyI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmc4IiB4Mj0iMSIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNlNWYzZWEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNkMWU4ZGQiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxMTIiIHJ4PSIxNCIgZmlsbD0idXJsKCNiZzgpIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjMTc3OTY0IiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiMxNzc5NjQiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7imajvuI88L3RleHQ+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIyOSIgaGVpZ2h0PSIyMSIgcng9IjciIGZpbGw9IiMxNzc5NjQiLz48dGV4dCB4PSIyMi41IiB5PSIyMy41IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIj4wODwvdGV4dD48L3N2Zz4=",
+    "9": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJFcmVpZ25pcyI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmc5IiB4Mj0iMSIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNmZmY0ZGUiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNmOWUzYWIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxMTIiIHJ4PSIxNCIgZmlsbD0idXJsKCNiZzkpIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjYTg3MzI0IiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiNhODczMjQiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7imqE8L3RleHQ+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIyOSIgaGVpZ2h0PSIyMSIgcng9IjciIGZpbGw9IiNhODczMjQiLz48dGV4dCB4PSIyMi41IiB5PSIyMy41IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIj4wOTwvdGV4dD48L3N2Zz4=",
+    "10": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJFZmZpemllbnRlIE1hc2NoaW5lbiI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmcxMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZTVmM2VhIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZDFlOGRkIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiByeD0iMTQiIGZpbGw9InVybCgjYmcxMCkiLz48ZyBvcGFjaXR5PSIwLjE0IiBzdHJva2U9IiMxNzc5NjQiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTYwIiBjeT0iMTYiIHI9IjQ1Ii8+PGNpcmNsZSBjeD0iMTY1IiBjeT0iMTgiIHI9IjI4Ii8+PHBhdGggZD0iTS0yMCA4OEw2MCA4TTgwIDEzMEwxNzAgNDJNMjAgMTEwTDEwMCAzMCIvPjwvZz4KPGcgb3BhY2l0eT0iMC4xNSIgZmlsbD0iIzE3Nzk2NCI+PHJlY3QgeD0iMTUiIHk9Ijc5IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjYiIHJ4PSIzIi8+PHJlY3QgeD0iMzUiIHk9IjkwIiB3aWR0aD0iMTIyIiBoZWlnaHQ9IjQiIHJ4PSIyIi8+PC9nPgo8dGV4dCB4PSI5NiIgeT0iNzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSBFbW9qaSwgQXBwbGUgQ29sb3IgRW1vamksIE5vdG8gQ29sb3IgRW1vamksIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNjEiPuKame+4jzwvdGV4dD4KPHJlY3QgeD0iOCIgeT0iOCIgd2lkdGg9IjI5IiBoZWlnaHQ9IjIxIiByeD0iNyIgZmlsbD0iIzE3Nzk2NCIvPjx0ZXh0IHg9IjIyLjUiIHk9IjIzLjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiPjEwPC90ZXh0Pjwvc3ZnPg==",
+    "11": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJDT+KCgi1BdWRpdCI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmcxMSIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZmZmMGViIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZjhkNGNlIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiByeD0iMTQiIGZpbGw9InVybCgjYmcxMSkiLz48ZyBvcGFjaXR5PSIwLjE0IiBzdHJva2U9IiM5ZDQ5M2YiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTYwIiBjeT0iMTYiIHI9IjQ1Ii8+PGNpcmNsZSBjeD0iMTY1IiBjeT0iMTgiIHI9IjI4Ii8+PHBhdGggZD0iTS0yMCA4OEw2MCA4TTgwIDEzMEwxNzAgNDJNMjAgMTEwTDEwMCAzMCIvPjwvZz4KPGcgb3BhY2l0eT0iMC4xNSIgZmlsbD0iIzlkNDkzZiI+PHJlY3QgeD0iMTUiIHk9Ijc5IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjYiIHJ4PSIzIi8+PHJlY3QgeD0iMzUiIHk9IjkwIiB3aWR0aD0iMTIyIiBoZWlnaHQ9IjQiIHJ4PSIyIi8+PC9nPgo8dGV4dCB4PSI5NiIgeT0iNzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSBFbW9qaSwgQXBwbGUgQ29sb3IgRW1vamksIE5vdG8gQ29sb3IgRW1vamksIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNjEiPvCfk4s8L3RleHQ+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIyOSIgaGVpZ2h0PSIyMSIgcng9IjciIGZpbGw9IiM5ZDQ5M2YiLz48dGV4dCB4PSIyMi41IiB5PSIyMy41IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIj4xMTwvdGV4dD48L3N2Zz4=",
+    "12": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJFbGVrdHJpc2NoZSBTdGFwbGVyIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJiZzEyIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNlNWYzZWEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNkMWU4ZGQiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxMTIiIHJ4PSIxNCIgZmlsbD0idXJsKCNiZzEyKSIvPjxnIG9wYWNpdHk9IjAuMTQiIHN0cm9rZT0iIzE3Nzk2NCIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIj48Y2lyY2xlIGN4PSIxNjAiIGN5PSIxNiIgcj0iNDUiLz48Y2lyY2xlIGN4PSIxNjUiIGN5PSIxOCIgcj0iMjgiLz48cGF0aCBkPSJNLTIwIDg4TDYwIDhNODAgMTMwTDE3MCA0Mk0yMCAxMTBMMTAwIDMwIi8+PC9nPgo8ZyBvcGFjaXR5PSIwLjE1IiBmaWxsPSIjMTc3OTY0Ij48cmVjdCB4PSIxNSIgeT0iNzkiIHdpZHRoPSIxNjAiIGhlaWdodD0iNiIgcng9IjMiLz48cmVjdCB4PSIzNSIgeT0iOTAiIHdpZHRoPSIxMjIiIGhlaWdodD0iNCIgcng9IjIiLz48L2c+Cjx0ZXh0IHg9Ijk2IiB5PSI3NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IlNlZ29lIFVJIEVtb2ppLCBBcHBsZSBDb2xvciBFbW9qaSwgTm90byBDb2xvciBFbW9qaSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI2MSI+8J+anDwvdGV4dD4KPHJlY3QgeD0iOCIgeT0iOCIgd2lkdGg9IjI5IiBoZWlnaHQ9IjIxIiByeD0iNyIgZmlsbD0iIzE3Nzk2NCIvPjx0ZXh0IHg9IjIyLjUiIHk9IjIzLjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiPjEyPC90ZXh0Pjwvc3ZnPg==",
+    "13": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJFbnRzY2hlaWR1bmciPgo8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnMTMiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2U4ZjBmZiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2Q0ZTFmOCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjExMiIgcng9IjE0IiBmaWxsPSJ1cmwoI2JnMTMpIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjM2U2MzhmIiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiMzZTYzOGYiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7wn5uSPC90ZXh0Pgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iMjkiIGhlaWdodD0iMjEiIHJ4PSI3IiBmaWxsPSIjM2U2MzhmIi8+PHRleHQgeD0iMjIuNSIgeT0iMjMuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSI+MTM8L3RleHQ+PC9zdmc+",
+    "14": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJSb3V0ZW56dWciPgo8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnMTQiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2U1ZjNlYSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2QxZThkZCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjExMiIgcng9IjE0IiBmaWxsPSJ1cmwoI2JnMTQpIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjMTc3OTY0IiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiMxNzc5NjQiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7wn5qaPC90ZXh0Pgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iMjkiIGhlaWdodD0iMjEiIHJ4PSI3IiBmaWxsPSIjMTc3OTY0Ii8+PHRleHQgeD0iMjIuNSIgeT0iMjMuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSI+MTQ8L3RleHQ+PC9zdmc+",
+    "15": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJHcsO8bnN0cm9tdmVydHJhZyI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmcxNSIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZTVmM2VhIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZDFlOGRkIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiByeD0iMTQiIGZpbGw9InVybCgjYmcxNSkiLz48ZyBvcGFjaXR5PSIwLjE0IiBzdHJva2U9IiMxNzc5NjQiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTYwIiBjeT0iMTYiIHI9IjQ1Ii8+PGNpcmNsZSBjeD0iMTY1IiBjeT0iMTgiIHI9IjI4Ii8+PHBhdGggZD0iTS0yMCA4OEw2MCA4TTgwIDEzMEwxNzAgNDJNMjAgMTEwTDEwMCAzMCIvPjwvZz4KPGcgb3BhY2l0eT0iMC4xNSIgZmlsbD0iIzE3Nzk2NCI+PHJlY3QgeD0iMTUiIHk9Ijc5IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjYiIHJ4PSIzIi8+PHJlY3QgeD0iMzUiIHk9IjkwIiB3aWR0aD0iMTIyIiBoZWlnaHQ9IjQiIHJ4PSIyIi8+PC9nPgo8dGV4dCB4PSI5NiIgeT0iNzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSBFbW9qaSwgQXBwbGUgQ29sb3IgRW1vamksIE5vdG8gQ29sb3IgRW1vamksIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNjEiPvCflIw8L3RleHQ+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIyOSIgaGVpZ2h0PSIyMSIgcng9IjciIGZpbGw9IiMxNzc5NjQiLz48dGV4dCB4PSIyMi41IiB5PSIyMy41IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIj4xNTwvdGV4dD48L3N2Zz4=",
+    "16": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJFcmVpZ25pcyI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmcxNiIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZmZmNGRlIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZjllM2FiIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiByeD0iMTQiIGZpbGw9InVybCgjYmcxNikiLz48ZyBvcGFjaXR5PSIwLjE0IiBzdHJva2U9IiNhODczMjQiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTYwIiBjeT0iMTYiIHI9IjQ1Ii8+PGNpcmNsZSBjeD0iMTY1IiBjeT0iMTgiIHI9IjI4Ii8+PHBhdGggZD0iTS0yMCA4OEw2MCA4TTgwIDEzMEwxNzAgNDJNMjAgMTEwTDEwMCAzMCIvPjwvZz4KPGcgb3BhY2l0eT0iMC4xNSIgZmlsbD0iI2E4NzMyNCI+PHJlY3QgeD0iMTUiIHk9Ijc5IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjYiIHJ4PSIzIi8+PHJlY3QgeD0iMzUiIHk9IjkwIiB3aWR0aD0iMTIyIiBoZWlnaHQ9IjQiIHJ4PSIyIi8+PC9nPgo8dGV4dCB4PSI5NiIgeT0iNzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSBFbW9qaSwgQXBwbGUgQ29sb3IgRW1vamksIE5vdG8gQ29sb3IgRW1vamksIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNjEiPvCfjKnvuI88L3RleHQ+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIyOSIgaGVpZ2h0PSIyMSIgcng9IjciIGZpbGw9IiNhODczMjQiLz48dGV4dCB4PSIyMi41IiB5PSIyMy41IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIj4xNjwvdGV4dD48L3N2Zz4=",
+    "17": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJLbGltYWFybWUgTGllZmVyYW50ZW4iPgo8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnMTciIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2U1ZjNlYSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2QxZThkZCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjExMiIgcng9IjE0IiBmaWxsPSJ1cmwoI2JnMTcpIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjMTc3OTY0IiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiMxNzc5NjQiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7wn6SdPC90ZXh0Pgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iMjkiIGhlaWdodD0iMjEiIHJ4PSI3IiBmaWxsPSIjMTc3OTY0Ii8+PHRleHQgeD0iMjIuNSIgeT0iMjMuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSI+MTc8L3RleHQ+PC9zdmc+",
+    "18": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJFbnRzY2hlaWR1bmciPgo8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnMTgiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2U4ZjBmZiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2Q0ZTFmOCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjExMiIgcng9IjE0IiBmaWxsPSJ1cmwoI2JnMTgpIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjM2U2MzhmIiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiMzZTYzOGYiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7wn5GlPC90ZXh0Pgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iMjkiIGhlaWdodD0iMjEiIHJ4PSI3IiBmaWxsPSIjM2U2MzhmIi8+PHRleHQgeD0iMjIuNSIgeT0iMjMuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSI+MTg8L3RleHQ+PC9zdmc+",
+    "19": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJSZWN5Y2xpbmdtYXRlcmlhbCI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmcxOSIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZTVmM2VhIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZDFlOGRkIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiByeD0iMTQiIGZpbGw9InVybCgjYmcxOSkiLz48ZyBvcGFjaXR5PSIwLjE0IiBzdHJva2U9IiMxNzc5NjQiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTYwIiBjeT0iMTYiIHI9IjQ1Ii8+PGNpcmNsZSBjeD0iMTY1IiBjeT0iMTgiIHI9IjI4Ii8+PHBhdGggZD0iTS0yMCA4OEw2MCA4TTgwIDEzMEwxNzAgNDJNMjAgMTEwTDEwMCAzMCIvPjwvZz4KPGcgb3BhY2l0eT0iMC4xNSIgZmlsbD0iIzE3Nzk2NCI+PHJlY3QgeD0iMTUiIHk9Ijc5IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjYiIHJ4PSIzIi8+PHJlY3QgeD0iMzUiIHk9IjkwIiB3aWR0aD0iMTIyIiBoZWlnaHQ9IjQiIHJ4PSIyIi8+PC9nPgo8dGV4dCB4PSI5NiIgeT0iNzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSBFbW9qaSwgQXBwbGUgQ29sb3IgRW1vamksIE5vdG8gQ29sb3IgRW1vamksIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNjEiPuKZu++4jzwvdGV4dD4KPHJlY3QgeD0iOCIgeT0iOCIgd2lkdGg9IjI5IiBoZWlnaHQ9IjIxIiByeD0iNyIgZmlsbD0iIzE3Nzk2NCIvPjx0ZXh0IHg9IjIyLjUiIHk9IjIzLjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiPjE5PC90ZXh0Pjwvc3ZnPg==",
+    "20": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJIYWxsZSBkw6RtbWVuIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJiZzIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNlNWYzZWEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNkMWU4ZGQiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxMTIiIHJ4PSIxNCIgZmlsbD0idXJsKCNiZzIwKSIvPjxnIG9wYWNpdHk9IjAuMTQiIHN0cm9rZT0iIzE3Nzk2NCIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIj48Y2lyY2xlIGN4PSIxNjAiIGN5PSIxNiIgcj0iNDUiLz48Y2lyY2xlIGN4PSIxNjUiIGN5PSIxOCIgcj0iMjgiLz48cGF0aCBkPSJNLTIwIDg4TDYwIDhNODAgMTMwTDE3MCA0Mk0yMCAxMTBMMTAwIDMwIi8+PC9nPgo8ZyBvcGFjaXR5PSIwLjE1IiBmaWxsPSIjMTc3OTY0Ij48cmVjdCB4PSIxNSIgeT0iNzkiIHdpZHRoPSIxNjAiIGhlaWdodD0iNiIgcng9IjMiLz48cmVjdCB4PSIzNSIgeT0iOTAiIHdpZHRoPSIxMjIiIGhlaWdodD0iNCIgcng9IjIiLz48L2c+Cjx0ZXh0IHg9Ijk2IiB5PSI3NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IlNlZ29lIFVJIEVtb2ppLCBBcHBsZSBDb2xvciBFbW9qaSwgTm90byBDb2xvciBFbW9qaSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI2MSI+8J+PojwvdGV4dD4KPHJlY3QgeD0iOCIgeT0iOCIgd2lkdGg9IjI5IiBoZWlnaHQ9IjIxIiByeD0iNyIgZmlsbD0iIzE3Nzk2NCIvPjx0ZXh0IHg9IjIyLjUiIHk9IjIzLjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiPjIwPC90ZXh0Pjwvc3ZnPg==",
+    "21": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJJbm5vdmF0aW9uc2bDtnJkZXJ1bmciPgo8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnMjEiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2ZmZjZkZCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2VhZTNiYyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjExMiIgcng9IjE0IiBmaWxsPSJ1cmwoI2JnMjEpIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjOGI3ODI5IiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiM4Yjc4MjkiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7wn4+FPC90ZXh0Pgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iMjkiIGhlaWdodD0iMjEiIHJ4PSI3IiBmaWxsPSIjOGI3ODI5Ii8+PHRleHQgeD0iMjIuNSIgeT0iMjMuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSI+MjE8L3RleHQ+PC9zdmc+",
+    "22": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJFZmZpemllbnRlIEFudHJpZWJlIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJiZzIyIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNlNWYzZWEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNkMWU4ZGQiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxMTIiIHJ4PSIxNCIgZmlsbD0idXJsKCNiZzIyKSIvPjxnIG9wYWNpdHk9IjAuMTQiIHN0cm9rZT0iIzE3Nzk2NCIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIj48Y2lyY2xlIGN4PSIxNjAiIGN5PSIxNiIgcj0iNDUiLz48Y2lyY2xlIGN4PSIxNjUiIGN5PSIxOCIgcj0iMjgiLz48cGF0aCBkPSJNLTIwIDg4TDYwIDhNODAgMTMwTDE3MCA0Mk0yMCAxMTBMMTAwIDMwIi8+PC9nPgo8ZyBvcGFjaXR5PSIwLjE1IiBmaWxsPSIjMTc3OTY0Ij48cmVjdCB4PSIxNSIgeT0iNzkiIHdpZHRoPSIxNjAiIGhlaWdodD0iNiIgcng9IjMiLz48cmVjdCB4PSIzNSIgeT0iOTAiIHdpZHRoPSIxMjIiIGhlaWdodD0iNCIgcng9IjIiLz48L2c+Cjx0ZXh0IHg9Ijk2IiB5PSI3NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IlNlZ29lIFVJIEVtb2ppLCBBcHBsZSBDb2xvciBFbW9qaSwgTm90byBDb2xvciBFbW9qaSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI2MSI+8J+UpzwvdGV4dD4KPHJlY3QgeD0iOCIgeT0iOCIgd2lkdGg9IjI5IiBoZWlnaHQ9IjIxIiByeD0iNyIgZmlsbD0iIzE3Nzk2NCIvPjx0ZXh0IHg9IjIyLjUiIHk9IjIzLjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiPjIyPC90ZXh0Pjwvc3ZnPg==",
+    "23": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJFcmVpZ25pcyI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmcyMyIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZmZmNGRlIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZjllM2FiIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiByeD0iMTQiIGZpbGw9InVybCgjYmcyMykiLz48ZyBvcGFjaXR5PSIwLjE0IiBzdHJva2U9IiNhODczMjQiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTYwIiBjeT0iMTYiIHI9IjQ1Ii8+PGNpcmNsZSBjeD0iMTY1IiBjeT0iMTgiIHI9IjI4Ii8+PHBhdGggZD0iTS0yMCA4OEw2MCA4TTgwIDEzMEwxNzAgNDJNMjAgMTEwTDEwMCAzMCIvPjwvZz4KPGcgb3BhY2l0eT0iMC4xNSIgZmlsbD0iI2E4NzMyNCI+PHJlY3QgeD0iMTUiIHk9Ijc5IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjYiIHJ4PSIzIi8+PHJlY3QgeD0iMzUiIHk9IjkwIiB3aWR0aD0iMTIyIiBoZWlnaHQ9IjQiIHJ4PSIyIi8+PC9nPgo8dGV4dCB4PSI5NiIgeT0iNzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSBFbW9qaSwgQXBwbGUgQ29sb3IgRW1vamksIE5vdG8gQ29sb3IgRW1vamksIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNjEiPvCfk6M8L3RleHQ+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIyOSIgaGVpZ2h0PSIyMSIgcng9IjciIGZpbGw9IiNhODczMjQiLz48dGV4dCB4PSIyMi41IiB5PSIyMy41IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIj4yMzwvdGV4dD48L3N2Zz4=",
+    "24": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJQcmVkaWN0aXZlIE1haW50ZW5hbmNlIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJiZzI0IiB4Mj0iMSIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNlNWYzZWEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNkMWU4ZGQiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxMTIiIHJ4PSIxNCIgZmlsbD0idXJsKCNiZzI0KSIvPjxnIG9wYWNpdHk9IjAuMTQiIHN0cm9rZT0iIzE3Nzk2NCIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIj48Y2lyY2xlIGN4PSIxNjAiIGN5PSIxNiIgcj0iNDUiLz48Y2lyY2xlIGN4PSIxNjUiIGN5PSIxOCIgcj0iMjgiLz48cGF0aCBkPSJNLTIwIDg4TDYwIDhNODAgMTMwTDE3MCA0Mk0yMCAxMTBMMTAwIDMwIi8+PC9nPgo8ZyBvcGFjaXR5PSIwLjE1IiBmaWxsPSIjMTc3OTY0Ij48cmVjdCB4PSIxNSIgeT0iNzkiIHdpZHRoPSIxNjAiIGhlaWdodD0iNiIgcng9IjMiLz48cmVjdCB4PSIzNSIgeT0iOTAiIHdpZHRoPSIxMjIiIGhlaWdodD0iNCIgcng9IjIiLz48L2c+Cjx0ZXh0IHg9Ijk2IiB5PSI3NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IlNlZ29lIFVJIEVtb2ppLCBBcHBsZSBDb2xvciBFbW9qaSwgTm90byBDb2xvciBFbW9qaSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI2MSI+8J+UjTwvdGV4dD4KPHJlY3QgeD0iOCIgeT0iOCIgd2lkdGg9IjI5IiBoZWlnaHQ9IjIxIiByeD0iNyIgZmlsbD0iIzE3Nzk2NCIvPjx0ZXh0IHg9IjIyLjUiIHk9IjIzLjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiPjI0PC90ZXh0Pjwvc3ZnPg==",
+    "25": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJFbnRzY2hlaWR1bmciPgo8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnMjUiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2U4ZjBmZiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2Q0ZTFmOCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjExMiIgcng9IjE0IiBmaWxsPSJ1cmwoI2JnMjUpIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjM2U2MzhmIiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiMzZTYzOGYiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7wn4+X77iPPC90ZXh0Pgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iMjkiIGhlaWdodD0iMjEiIHJ4PSI3IiBmaWxsPSIjM2U2MzhmIi8+PHRleHQgeD0iMjIuNSIgeT0iMjMuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSI+MjU8L3RleHQ+PC9zdmc+",
+    "26": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJUcmFuc3BvcnRlIGF1ZiBTY2hpZW5lIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJiZzI2IiB4Mj0iMSIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNlNWYzZWEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNkMWU4ZGQiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxMTIiIHJ4PSIxNCIgZmlsbD0idXJsKCNiZzI2KSIvPjxnIG9wYWNpdHk9IjAuMTQiIHN0cm9rZT0iIzE3Nzk2NCIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIj48Y2lyY2xlIGN4PSIxNjAiIGN5PSIxNiIgcj0iNDUiLz48Y2lyY2xlIGN4PSIxNjUiIGN5PSIxOCIgcj0iMjgiLz48cGF0aCBkPSJNLTIwIDg4TDYwIDhNODAgMTMwTDE3MCA0Mk0yMCAxMTBMMTAwIDMwIi8+PC9nPgo8ZyBvcGFjaXR5PSIwLjE1IiBmaWxsPSIjMTc3OTY0Ij48cmVjdCB4PSIxNSIgeT0iNzkiIHdpZHRoPSIxNjAiIGhlaWdodD0iNiIgcng9IjMiLz48cmVjdCB4PSIzNSIgeT0iOTAiIHdpZHRoPSIxMjIiIGhlaWdodD0iNCIgcng9IjIiLz48L2c+Cjx0ZXh0IHg9Ijk2IiB5PSI3NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IlNlZ29lIFVJIEVtb2ppLCBBcHBsZSBDb2xvciBFbW9qaSwgTm90byBDb2xvciBFbW9qaSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI2MSI+8J+ahjwvdGV4dD4KPHJlY3QgeD0iOCIgeT0iOCIgd2lkdGg9IjI5IiBoZWlnaHQ9IjIxIiByeD0iNyIgZmlsbD0iIzE3Nzk2NCIvPjx0ZXh0IHg9IjIyLjUiIHk9IjIzLjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiPjI2PC90ZXh0Pjwvc3ZnPg==",
+    "27": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJDT+KCgi1QcmVpcyI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmcyNyIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZjRlYWYzIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZTlkMmU3Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiByeD0iMTQiIGZpbGw9InVybCgjYmcyNykiLz48ZyBvcGFjaXR5PSIwLjE0IiBzdHJva2U9IiM5MDUxNmQiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTYwIiBjeT0iMTYiIHI9IjQ1Ii8+PGNpcmNsZSBjeD0iMTY1IiBjeT0iMTgiIHI9IjI4Ii8+PHBhdGggZD0iTS0yMCA4OEw2MCA4TTgwIDEzMEwxNzAgNDJNMjAgMTEwTDEwMCAzMCIvPjwvZz4KPGcgb3BhY2l0eT0iMC4xNSIgZmlsbD0iIzkwNTE2ZCI+PHJlY3QgeD0iMTUiIHk9Ijc5IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjYiIHJ4PSIzIi8+PHJlY3QgeD0iMzUiIHk9IjkwIiB3aWR0aD0iMTIyIiBoZWlnaHQ9IjQiIHJ4PSIyIi8+PC9nPgo8dGV4dCB4PSI5NiIgeT0iNzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSBFbW9qaSwgQXBwbGUgQ29sb3IgRW1vamksIE5vdG8gQ29sb3IgRW1vamksIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNjEiPvCfk4k8L3RleHQ+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIyOSIgaGVpZ2h0PSIyMSIgcng9IjciIGZpbGw9IiM5MDUxNmQiLz48dGV4dCB4PSIyMi41IiB5PSIyMy41IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIj4yNzwvdGV4dD48L3N2Zz4=",
+    "28": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJNZWhyd2VndmVycGFja3VuZyI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmcyOCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZTVmM2VhIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZDFlOGRkIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiByeD0iMTQiIGZpbGw9InVybCgjYmcyOCkiLz48ZyBvcGFjaXR5PSIwLjE0IiBzdHJva2U9IiMxNzc5NjQiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTYwIiBjeT0iMTYiIHI9IjQ1Ii8+PGNpcmNsZSBjeD0iMTY1IiBjeT0iMTgiIHI9IjI4Ii8+PHBhdGggZD0iTS0yMCA4OEw2MCA4TTgwIDEzMEwxNzAgNDJNMjAgMTEwTDEwMCAzMCIvPjwvZz4KPGcgb3BhY2l0eT0iMC4xNSIgZmlsbD0iIzE3Nzk2NCI+PHJlY3QgeD0iMTUiIHk9Ijc5IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjYiIHJ4PSIzIi8+PHJlY3QgeD0iMzUiIHk9IjkwIiB3aWR0aD0iMTIyIiBoZWlnaHQ9IjQiIHJ4PSIyIi8+PC9nPgo8dGV4dCB4PSI5NiIgeT0iNzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSBFbW9qaSwgQXBwbGUgQ29sb3IgRW1vamksIE5vdG8gQ29sb3IgRW1vamksIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNjEiPvCfk6Y8L3RleHQ+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIyOSIgaGVpZ2h0PSIyMSIgcng9IjciIGZpbGw9IiMxNzc5NjQiLz48dGV4dCB4PSIyMi41IiB5PSIyMy41IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIj4yODwvdGV4dD48L3N2Zz4=",
+    "29": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJFcmVpZ25pcyI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmcyOSIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZmZmNGRlIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZjllM2FiIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiByeD0iMTQiIGZpbGw9InVybCgjYmcyOSkiLz48ZyBvcGFjaXR5PSIwLjE0IiBzdHJva2U9IiNhODczMjQiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTYwIiBjeT0iMTYiIHI9IjQ1Ii8+PGNpcmNsZSBjeD0iMTY1IiBjeT0iMTgiIHI9IjI4Ii8+PHBhdGggZD0iTS0yMCA4OEw2MCA4TTgwIDEzMEwxNzAgNDJNMjAgMTEwTDEwMCAzMCIvPjwvZz4KPGcgb3BhY2l0eT0iMC4xNSIgZmlsbD0iI2E4NzMyNCI+PHJlY3QgeD0iMTUiIHk9Ijc5IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjYiIHJ4PSIzIi8+PHJlY3QgeD0iMzUiIHk9IjkwIiB3aWR0aD0iMTIyIiBoZWlnaHQ9IjQiIHJ4PSIyIi8+PC9nPgo8dGV4dCB4PSI5NiIgeT0iNzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSBFbW9qaSwgQXBwbGUgQ29sb3IgRW1vamksIE5vdG8gQ29sb3IgRW1vamksIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNjEiPvCfjrI8L3RleHQ+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIyOSIgaGVpZ2h0PSIyMSIgcng9IjciIGZpbGw9IiNhODczMjQiLz48dGV4dCB4PSIyMi41IiB5PSIyMy41IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIj4yOTwvdGV4dD48L3N2Zz4=",
+    "30": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJFbWlzc2lvbnNhcm1lciBTdGFobCI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmczMCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZTVmM2VhIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZDFlOGRkIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiByeD0iMTQiIGZpbGw9InVybCgjYmczMCkiLz48ZyBvcGFjaXR5PSIwLjE0IiBzdHJva2U9IiMxNzc5NjQiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTYwIiBjeT0iMTYiIHI9IjQ1Ii8+PGNpcmNsZSBjeD0iMTY1IiBjeT0iMTgiIHI9IjI4Ii8+PHBhdGggZD0iTS0yMCA4OEw2MCA4TTgwIDEzMEwxNzAgNDJNMjAgMTEwTDEwMCAzMCIvPjwvZz4KPGcgb3BhY2l0eT0iMC4xNSIgZmlsbD0iIzE3Nzk2NCI+PHJlY3QgeD0iMTUiIHk9Ijc5IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjYiIHJ4PSIzIi8+PHJlY3QgeD0iMzUiIHk9IjkwIiB3aWR0aD0iMTIyIiBoZWlnaHQ9IjQiIHJ4PSIyIi8+PC9nPgo8dGV4dCB4PSI5NiIgeT0iNzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSBFbW9qaSwgQXBwbGUgQ29sb3IgRW1vamksIE5vdG8gQ29sb3IgRW1vamksIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNjEiPvCflKk8L3RleHQ+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIyOSIgaGVpZ2h0PSIyMSIgcng9IjciIGZpbGw9IiMxNzc5NjQiLz48dGV4dCB4PSIyMi41IiB5PSIyMy41IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIj4zMDwvdGV4dD48L3N2Zz4=",
+    "31": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJadW0gQXVkaXQiPgo8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnMzEiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2ZmZjBlYiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2Y4ZDRjZSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjExMiIgcng9IjE0IiBmaWxsPSJ1cmwoI2JnMzEpIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjOWQ0OTNmIiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiM5ZDQ5M2YiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7imqDvuI88L3RleHQ+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIyOSIgaGVpZ2h0PSIyMSIgcng9IjciIGZpbGw9IiM5ZDQ5M2YiLz48dGV4dCB4PSIyMi41IiB5PSIyMy41IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIj4zMTwvdGV4dD48L3N2Zz4=",
+    "32": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJEaWdpdGFsZSBQbGFudW5nIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJiZzMyIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIHN0b3AtY29sb3I9IiNlNWYzZWEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNkMWU4ZGQiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KPHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxMTIiIHJ4PSIxNCIgZmlsbD0idXJsKCNiZzMyKSIvPjxnIG9wYWNpdHk9IjAuMTQiIHN0cm9rZT0iIzE3Nzk2NCIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIyIj48Y2lyY2xlIGN4PSIxNjAiIGN5PSIxNiIgcj0iNDUiLz48Y2lyY2xlIGN4PSIxNjUiIGN5PSIxOCIgcj0iMjgiLz48cGF0aCBkPSJNLTIwIDg4TDYwIDhNODAgMTMwTDE3MCA0Mk0yMCAxMTBMMTAwIDMwIi8+PC9nPgo8ZyBvcGFjaXR5PSIwLjE1IiBmaWxsPSIjMTc3OTY0Ij48cmVjdCB4PSIxNSIgeT0iNzkiIHdpZHRoPSIxNjAiIGhlaWdodD0iNiIgcng9IjMiLz48cmVjdCB4PSIzNSIgeT0iOTAiIHdpZHRoPSIxMjIiIGhlaWdodD0iNCIgcng9IjIiLz48L2c+Cjx0ZXh0IHg9Ijk2IiB5PSI3NCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IlNlZ29lIFVJIEVtb2ppLCBBcHBsZSBDb2xvciBFbW9qaSwgTm90byBDb2xvciBFbW9qaSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI2MSI+8J+Wpe+4jzwvdGV4dD4KPHJlY3QgeD0iOCIgeT0iOCIgd2lkdGg9IjI5IiBoZWlnaHQ9IjIxIiByeD0iNyIgZmlsbD0iIzE3Nzk2NCIvPjx0ZXh0IHg9IjIyLjUiIHk9IjIzLjUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiPjMyPC90ZXh0Pjwvc3ZnPg==",
+    "33": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJFbnRzY2hlaWR1bmciPgo8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnMzMiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2U4ZjBmZiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2Q0ZTFmOCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjExMiIgcng9IjE0IiBmaWxsPSJ1cmwoI2JnMzMpIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjM2U2MzhmIiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiMzZTYzOGYiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7wn5e677iPPC90ZXh0Pgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iMjkiIGhlaWdodD0iMjEiIHJ4PSI3IiBmaWxsPSIjM2U2MzhmIi8+PHRleHQgeD0iMjIuNSIgeT0iMjMuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSI+MzM8L3RleHQ+PC9zdmc+",
+    "34": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJXw6RybWVwdW1wZSI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmczNCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZTVmM2VhIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZDFlOGRkIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiByeD0iMTQiIGZpbGw9InVybCgjYmczNCkiLz48ZyBvcGFjaXR5PSIwLjE0IiBzdHJva2U9IiMxNzc5NjQiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTYwIiBjeT0iMTYiIHI9IjQ1Ii8+PGNpcmNsZSBjeD0iMTY1IiBjeT0iMTgiIHI9IjI4Ii8+PHBhdGggZD0iTS0yMCA4OEw2MCA4TTgwIDEzMEwxNzAgNDJNMjAgMTEwTDEwMCAzMCIvPjwvZz4KPGcgb3BhY2l0eT0iMC4xNSIgZmlsbD0iIzE3Nzk2NCI+PHJlY3QgeD0iMTUiIHk9Ijc5IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjYiIHJ4PSIzIi8+PHJlY3QgeD0iMzUiIHk9IjkwIiB3aWR0aD0iMTIyIiBoZWlnaHQ9IjQiIHJ4PSIyIi8+PC9nPgo8dGV4dCB4PSI5NiIgeT0iNzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSBFbW9qaSwgQXBwbGUgQ29sb3IgRW1vamksIE5vdG8gQ29sb3IgRW1vamksIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNjEiPvCfjKHvuI88L3RleHQ+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIyOSIgaGVpZ2h0PSIyMSIgcng9IjciIGZpbGw9IiMxNzc5NjQiLz48dGV4dCB4PSIyMi41IiB5PSIyMy41IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIj4zNDwvdGV4dD48L3N2Zz4=",
+    "35": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJFcmVpZ25pcyI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmczNSIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZmZmNGRlIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZjllM2FiIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiByeD0iMTQiIGZpbGw9InVybCgjYmczNSkiLz48ZyBvcGFjaXR5PSIwLjE0IiBzdHJva2U9IiNhODczMjQiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTYwIiBjeT0iMTYiIHI9IjQ1Ii8+PGNpcmNsZSBjeD0iMTY1IiBjeT0iMTgiIHI9IjI4Ii8+PHBhdGggZD0iTS0yMCA4OEw2MCA4TTgwIDEzMEwxNzAgNDJNMjAgMTEwTDEwMCAzMCIvPjwvZz4KPGcgb3BhY2l0eT0iMC4xNSIgZmlsbD0iI2E4NzMyNCI+PHJlY3QgeD0iMTUiIHk9Ijc5IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjYiIHJ4PSIzIi8+PHJlY3QgeD0iMzUiIHk9IjkwIiB3aWR0aD0iMTIyIiBoZWlnaHQ9IjQiIHJ4PSIyIi8+PC9nPgo8dGV4dCB4PSI5NiIgeT0iNzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSBFbW9qaSwgQXBwbGUgQ29sb3IgRW1vamksIE5vdG8gQ29sb3IgRW1vamksIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNjEiPvCfjKrvuI88L3RleHQ+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIyOSIgaGVpZ2h0PSIyMSIgcng9IjciIGZpbGw9IiNhODczMjQiLz48dGV4dCB4PSIyMi41IiB5PSIyMy41IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIj4zNTwvdGV4dD48L3N2Zz4=",
+    "36": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJQcm96ZXNzb3B0aW1pZXJ1bmciPgo8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnMzYiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2U1ZjNlYSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2QxZThkZCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjExMiIgcng9IjE0IiBmaWxsPSJ1cmwoI2JnMzYpIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjMTc3OTY0IiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiMxNzc5NjQiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7wn5ug77iPPC90ZXh0Pgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iMjkiIGhlaWdodD0iMjEiIHJ4PSI3IiBmaWxsPSIjMTc3OTY0Ii8+PHRleHQgeD0iMjIuNSIgeT0iMjMuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSI+MzY8L3RleHQ+PC9zdmc+",
+    "37": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJFbnRzY2hlaWR1bmciPgo8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnMzciIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2U4ZjBmZiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2Q0ZTFmOCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjExMiIgcng9IjE0IiBmaWxsPSJ1cmwoI2JnMzcpIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjM2U2MzhmIiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiMzZTYzOGYiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7wn6eqPC90ZXh0Pgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iMjkiIGhlaWdodD0iMjEiIHJ4PSI3IiBmaWxsPSIjM2U2MzhmIi8+PHRleHQgeD0iMjIuNSIgeT0iMjMuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSI+Mzc8L3RleHQ+PC9zdmc+",
+    "38": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJNYXRlcmlhbGFybWVzIERlc2lnbiI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iYmczOCIgeDI9IjEiIHkyPSIxIj48c3RvcCBzdG9wLWNvbG9yPSIjZTVmM2VhIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZDFlOGRkIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiByeD0iMTQiIGZpbGw9InVybCgjYmczOCkiLz48ZyBvcGFjaXR5PSIwLjE0IiBzdHJva2U9IiMxNzc5NjQiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTYwIiBjeT0iMTYiIHI9IjQ1Ii8+PGNpcmNsZSBjeD0iMTY1IiBjeT0iMTgiIHI9IjI4Ii8+PHBhdGggZD0iTS0yMCA4OEw2MCA4TTgwIDEzMEwxNzAgNDJNMjAgMTEwTDEwMCAzMCIvPjwvZz4KPGcgb3BhY2l0eT0iMC4xNSIgZmlsbD0iIzE3Nzk2NCI+PHJlY3QgeD0iMTUiIHk9Ijc5IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjYiIHJ4PSIzIi8+PHJlY3QgeD0iMzUiIHk9IjkwIiB3aWR0aD0iMTIyIiBoZWlnaHQ9IjQiIHJ4PSIyIi8+PC9nPgo8dGV4dCB4PSI5NiIgeT0iNzQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSBFbW9qaSwgQXBwbGUgQ29sb3IgRW1vamksIE5vdG8gQ29sb3IgRW1vamksIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNjEiPvCfqrY8L3RleHQ+CjxyZWN0IHg9IjgiIHk9IjgiIHdpZHRoPSIyOSIgaGVpZ2h0PSIyMSIgcng9IjciIGZpbGw9IiMxNzc5NjQiLz48dGV4dCB4PSIyMi41IiB5PSIyMy41IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIj4zODwvdGV4dD48L3N2Zz4=",
+    "39": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJXaXNzZW5zdHJhbnNmZXIiPgo8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnMzkiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2VmZjJmYSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2Q5ZTJmMyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjExMiIgcng9IjE0IiBmaWxsPSJ1cmwoI2JnMzkpIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjNGE2NjkwIiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiM0YTY2OTAiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7wn46TPC90ZXh0Pgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iMjkiIGhlaWdodD0iMjEiIHJ4PSI3IiBmaWxsPSIjNGE2NjkwIi8+PHRleHQgeD0iMjIuNSIgeT0iMjMuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSI+Mzk8L3RleHQ+PC9zdmc+",
+    "40": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTIiIGhlaWdodD0iMTEyIiB2aWV3Qm94PSIwIDAgMTkyIDExMiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJXaXNzZW5zdHJhbnNmZXIiPgo8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnNDAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iI2VmZjJmYSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2Q5ZTJmMyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjExMiIgcng9IjE0IiBmaWxsPSJ1cmwoI2JnNDApIi8+PGcgb3BhY2l0eT0iMC4xNCIgc3Ryb2tlPSIjNGE2NjkwIiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2IiByPSI0NSIvPjxjaXJjbGUgY3g9IjE2NSIgY3k9IjE4IiByPSIyOCIvPjxwYXRoIGQ9Ik0tMjAgODhMNjAgOE04MCAxMzBMMTcwIDQyTTIwIDExMEwxMDAgMzAiLz48L2c+CjxnIG9wYWNpdHk9IjAuMTUiIGZpbGw9IiM0YTY2OTAiPjxyZWN0IHg9IjE1IiB5PSI3OSIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI2IiByeD0iMyIvPjxyZWN0IHg9IjM1IiB5PSI5MCIgd2lkdGg9IjEyMiIgaGVpZ2h0PSI0IiByeD0iMiIvPjwvZz4KPHRleHQgeD0iOTYiIHk9Ijc0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iU2Vnb2UgVUkgRW1vamksIEFwcGxlIENvbG9yIEVtb2ppLCBOb3RvIENvbG9yIEVtb2ppLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYxIj7wn6SdPC90ZXh0Pgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iMjkiIGhlaWdodD0iMjEiIHJ4PSI3IiBmaWxsPSIjNGE2NjkwIi8+PHRleHQgeD0iMjIuNSIgeT0iMjMuNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9IkFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSI+NDA8L3RleHQ+PC9zdmc+"
+  }
+}

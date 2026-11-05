@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a5f57">
+<title>CO₂ Factory – Multiplayer</title>
+<link rel="stylesheet" href="/style.css">
+<script src="/client.js" defer></script>
+</head>
+<body>
+<div class="layout">
+  <header class="top">
+    <div class="identity">
+      <img class="fh-logo" src="/logo-fh-ooe.png" alt="FH Oberösterreich – University of Applied Sciences Upper Austria">
+      <div class="brand"><span>CO₂ FACTORY</span><small>Das Unternehmensplanspiel · Multiplayer</small></div>
+    </div>
+    <div class="top-controls"><span class="connection" id="connectIndicator"><i></i> Spielbereit</span><button type="button" class="subtle" id="switchRoomBtn" hidden>Spiel verlassen</button></div>
+  </header>
+
+  <section id="home" class="home-grid">
+    <div class="hero">
+      <div class="eyebrow">GEMEINSAM STATT NACHEINANDER</div>
+      <h1>Eine Fabrik.<br><em>Viele Entscheidungen.</em></h1>
+      <p>Bis zu acht Unternehmen treten in einem gemeinsamen Spielraum an. Jeder würfelt und investiert auf seinem eigenen Gerät – alle sehen live dasselbe Brett.</p>
+      <div class="features"><span>● 40 Spielfelder</span><span>● 20 Ereigniskarten</span><span>● 2–8 Geräte</span><span>● WLAN & Internet</span></div>
+      <div class="hero-graphic"><div class="disc">CO₂<span>↓</span></div><div><strong>Investiere clever.</strong><small>Verringere Scope 1, 2 und 3 – ohne die Liquidität zu verlieren.</small></div></div>
+    </div>
+    <div class="panel entry">
+      <div class="switcher" role="tablist" aria-label="Zugang auswählen"><button id="createTab" type="button" class="selected" aria-selected="true">Spiel erstellen</button><button id="joinTab" type="button" aria-selected="false">Raum beitreten</button></div>
+      <form id="createForm" class="form-stack">
+        <h2>Neuen Spielraum erstellen</h2>
+        <label>Dein Unternehmensname<input name="name" maxlength="36" value="Unternehmen 1" required></label>
+        <div class="two"><label>Max. Spielerzahl<select name="maxPlayers"><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option selected>8</option></select></label><label>Geschäftsjahre<select name="maxYears" id="homeYears"></select></label></div>
+        <details class="advance"><summary>Erweiterte Startwerte</summary><div class="two"><label>Startkapital (€)<input name="initialCash" type="number" min="0" max="100000000000" value="1000000"></label><label>Jahresergebnis (€)<input name="annualIncome" type="number" value="200000"></label><label>Scope 1 (t)<input name="s1" type="number" min="0" value="250"></label><label>Scope 2 (t)<input name="s2" type="number" min="0" value="300"></label><label>Scope 3 (t)<input name="s3" type="number" min="0" value="450"></label><label>CO₂-Ziel (t/Jahr)<input name="goal" type="number" min="0" value="400"></label></div></details>
+        <button class="primary wide" type="submit">Spielraum erstellen <span>→</span></button>
+      </form>
+      <form id="joinForm" class="form-stack" hidden>
+        <h2>Bestehendem Spiel beitreten</h2>
+        <label>Sechsstelliger Raumcode<input id="codeInput" name="code" autocomplete="off" autocapitalize="characters" maxlength="6" placeholder="z. B. FH7K2M" required></label>
+        <label>Dein Unternehmensname<input name="name" maxlength="36" value="Mein Unternehmen" required></label>
+        <button class="primary wide" type="submit">Jetzt beitreten <span>→</span></button>
+      </form>
+      <div id="homeNotice" class="error" role="alert" hidden></div>
+      <p class="fineprint">Kein Konto notwendig. Das Spiel läuft auf dem gestarteten Server; auf anderen Geräten reicht der Browser.</p>
+    </div>
+  </section>
+
+  <section id="waiting" class="panel lobby" hidden>
+    <div class="eyebrow">SPIELRAUM BEREIT</div>
+    <div class="lobby-title"><div><h1>Wartebereich</h1><p>Teile die Adresse und den Code mit deinen Mitspielern.</p></div><div class="room-code"><small>RAUMCODE</small><strong id="roomCode">------</strong></div></div>
+    <div class="share-row"><input id="shareUrl" readonly aria-label="Einladungslink"><button type="button" id="copyInvite">Link kopieren</button></div>
+    <div class="lobby-grid"><div><h3 id="playerCountTitle">Spieler im Raum</h3><div id="lobbyPlayers" class="lobby-players"></div></div><div class="lobby-aside"><h3>Spielkonfiguration</h3><div id="lobbyConfig"></div><p class="helper">Die Spielleitung startet, sobald mindestens zwei Unternehmen beigetreten sind. Jeder Spieler steuert nur seine eigenen Züge.</p><button class="primary wide" id="beginBtn" type="button" hidden>Spiel starten</button><div id="waitHostText" class="muted" hidden>Warten auf die Spielleitung …</div></div></div>
+  </section>
+
+  <div id="playing" hidden>
+    <nav class="nav-tabs" aria-label="Spielbereiche"><button class="active" data-view="board">◈ Spielbrett</button><button data-view="stats">↗ CO₂ & Budget</button><button data-view="cards">▤ Ereigniskarten</button><button data-view="settings">⚙ Parameter & Regeln</button></nav>
+    <section id="boardView">
+      <div class="game-summary"><div><span class="eyebrow" id="turnNumber">SPIELZUG 1</span><h2 id="turnTitle">Am Zug: Unternehmen 1</h2><p id="turnHint">Bereit zum Würfeln</p></div><div class="summary-right"><div class="room-mark"><span>RAUM</span><b id="inGameCode">------</b></div><span id="turnPill" class="pill">Bereit</span></div></div>
+      <div class="game-layout">
+        <div class="primary-column">
+          <div class="board-frame"><div class="board" id="boardGrid"><div class="center" id="boardCenter"><div class="center-kicker">CO₂ FACTORY</div><h2>Klimaschutz ist<br>eine Entscheidung.</h2><div class="dice-stage"><div id="dieFace" class="die-face">⚄</div></div><div class="center-player" id="centerPlayer">Würfeln und investieren</div><p id="centerInstruction">Der gemeinsame Spielstand aktualisiert sich automatisch.</p><div class="center-actions"><button type="button" class="primary" id="rollBtn">🎲 Würfeln</button><button type="button" id="nextBtn">Zug beenden</button></div><div id="miniScopes" class="scope-pills"></div></div></div></div>
+          <div class="panel action"><div class="action-top"><div><span class="eyebrow">AKTUELLE AKTION</span><h3 id="actionTitle">Warten auf Spielstart</h3></div><span id="fieldTag" class="field-tag">Feld 1</span></div><div id="actionDescription" class="action-description"></div><div id="actionButtons" class="action-buttons"></div></div>
+        </div>
+        <aside class="sidebar"><div class="panel players-box"><div class="side-head"><h3>Unternehmen</h3><small id="playerTotal">0/8</small></div><div id="playersList" class="players-list"></div></div><div class="panel log-box"><h3>Spielprotokoll</h3><div id="gameLog" class="logs"></div></div></aside>
+      </div>
+    </section>
+    <section id="statsView" class="panel content-panel" hidden><div class="section-title"><div><span class="eyebrow">LIVE-VERLAUF</span><h2>Emissionen & Liquidität</h2><p>Alle Spielzüge werden für jedes Unternehmen erfasst. Die Diagramme zeigen Jahres-CO₂ und Kapital.</p></div><label>Unternehmen<select id="chartPlayer"><option value="all">Alle Spieler</option></select></label></div><div class="charts"><article class="chart-card"><h3>Jährliche CO₂-Emissionen <span>t CO₂e/Jahr</span></h3><svg id="co2Chart" viewBox="0 0 700 280" role="img" aria-label="Emissionsverlauf"></svg></article><article class="chart-card"><h3>Verfügbares Budget <span>Euro</span></h3><svg id="budgetChart" viewBox="0 0 700 280" role="img" aria-label="Budgetverlauf"></svg></article></div><div id="legend" class="legend"></div><div class="data-table-wrap"><table class="data-table" id="statsTable"></table></div></section>
+    <section id="cardsView" class="panel content-panel" hidden><div class="section-title"><div><span class="eyebrow">KARTENSTAPEL</span><h2>20 Ereigniskarten</h2><p>Die Effekte werden auf dem Server anhand der aktuellen Fabrikdaten berechnet.</p></div></div><div id="cardsGrid" class="cards-grid"></div></section>
+    <section id="settingsView" class="panel content-panel" hidden><div class="section-title"><div><span class="eyebrow">SPIELREGELN</span><h2>Parameter & Berechnungsgrundlagen</h2><p>Nur die Spielleitung kann Parameter verändern. Neue Werte gelten für künftig angewandte Ereigniskarten.</p></div></div><div class="rules-columns"><div><h3>Spielmechanik</h3><p><b>Geschäftsjahr:</b> Beim Überschreiten von Feld 1 werden das Jahresergebnis zum Kapital addiert und die aktuellen Scope-Emissionen kumuliert. Temporäre Karteneffekte laufen dann aus.</p><p><b>Investitionen:</b> Maßnahmen kosten einmalig Kapital, verändern laufende Jahresergebnisse und reduzieren bzw. erhöhen Scope 1–3.</p><p><b>Entscheidungsfelder:</b> Sechs verschiedene Situationen mit je drei Optionen. Ein Unternehmen kann jedes Feld höchstens einmal entscheiden.</p><p><b>Audit:</b> Der Grenzwert sinkt über die vereinbarten Geschäftsjahre bis zum Klimaziel. Überschreitungen kosten 100 €/t. Auf Feld 31 folgt eine Versetzung mit Aussetzen oder Sofortberatung.</p><p><b>Sieg:</b> Nach 1–20 vollständigen Geschäftsjahren zählt die niedrigste kumulierte CO₂e-Menge bei zahlungsfähigen Unternehmen; bei Gleichstand entscheidet das Kapital.</p><p class="helper">Hinweis: Die Emissionsdaten sind didaktische Annahmen. Mehrfachanrechnungen überlappender Maßnahmen müssen fachlich geprüft werden.</p></div><div><h3>Ereignisparameter</h3><div id="paramList" class="param-list"></div></div></div></section>
+  </div>
+  <div id="notification" class="notification" hidden role="status"></div>
+  <div class="overlay" id="eventOverlay" hidden role="dialog" aria-modal="true" aria-label="Ereigniskarte aufdecken"><div class="card-container"><div class="card-flip" id="eventFlip"><div class="card-face card-back"><span>CO₂</span><small>EREIGNISKARTE</small></div><div class="card-face card-front"><small id="eventIndex">KARTE 01 / 20</small><div class="card-big">⚡</div><h2 id="eventTitle">Ereignis</h2><p id="eventText"></p></div></div><button id="closeEventBtn" class="primary" type="button">Karte ansehen & schließen</button></div></div>
+  <footer>CO₂ Factory · FH Oberösterreich · Mehrspielerprototyp · Ein Server pro Spielgruppe</footer>
+</div>
+</body>
+</html>
