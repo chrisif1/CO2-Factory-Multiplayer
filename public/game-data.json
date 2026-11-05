@@ -373,17 +373,17 @@
     },
     {
       "number": 20,
-      "name": "Halle dämmen",
-      "type": "Investition",
-      "description": "Maßnahme kaufen oder verzichten. Investition: 110 000 €. Dauerhafte nominale Reduktion: 50 t CO₂e/Jahr.",
-      "capital": -110000,
-      "annual": 20000,
+      "name": "Wissenstransfer",
+      "type": "Wissenstransfer",
+      "description": "Wissenstransfer-Bonus erhalten: +20.000 €.",
+      "capital": 20000,
+      "annual": 0,
       "scope": [
-        -50,
+        0,
         0,
         0
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Bei jedem Besuch; keine weitere Voraussetzung. Keine direkte CO₂-Wirkung."
     },
     {
       "number": 21,
@@ -744,17 +744,17 @@
     },
     {
       "number": 39,
-      "name": "Wissenstransfer",
-      "type": "Wissenstransfer",
-      "description": "Wissenstransfer-Bonus erhalten: +20.000 €.",
-      "capital": 20000,
-      "annual": 0,
+      "name": "Halle dämmen",
+      "type": "Investition",
+      "description": "Maßnahme kaufen oder verzichten. Investition: 110 000 €. Dauerhafte nominale Reduktion: 50 t CO₂e/Jahr.",
+      "capital": -110000,
+      "annual": 20000,
       "scope": [
-        0,
+        -50,
         0,
         0
       ],
-      "conditions": "Bei jedem Besuch; keine weitere Voraussetzung. Keine direkte CO₂-Wirkung."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
     },
     {
       "number": 40,

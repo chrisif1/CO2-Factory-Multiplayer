@@ -6,3 +6,83 @@
  .primary-column .action{order:-1;margin:0 0 13px}
  .action-buttons button{flex:1;min-width:160px}
 }
+
+
+/* Feld-Tooltip */
+.cell[data-tooltip]{cursor:help}
+.cell[data-tooltip]::after{content:attr(data-tooltip);position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%) translateY(6px);width:min(220px,78vw);background:#183a37;color:#fff;border-radius:10px;padding:8px 10px;font-size:11px;line-height:1.35;box-shadow:0 10px 24px rgba(0,0,0,.22);opacity:0;pointer-events:none;transition:opacity .18s ease,transform .18s ease;z-index:20;text-align:left}
+.cell[data-tooltip]::before{content:'';position:absolute;left:50%;bottom:100%;transform:translateX(-50%);border:7px solid transparent;border-top:0;border-bottom-color:#183a37;opacity:0;transition:opacity .18s ease;z-index:20}
+.cell[data-tooltip]:hover::after,.cell[data-tooltip]:focus::after,.cell[data-tooltip]:hover::before,.cell[data-tooltip]:focus::before{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Mobile-Optimierung */
+@media(max-width:780px){
+ body{font-size:14px}
+ .layout{padding:8px}
+ .top{gap:10px;align-items:flex-start;flex-direction:column}
+ .identity{width:100%;justify-content:space-between;align-items:flex-start}
+ .fh-logo{width:150px;max-width:48vw;height:auto}
+ .brand span{font-size:20px}
+ .brand small{font-size:12px}
+ .top-controls{width:100%;justify-content:space-between}
+ .nav-tabs{position:sticky;top:0;z-index:25;background:var(--bg);padding:6px 0;overflow:auto;white-space:nowrap;scrollbar-width:none}
+ .nav-tabs::-webkit-scrollbar{display:none}
+ .nav-tabs button{flex:0 0 auto;padding:10px 12px;font-size:13px}
+ .game-summary{gap:10px;align-items:flex-start;flex-direction:column}
+ .summary-right{width:100%;justify-content:space-between}
+ .board-frame{padding:6px;overflow:auto;-webkit-overflow-scrolling:touch}
+ .board{min-width:640px;gap:4px;grid-template-rows:repeat(11,minmax(72px,auto))}
+ .cell{min-height:72px;padding:3px;border-radius:5px}
+ .cell .num{font-size:9px;left:3px;top:3px;padding:1px 3px}
+ .field-img{height:34px;border-radius:4px}
+ .field-name{font-size:9px;min-height:18px;line-height:1.05}
+ .tokens{min-height:13px;gap:1px}
+ .token{height:15px;width:15px;font-size:9px}
+ .center{min-height:285px;padding:10px;gap:8px}
+ .center-kicker{font-size:10px}
+ .center h2{font-size:24px}
+ .dice-stage{height:74px}
+ .die-face{width:58px;height:58px;font-size:52px;border-radius:12px;box-shadow:0 7px 0 #d0e1da,0 10px 12px #244e4020}
+ .center-player{font-size:15px}
+ .center p{font-size:12px;max-width:100%}
+ .center-actions{width:100%}
+ .center-actions button{flex:1;min-width:0;padding:10px 8px}
+ .scope-pills{grid-template-columns:repeat(3,1fr);gap:4px;max-width:none}
+ .scope-pills span{padding:6px;font-size:10px}
+ .scope-pills b{font-size:12px}
+ .action{margin-top:10px}
+ .action-top{align-items:flex-start;flex-direction:column}
+ .action-top h3{font-size:17px}
+ .field-tag{font-size:10px;padding:5px 9px}
+ .action-description{font-size:13px}
+ .action-buttons{display:grid;grid-template-columns:1fr;gap:8px}
+ .action-buttons button,.button-choice{width:100%;min-width:0;max-width:none}
+ .sidebar{display:flex;flex-direction:column;gap:10px}
+ .players-box,.log-box,.chart-card,.info-card{padding:12px}
+ .logs{max-height:220px}
+ .section-title{margin-bottom:12px}
+ .section-title h2{font-size:22px}
+ .charts{grid-template-columns:1fr;gap:10px}
+ .legend{gap:10px;margin:14px 0}
+ .cards-grid{grid-template-columns:1fr}
+ .rules-columns{grid-template-columns:1fr;gap:16px}
+ .param-row{grid-template-columns:1fr 92px;gap:8px}
+ .notification{left:8px;right:8px;max-width:none;margin:10px 0 0;font-size:13px}
+ .overlay{padding:14px}
+ .card-flip{width:min(320px,92vw);height:380px}
+ .card-front p{max-height:185px;font-size:13px}
+}
+@media(max-width:520px){
+ .home-grid{gap:10px}
+ .hero h1{font-size:34px}
+ .features{gap:6px}
+ .features span{font-size:11px}
+ .two{grid-template-columns:1fr}
+ .board{min-width:560px;grid-template-rows:repeat(11,minmax(64px,auto))}
+ .cell{min-height:64px}
+ .field-img{height:28px}
+ .field-name{font-size:8px}
+ .center{grid-row:3/10;grid-column:3/10;min-height:250px;padding:8px}
+ .center h2{font-size:20px}
+ .scope-pills{grid-template-columns:1fr}
+ .summary-right,.top-controls{gap:8px}
+}

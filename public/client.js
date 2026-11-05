@@ -83,9 +83,12 @@ function renderBoard(){
  const b=$('boardGrid');b.querySelectorAll('.cell').forEach(x=>x.remove());const current=room.players[room.turn];
  DATA.fields.forEach((f,idx)=>{const [r,c]=fieldCoords(idx);const el=document.createElement('div');
  const style={'Investition':'invest','Ereigniskarte':'event','Entscheidung':'decision','Audit':'audit','Versetzung zum Audit':'goaudit','CO₂-Preis':'tax','Förderung':'bonus','Wissenstransfer':'bonus'};
- el.className=`cell ${style[f.type]||''} ${current.pos===idx&&!room.gameOver?'current':''}`;el.style.gridRow=String(r+1);el.style.gridColumn=String(c+1);el.title=`Feld ${f.number}: ${f.name}`;
+ const desc=(f.description||'').replace(/\s+/g,' ').trim();
+ const shortDesc=desc.length>120?desc.slice(0,117)+'…':desc;
+ const imgSrc=f.type==='Ereigniskarte'?'/img/event.svg':`/img/${String(f.number).padStart(2,'0')}.svg`;
+ el.className=`cell ${style[f.type]||''} ${current.pos===idx&&!room.gameOver?'current':''}`;el.style.gridRow=String(r+1);el.style.gridColumn=String(c+1);el.title=`Feld ${f.number}: ${f.name} — ${shortDesc}`;el.setAttribute('data-tooltip',shortDesc);el.setAttribute('tabindex','0');
  let chips='';room.players.forEach((p,i)=>{if(p.pos===idx)chips+=`<span class="token" style="--c:${COLORS[i]}" title="${clean(p.name)}">${i+1}</span>`});
- el.innerHTML=`<span class="num">${f.number}</span><img class="field-img" src="/img/${String(f.number).padStart(2,'0')}.svg" alt="${clean(f.name)}"><div class="field-name">${clean(f.name)}</div><div class="tokens">${chips}</div>`;b.append(el);
+ el.innerHTML=`<span class="num">${f.number}</span><img class="field-img" src="${imgSrc}" alt="${clean(f.name)}"><div class="field-name">${clean(f.name)}</div><div class="tokens">${chips}</div>`;b.append(el);
  });
 }
 function renderPlayers(){const box=$('playersList');box.textContent='';room.players.forEach((p,i)=>{

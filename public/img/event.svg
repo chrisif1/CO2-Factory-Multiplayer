@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="220" viewBox="0 0 320 220">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff7df"/>
+      <stop offset="100%" stop-color="#f2d694"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="304" height="204" rx="18" fill="url(#g)" stroke="#b88b32" stroke-width="8"/>
+  <rect x="30" y="30" width="260" height="160" rx="12" fill="#fffdf6" stroke="#d1b06a" stroke-dasharray="8 6" stroke-width="4"/>
+  <text x="160" y="82" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700" fill="#9b6c12">⚡</text>
+  <text x="160" y="128" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#725010">EREIGNIS</text>
+  <text x="160" y="156" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#a07623">KARTE ZIEHEN</text>
+</svg>
