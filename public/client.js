@@ -7,7 +7,7 @@ const fmt=(n,d=2)=>new Intl.NumberFormat('de-DE',{maximumFractionDigits:d}).form
 const clean=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safeNum=(n,d=0)=>Number.isFinite(Number(n))?Number(n):d;
 const STORE='co2_factory_multiplayer_access_v1';
-let access=null,room=null,DATA=null,view='board',pollBusy=false,actionBusy=false,lastSeen=-1,chartSelection='all',alertTimer=null,dieTimer=null,connectionLost=false;
+let access=null,room=null,DATA=null,view='board',pollBusy=false,actionBusy=false,lastSeen=-1,chartSelection='all',alertTimer=null,dieTimer=null,connectionLost=false,lastOpenedPopupKey=null,modalFocusReturn=null;
 function safeLocalSet(key,value){try{localStorage.setItem(key,value)}catch{}}
 function safeLocalGet(key){try{return localStorage.getItem(key)}catch{return null}}
 function toast(message,error=false){const el=$('notification');el.textContent=message;el.className='notification'+(error?' error-toast':'');el.hidden=false;if(alertTimer)clearTimeout(alertTimer);alertTimer=setTimeout(()=>el.hidden=true,4500);}
@@ -44,18 +44,18 @@ $('joinForm').addEventListener('submit',async ev=>{
 });
 function showHomeError(s){$('homeNotice').textContent=s;$('homeNotice').hidden=false;}
 function attach(result){access={code:result.code,token:result.token,playerId:result.playerId};safeLocalSet(STORE,JSON.stringify(access));lastSeen=result.room?.lastEvent?.id??-1;room=result.room;history.replaceState(null,'',`/?room=${result.code}`);$('switchRoomBtn').hidden=false;connected(true);render();}
-function leave(){if(!confirm('Diesen Spielraum auf diesem Gerät verlassen? Der reservierte Platz bleibt im laufenden Spiel bestehen.'))return;access=null;room=null;lastSeen=-1;safeLocalSet(STORE,'');history.replaceState(null,'','/');$('home').hidden=false;$('waiting').hidden=true;$('playing').hidden=true;$('switchRoomBtn').hidden=true;toast('Lokale Verbindung zum Raum beendet.');}
+function leave(){closeFieldPopup();lastOpenedPopupKey=null;if(!confirm('Diesen Spielraum auf diesem Gerät verlassen? Der reservierte Platz bleibt im laufenden Spiel bestehen.'))return;access=null;room=null;lastSeen=-1;safeLocalSet(STORE,'');history.replaceState(null,'','/');$('home').hidden=false;$('waiting').hidden=true;$('playing').hidden=true;$('switchRoomBtn').hidden=true;toast('Lokale Verbindung zum Raum beendet.');}
 $('switchRoomBtn').addEventListener('click',leave);
 async function poll(){if(!access||pollBusy)return;pollBusy=true;try{const r=await api(endpoint());connected(true);if(!room||r.revision!==room.revision){const previous=lastSeen;room=r;lastSeen=r.lastEvent?.id??lastSeen;render();if(previous>=0&&r.lastEvent&&r.lastEvent.id>previous)animateEvent(r.lastEvent);}else room=r;
  }catch(err){connected(false);if(err.message.includes('Kein gültiger Zugang')){toast('Dieser Zugang ist nicht mehr gültig. Bitte erneut beitreten.',true);access=null;room=null;safeLocalSet(STORE,'');render();}}finally{pollBusy=false}}
 async function postAction(body){if(actionBusy||!access)return;actionBusy=true;setBusy(true);try{const r=await api(endpoint()+'/action','POST',body);const previous=lastSeen;room=r;lastSeen=r.lastEvent?.id??lastSeen;connected(true);render();if(previous>=0&&r.lastEvent&&r.lastEvent.id>previous)animateEvent(r.lastEvent);}catch(err){toast(err.message,true)}finally{actionBusy=false;setBusy(false)}}
-function setBusy(b){$('rollBtn').disabled=b||!myTurn()||room?.phase!=='roll';$('nextBtn').disabled=b||!myTurn()||room?.phase!=='end';for(const button of $('actionButtons').querySelectorAll('button'))button.disabled=b||button.dataset.disabled==='true';}
+function setBusy(b){$('rollBtn').disabled=b||!myTurn()||room?.phase!=='roll';$('nextBtn').disabled=b||!myTurn()||room?.phase!=='end';for(const button of document.querySelectorAll('#actionButtons button,#fieldPopupButtons button'))button.disabled=b||button.dataset.disabled==='true';}
 function myTurn(){return room&&room.started&&!room.gameOver&&room.players[room.turn]?.id===room.actorId;}
 function render(){
  if(!access||!room){$('home').hidden=false;$('waiting').hidden=true;$('playing').hidden=true;return;}
  $('home').hidden=true;$('switchRoomBtn').hidden=false;
  if(!room.started){$('waiting').hidden=false;$('playing').hidden=true;renderLobby();return;}
- $('waiting').hidden=true;$('playing').hidden=false;renderHeader();renderBoard();renderPlayers();renderAction();renderLog();
+ $('waiting').hidden=true;$('playing').hidden=false;renderHeader();renderBoard();renderPlayers();renderAction();renderLog();maybeShowFieldPopup();
  if(view==='stats')renderStats();else if(view==='cards')renderCards();else if(view==='settings')renderSettings();
  setBusy(actionBusy);
 }
@@ -87,29 +87,43 @@ function renderBoard(){
  const shortDesc=desc.length>120?desc.slice(0,117)+'…':desc;
  const imgSrc=f.type==='Ereigniskarte'?'/img/event.svg':`/img/${String(f.number).padStart(2,'0')}.svg`;
  el.className=`cell ${style[f.type]||''} ${current.pos===idx&&!room.gameOver?'current':''}`;el.style.gridRow=String(r+1);el.style.gridColumn=String(c+1);el.title=`Feld ${f.number}: ${f.name} — ${shortDesc}`;el.setAttribute('data-tooltip',shortDesc);el.setAttribute('tabindex','0');
- let chips='';room.players.forEach((p,i)=>{if(p.pos===idx)chips+=`<span class="token" style="--c:${COLORS[i]}" title="${clean(p.name)}">${i+1}</span>`});
+ let chips='';room.players.forEach((p,i)=>{if(p.pos===idx)chips+=`<span class="token" style="--c:${COLORS[i]}" title="Spieler ${i+1}: ${clean(p.name)}" aria-label="Spieler ${i+1}: ${clean(p.name)}">${i+1}</span>`});
  el.innerHTML=`<span class="num">${f.number}</span><img class="field-img" src="${imgSrc}" alt="${clean(f.name)}"><div class="field-name">${clean(f.name)}</div><div class="tokens">${chips}</div>`;b.append(el);
  });
 }
 function renderPlayers(){const box=$('playersList');box.textContent='';room.players.forEach((p,i)=>{
- const node=document.createElement('div');node.className='player-card'+(i===room.turn?' active':'')+(p.finished||p.bankrupt?' done':'');
+ const node=document.createElement('div');node.className='player-card'+(i===room.turn?' active':'')+(p.finished?' done':'');
  const v=p.scope||[0,0,0];const start=room.config.starting.reduce((s,x)=>s+x,0);
- node.innerHTML=`<div class="player-head"><span><span class="indicator" style="--c:${COLORS[i]}">${i+1}</span>${clean(p.name)}</span><span>${p.bankrupt?'Insolvent':p.finished?'Fertig':p.years+'/'+room.config.maxYears}</span></div><div class="player-metrics"><span>Kapital</span><strong>${euro(p.cash)}</strong><span>CO₂e/Jahr</span><strong>${fmt(p.co2)} t</strong><span>Scope 1 / 2 / 3</span><strong>${v.map(x=>fmt(x)).join(' / ')}</strong><span>Kumuliert</span><strong>${fmt(p.cumulative)} t</strong><span>Jahresergebnis</span><strong>${euro(p.annual)}</strong></div><div class="player-progress"><span style="width:${start>0?Math.max(0,Math.min(100,(1-p.co2/start)*100)):0}%"></span></div>`;box.append(node)});
+ node.innerHTML=`<div class="player-head"><span><span class="indicator" style="--c:${COLORS[i]}">${i+1}</span>${clean(p.name)}</span><span>${p.finished?'Fertig':p.cash<0?'Schulden':p.years+'/'+room.config.maxYears}</span></div><div class="player-metrics"><span>Kapital</span><strong>${euro(p.cash)}</strong><span>CO₂e/Jahr</span><strong>${fmt(p.co2)} t</strong><span>Scope 1 / 2 / 3</span><strong>${v.map(x=>fmt(x)).join(' / ')}</strong><span>Kumuliert</span><strong>${fmt(p.cumulative)} t</strong><span>Jahresergebnis</span><strong>${euro(p.annual)}</strong></div><div class="player-progress"><span style="width:${start>0?Math.max(0,Math.min(100,(1-p.co2/start)*100)):0}%"></span></div>`;box.append(node)});
  $('playerTotal').textContent=`${room.players.length}/${room.config.maxPlayers}`;
 }
 function renderLog(){const el=$('gameLog');el.textContent='';room.logs.slice(0,25).forEach(t=>{const p=document.createElement('p');p.textContent=t;el.append(p)})}
-function controls(title,html,buttons){$('actionTitle').textContent=title;$('fieldTag').textContent=`Feld ${room.players[room.turn]?.pos+1||1}`;$('actionDescription').innerHTML=html;
- const wrap=$('actionButtons');wrap.textContent='';buttons.forEach(o=>{const btn=document.createElement('button');btn.type='button';if(o.primary)btn.className='primary';if(o.detail){btn.classList.add('button-choice');btn.innerHTML=`<strong>${clean(o.label)}</strong><small>${clean(o.detail)}</small>`;}else btn.textContent=o.label;
- btn.disabled=!!o.disabled;btn.dataset.disabled=String(!!o.disabled);btn.addEventListener('click',o.action);wrap.append(btn)})}
+function controls(title,html,buttons){$('actionTitle').textContent=title;$('fieldTag').textContent=`Feld ${(room.lastEvent?.kind==='roll'&&room.lastEvent?.playerId===room.actorId?room.lastEvent.landedField:room.players[room.turn]?.pos+1)||1}`;$('actionDescription').innerHTML=html;
+ const buildButton=o=>{const btn=document.createElement('button');btn.type='button';if(o.primary)btn.className='primary';if(o.detail){btn.classList.add('button-choice');btn.innerHTML=`<strong>${clean(o.label)}</strong><small>${clean(o.detail)}</small>`;}else btn.textContent=o.label;
+  btn.disabled=!!o.disabled;btn.dataset.disabled=String(!!o.disabled);btn.addEventListener('click',o.action);return btn;};
+ for(const id of ['actionButtons','fieldPopupButtons']){const wrap=$(id);wrap.textContent='';buttons.forEach(o=>wrap.append(buildButton(o)));}
+ $('fieldPopupTitle').textContent=title;$('fieldPopupDescription').innerHTML=html;
+ $('fieldPopupOpen').hidden=!myTurn()||room?.gameOver;
+}
 function renderAction(){const p=room.players[room.turn],f=DATA.fields[p.pos],active=myTurn();
- if(room.gameOver){const viable=room.players.filter(p=>!p.bankrupt&&p.years>=room.config.maxYears).sort((a,b)=>a.cumulative-b.cumulative||b.cash-a.cash);const leader=viable[0];
+ if(room.gameOver){const viable=room.players.filter(p=>p.years>=room.config.maxYears).sort((a,b)=>a.cumulative-b.cumulative||b.cash-a.cash);const leader=viable[0];
  const ranking=viable.map((v,i)=>`<p><strong>${i+1}. ${clean(v.name)}</strong> · ${fmt(v.cumulative)} t kumuliert · ${euro(v.cash)}</p>`).join('');controls('Spiel beendet',leader?`<p>🏆 Sieger: <strong>${clean(leader.name)}</strong> mit ${fmt(leader.cumulative)} t CO₂e.</p>${ranking}`:'<p>Kein zahlungsfähiges Unternehmen hat die Zieljahre erreicht.</p>',[]);return;}
- if(!active){controls('Gemeinsamer Spielstand',`<p><strong>${clean(p.name)}</strong> ist am Zug. Die Bewegung und Entscheidungen erscheinen hier automatisch.</p>${room.pending?.kind==='event'?`<p>Gezogene Ereigniskarte: <strong>${clean(DATA.cards[room.pending.card-1]?.title)}</strong></p>`:''}`,[]);return;}
+ if(!active){controls('Gemeinsamer Spielstand',`<p><strong>${clean(p.name)}</strong> ist am Zug. Die Bewegung und Entscheidungen erscheinen hier automatisch.</p>`,[]);return;}
  if(room.phase==='roll'){controls('Würfeln',`<p>Du bist dran. Würfle und lande auf einem von 40 Feldern.</p>`,[{label:'🎲 Würfeln',primary:true,action:()=>postAction({type:'roll'})}]);return;}
- if(room.phase==='detention'){controls('Audit-Aufenthalt',`<p>Nach der Versetzung zum Audit kannst du für <strong>40.000 €</strong> eine Sofortberatung bezahlen oder einen Zug aussetzen.</p>`,[
- {label:'40.000 € zahlen und würfeln',primary:true,disabled:p.cash<40000,action:()=>postAction({type:'detention',choice:'pay'})},
+ if(room.phase==='detention'){controls('Audit-Aufenthalt',`<p>Nach der Versetzung zum Audit kannst du für <strong>${euro(room.auditReleaseFee)}</strong> eine Sofortberatung bezahlen oder einen Zug aussetzen.</p>`,[
+ {label:`${euro(room.auditReleaseFee)} zahlen und würfeln`,primary:true,disabled:p.cash<room.auditReleaseFee,action:()=>postAction({type:'detention',choice:'pay'})},
  {label:'Zug aussetzen',action:()=>postAction({type:'detention',choice:'skip'})}]);return;}
- if(room.phase==='end'){controls(f.name,`<p>Die Feldaktion ist abgeschlossen. Du kannst den Zug an das nächste Unternehmen übergeben.</p>`,[{label:'Zug beenden →',primary:true,action:()=>postAction({type:'end'})}]);return;}
+ if(room.phase==='end'){
+   const ev=room.lastEvent,landed=ev?.kind==='roll'&&ev?.playerId===p.id?DATA.fields[(ev.landedField||p.pos+1)-1]:f;
+   let details=`<p>${clean(landed.description||'')}</p>`;
+   if(ev?.kind==='roll'&&ev?.playerId===p.id){
+      if(ev.eventId){const card=DATA.cards[ev.eventId-1],e=ev.eventResult;
+        details+=`<div class="event-result"><span class="event-stamp">EREIGNISKARTE · VERPFLICHTEND</span><h4>${clean(card.title)}</h4><p>${clean(card.action)}</p><p><strong>Automatisch angewendet:</strong> ${e?.valid?'Ja':'Voraussetzung nicht erfüllt – ohne Wirkung'} · Kapital ${e?.cash>=0?'+':''}${euro(e?.cash||0)}</p><p>Scope-Wirkung: ${(e?.scope||[0,0,0]).map((x,i)=>`S${i+1} ${x>=0?'+':''}${fmt(x,3)} t`).join(' · ')}</p></div>`;
+      }else details+=`<p class="field-result">${clean(ev.message||'')}</p>`;
+   }
+   if(p.cash<0)details+=`<p><strong>Hinweis:</strong> Dein Unternehmen hat ${euro(p.cash)} Kapital. Du bleibst im Spiel und kannst weiter würfeln.</p>`;
+   controls(landed.name,details,[{label:'Zug beenden →',primary:true,action:()=>postAction({type:'end'})}]);return;
+ }
  if(room.phase==='decision'&&room.pending){const q=room.pending;
  if(q.kind==='invest'){
   const v=DATA.fields[q.index],cost=Math.max(0,-safeNum(v.capital)),owned=p.owned.includes(v.number);
@@ -118,14 +132,9 @@ function renderAction(){const p=room.players[room.turn],f=DATA.fields[p.pos],act
     {label:'Verzichten',action:()=>postAction({type:'invest',choice:'pass'})}]);return;
  }
  if(q.kind==='choose'){
-  const v=DATA.fields[q.index];controls(`${v.name} · Unternehmensentscheidung`,`<p>${clean(v.description)}</p>`,v.options.map((o,i)=>({label:o.name,detail:`Kapital ${o.cash>=0?'+':''}${euro(o.cash)} · Jahresergebnis ${o.annual>=0?'+':''}${euro(o.annual)}/Jahr · ${o.scope.map((x,j)=>`S${j+1} ${x>0?'+':''}${fmt(x)} t`).join(' / ')}`,disabled:p.cash+o.cash<0,action:()=>postAction({type:'choose',option:i})})));return;
+  const v=DATA.fields[q.index];controls(`${v.name} · Unternehmensentscheidung`,`<p>${clean(v.description)}</p>`,v.options.map((o,i)=>({label:o.name,detail:`Kapital ${o.cash>=0?'+':''}${euro(o.cash)} · Jahresergebnis ${o.annual>=0?'+':''}${euro(o.annual)}/Jahr · ${o.scope.map((x,j)=>`S${j+1} ${x>0?'+':''}${fmt(x)} t`).join(' / ')}`,disabled:o.cash<0&&p.cash< -o.cash,action:()=>postAction({type:'choose',option:i})})));return;
  }
- if(q.kind==='event'){
-  const v=DATA.cards[q.card-1],e=q.effect||{cash:0,scope:[0,0,0],valid:false};const term=e.term==='permanent'?'Dauerhaft':e.term==='temporary'?'Bis zum nächsten Jahresabschluss':'Einmalig';
-  controls(`Karte ${q.card}/20 · ${v.title}`,`<p><strong>${clean(v.action)}</strong></p><p>Berechnet: <b>${e.cash>=0?'+':''}${euro(e.cash)}</b> · ${e.scope.map((x,i)=>`S${i+1} ${x>0?'+':''}${fmt(x,3)} t`).join(' · ')}</p><p><strong>Wirkung:</strong> ${term}. ${clean(e.note||'')}</p><details><summary>Formel und Annahmen</summary><p>${clean(v.formula)}</p><p>${clean(v.assumptions)}</p></details>`,[
-    {label:e.valid?'Kartenwirkung anwenden':'Karte ohne Wirkung bestätigen',primary:true,action:()=>postAction({type:'event',choice:'apply'})},
-    {label:'Ohne Wirkung ablegen',action:()=>postAction({type:'event',choice:'ignore'})}]);return;
- }
+
  }
  controls('Warten','<p>Der aktuelle Spielschritt wird aktualisiert.</p>',[]);
 }
@@ -135,16 +144,37 @@ function animateEvent(e){
    if(dieTimer)clearTimeout(dieTimer);const face=$('dieFace');face.classList.remove('rolling');void face.offsetWidth;
    if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches)face.classList.add('rolling');
    face.textContent=DICE[Math.max(0,Math.min(5,(e.die||1)-1))];dieTimer=setTimeout(()=>face.classList.remove('rolling'),950);
-   if(e.eventId)showCard(e.eventId);
+   // Die Ereigniskarte erscheint nur dem aktiven Spieler im Feld-Popup.
  }
 }
-function showCard(id){const c=DATA.cards[id-1];if(!c)return;
- $('eventIndex').textContent=`KARTE ${String(id).padStart(2,'0')} / 20`;$('eventTitle').textContent=c.title;$('eventText').textContent=c.action;
- const overlay=$('eventOverlay'),flipper=$('eventFlip');overlay.hidden=false;flipper.classList.remove('flipped');requestAnimationFrame(()=>requestAnimationFrame(()=>flipper.classList.add('flipped')));
- $('closeEventBtn').focus();
+function openFieldPopup(manual=false){
+ if(!myTurn()||!room?.started||room.gameOver)return;
+ const ev=room.lastEvent,landed=ev?.kind==='roll'&&ev?.playerId===room.actorId?ev.landedField:null;
+ const fieldNumber=landed||room.players[room.turn].pos+1;
+ const f=DATA.fields[fieldNumber-1];if(!f)return;
+ $('fieldPopupNumber').textContent=`FELD ${fieldNumber}`;
+ $('fieldPopupImg').src=f.type==='Ereigniskarte'?'/img/event.svg':`/img/${String(fieldNumber).padStart(2,'0')}.svg`;
+ $('fieldPopupImg').alt=f.name;
+ const el=$('fieldPopup');modalFocusReturn=manual?document.activeElement:null;el.hidden=false;document.body.classList.add('modal-open');
+ $('fieldPopupCard').classList.remove('revealed');void $('fieldPopupCard').offsetWidth;
+ if(f.type==='Ereigniskarte'&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches){$('fieldPopupCard').classList.add('revealed');}
+ $('fieldPopupClose').focus();
 }
-function closeCard(){$('eventOverlay').hidden=true;$('eventFlip').classList.remove('flipped')}
-$('closeEventBtn').addEventListener('click',closeCard);$('eventOverlay').addEventListener('click',e=>{if(e.target===$('eventOverlay'))closeCard()});
+function closeFieldPopup(){const el=$('fieldPopup');if(!el.hidden){el.hidden=true;document.body.classList.remove('modal-open');if(modalFocusReturn?.focus)modalFocusReturn.focus();}modalFocusReturn=null;}
+function maybeShowFieldPopup(){
+ if(!myTurn()||room.gameOver){closeFieldPopup();return;}
+ const e=room.lastEvent,p=room.players[room.turn];
+ const landed=e?.kind==='roll'&&e.playerId===p.id&&(room.phase==='decision'||room.phase==='end');
+ const waiting=room.phase==='detention'||room.phase==='decision';
+ if(!landed&&!waiting)return;
+ const key=`${room.code}-${room.turnNumber}-${e?.landedField||p.pos+1}`;
+ if(lastOpenedPopupKey===key)return;
+ lastOpenedPopupKey=key;openFieldPopup();
+}
+$('fieldPopupOpen').addEventListener('click',()=>openFieldPopup(true));
+$('fieldPopupClose').addEventListener('click',closeFieldPopup);
+$('fieldPopup').addEventListener('click',e=>{if(e.target===$('fieldPopup'))closeFieldPopup()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('fieldPopup').hidden){closeFieldPopup();}});
 for(const b of document.querySelectorAll('[data-view]'))b.addEventListener('click',()=>setActiveTab(b.dataset.view));
 $('chartPlayer').addEventListener('change',()=>{chartSelection=$('chartPlayer').value;renderStats()});
 function renderStats(){
@@ -168,7 +198,7 @@ function graph(id,key){const svg=$(id),chosen=room.players.filter(p=>chartSelect
  svg.innerHTML=html;
 }
 let cardsRendered=false;
-function renderCards(){if(cardsRendered||!DATA)return;const grid=$('cardsGrid');grid.innerHTML=DATA.cards.map(c=>`<article class="info-card"><small>KARTE ${String(c.number).padStart(2,'0')} / 20</small><h3>${clean(c.title)}</h3><p>${clean(c.action)}</p><details><summary>Formel, Dauer und Annahmen</summary><p><b>Dauer:</b> ${clean(c.duration)}</p><p><b>Formel:</b> ${clean(c.formula)}</p><p><b>Annahmen:</b> ${clean(c.assumptions)}</p><p><b>Bedingung:</b> ${clean(c.conditions)}</p></details></article>`).join('');cardsRendered=true;}
+function renderCards(){if(cardsRendered||!DATA)return;const grid=$('cardsGrid');grid.innerHTML=DATA.cards.map(c=>`<article class="info-card"><small>EREIGNISKARTE</small><h3>${clean(c.title)}</h3><p>${clean(c.action)}</p><details><summary>Formel, Dauer und Annahmen</summary><p><b>Dauer:</b> ${clean(c.duration)}</p><p><b>Formel:</b> ${clean(c.formula)}</p><p><b>Annahmen:</b> ${clean(c.assumptions)}</p><p><b>Bedingung:</b> ${clean(c.conditions)}</p></details></article>`).join('');cardsRendered=true;}
 let paramRevision=-1;
 function renderSettings(){if(!room||paramRevision===room.revision)return;paramRevision=room.revision;
  const list=$('paramList');list.textContent='';for(const [key,p]of Object.entries(DATA.parameters)){

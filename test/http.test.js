@@ -16,6 +16,7 @@ test('HTTP: Browserassets, 2 Clients, Spielstart, Autorisierung, persistierter R
   const url=`http://127.0.0.1:${port}`;
   const html=await fetch(url+'/');assert.equal(html.status,200);assert.match(await html.text(),/CO₂ FACTORY/);
   const svg=await fetch(url+'/img/06.svg');assert.equal(svg.status,200);
+  const eventImg=await fetch(url+'/img/event.svg');assert.equal(eventImg.status,200);
   const resp=await fetch(url+'/api/rooms',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Host AG',config:{maxYears:2,maxPlayers:8}})});
   assert.equal(resp.status,201);const created=await resp.json();assert.match(created.code,/^[A-HJ-NP-Z2-9]{6}$/);
   const code=created.code,token=created.token;

@@ -123,7 +123,7 @@
       "number": 7,
       "name": "CO₂-Preis",
       "type": "CO₂-Preis",
-      "description": "Sofort 100 €/t × aktuelle jährliche Gesamt-CO₂e bezahlen.",
+      "description": "Sofort 100 €/t × Startkapitalfaktor × aktuelle jährliche Gesamt-CO₂e bezahlen.",
       "capital": 0,
       "annual": 0,
       "scope": [
@@ -179,7 +179,7 @@
       "number": 11,
       "name": "CO₂-Audit",
       "type": "Audit",
-      "description": "CO₂ prüfen. Grenze = gerundet max(Ziel, Startemissionen − Absenkung × (abgeschlossene Jahre + 1)). Gebühr = max(0, aktuelle jährliche Emissionen − Grenze) × 100 €/t.",
+      "description": "CO₂ prüfen. Grenze = gerundet max(Ziel, Startemissionen − Absenkung × (abgeschlossene Jahre + 1)). Gebühr = max(0, aktuelle jährliche Emissionen − Grenze) × 100 €/t × Startkapitalfaktor.",
       "capital": 0,
       "annual": 0,
       "scope": [
@@ -187,7 +187,7 @@
         0,
         0
       ],
-      "conditions": "Absenkung bei individuell gewählten Werten: max(0, (Startemissionen − Ziel)/8). Standard: 75 t/Jahr, erste Grenze 925 t. Normaler Besuch ohne Aussetzen; aus Feld 31 zusätzlich Audit-Aufenthalt. Keine CO₂-Buchung."
+      "conditions": "Auditgrenze und Absenkung richten sich nach der eingestellten Anzahl von Geschäftsjahren. Bei 8 Jahren, 1.000 t Startemissionen und 400 t Ziel sinkt die Grenze um 75 t pro Jahr. Normaler Besuch ohne Aussetzen; nach Versetzung von Feld 31 folgt Audit-Aufenthalt. Keine CO₂-Buchung."
     },
     {
       "number": 12,
@@ -508,7 +508,7 @@
       "number": 27,
       "name": "CO₂-Preis",
       "type": "CO₂-Preis",
-      "description": "Sofort 100 €/t × aktuelle jährliche Gesamt-CO₂e bezahlen.",
+      "description": "Sofort 100 €/t × Startkapitalfaktor × aktuelle jährliche Gesamt-CO₂e bezahlen.",
       "capital": 0,
       "annual": 0,
       "scope": [
@@ -564,7 +564,7 @@
       "number": 31,
       "name": "Zum Audit",
       "type": "Versetzung zum Audit",
-      "description": "Sofort auf Feld 11 versetzen und Audit durchführen. Im nächsten eigenen Zug: 40 000 € Sofortberatung zahlen und normal würfeln ODER genau einen Zug aussetzen.",
+      "description": "Sofort auf Feld 11 versetzen und Audit durchführen. Im nächsten eigenen Zug: Sofortberatung zum nach Startkapital skalierten Preis (40.000 € bei 1 Mio. € Startkapital) zahlen und normal würfeln ODER genau einen Zug aussetzen.",
       "capital": 0,
       "annual": 0,
       "scope": [
@@ -775,7 +775,7 @@
     {
       "number": 1,
       "title": "CO₂-Preisschock",
-      "action": "Der CO₂-Preis steigt unerwartet. Bezahle zusätzlich 50 € je aktueller jährlicher Tonne CO₂e.",
+      "action": "Der CO₂-Preis steigt unerwartet. Bezahle 50 € je aktueller jährlicher Tonne CO₂e, multipliziert mit dem Startkapitalfaktor.",
       "capital": 0,
       "price": 50,
       "scope": [
@@ -783,10 +783,10 @@
         0,
         0
       ],
-      "conditions": "Zahlung = 50 €/t × aktuelle jährliche Gesamt-CO₂e. Emissionsmenge selbst bleibt unverändert.",
+      "conditions": "Zahlung = 50 €/t × Startkapitalfaktor × aktuelle jährliche Gesamt-CO₂e. Emissionsmenge selbst bleibt unverändert.",
       "duration": "Geldwirkung einmalig, sofort.",
-      "formula": "Keine CO₂-Wirkung: ΔScope 1/2/3 = 0. Nur monetäre Bewertung des vorhandenen Footprints.",
-      "assumptions": "50 €/t ist eine Spielannahme; im realen Modell kann ein gewählter CO₂-Schattenpreis eingesetzt werden.",
+      "formula": "Keine physische CO₂-Änderung: ΔScope 1/2/3 = 0. Zahlung = aktuelle jährliche Gesamt-CO₂e × 50 €/t × Startkapitalfaktor (min. 0,1; max. 10).",
+      "assumptions": "50 €/t bei 1 Mio. € Startkapital ist eine Spielannahme; im realen Modell kann ein gewählter CO₂-Schattenpreis eingesetzt werden.",
       "reason": "Ein CO₂-Preis ändert nicht automatisch die physische Emissionsmenge; er bewertet sie finanziell.",
       "source": "https://ghgprotocol.org/calculation-tools-faq"
     },

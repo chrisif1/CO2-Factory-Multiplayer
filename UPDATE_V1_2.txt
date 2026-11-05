@@ -1,0 +1,13 @@
+CO₂ FACTORY MULTIPLAYER V1.2 – GITHUB/RENDER-UPDATE
+
+1. ZIP entpacken.
+2. GitHub-Repository CO2-Factory-Multiplayer öffnen.
+3. Add file -> Upload files.
+4. ALLE DATEIEN UND UNTERORDNER aus dem enthaltenen Ordner CO2_Factory_Multiplayer hochladen (nicht die ZIP selbst).
+5. Commit changes. Auto-Deploy auf Render muss aktiviert sein.
+6. Im Render-Dashboard warten, bis der Status wieder Live anzeigt.
+7. Im Browser die bisherige Spiel-URL neu laden (gegebenenfalls Strg+F5).
+
+Wichtig: Ein Update kann bestehende laufende Spielräume auf Render Free unterbrechen. Vorzugsweise nur zwischen zwei Spielen aktualisieren.
+
+NEU: Pflicht-Ereignisse, CO₂-Strafskalierung nach Startkapital, Feld-Popups nur für aktive Spieler, stärkere Felder/Spielernummern, Spielen trotz Schulden.

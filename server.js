@@ -37,7 +37,7 @@ function limited(req){
 }
 function staticFile(req,res,url){
  let file=url.pathname==='/'?'/index.html':url.pathname;
- if(!/^\/(?:index\.html|style\.css|client\.js|game-data\.json|logo-fh-ooe\.png|img\/\d{2}\.svg)$/.test(file))return fault(res,404,'Datei nicht gefunden.');
+ if(!/^\/(?:index\.html|style\.css|client\.js|game-data\.json|logo-fh-ooe\.png|img\/(?:\d{2}|event)\.svg)$/.test(file))return fault(res,404,'Datei nicht gefunden.');
  const fullname=path.resolve(BASE,'.'+file);if(!fullname.startsWith(BASE+path.sep))return fault(res,404,'Datei nicht gefunden.');
  const mime=file.endsWith('.html')?'text/html; charset=utf-8':file.endsWith('.css')?'text/css; charset=utf-8':file.endsWith('.js')?'text/javascript; charset=utf-8':file.endsWith('.json')?'application/json; charset=utf-8':file.endsWith('.svg')?'image/svg+xml':'image/png';
  fs.readFile(fullname,(err,data)=>{

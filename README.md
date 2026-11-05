@@ -1,3 +1,36 @@
+# CO₂ Factory Multiplayer V1.2 (05.11.2026)
+
+## Neuerungen
+
+- **CO₂-Strafen proportional zum gewählten Startkapital:** CO₂-Abgabe (Felder 7/27), Audit-Strafe (Feld 11 und nach Feld 31), Ereignis „CO₂-Preisschock“. Basis ist das bisherige Startkapital von 1.000.000 € mit 100 % der bisherigen Strafen. Der Faktor wird auf **0,1 bis 10** begrenzt. Die Sofortberatung beim Audit wird ebenfalls angepasst. Andere Betriebskosten, Investitionen und Ereignisse bleiben unverändert.
+- **Ereigniskarten gelten zwingend:** Nach dem Würfeln auf ein Ereignisfeld wird die neue Karte serverseitig sofort angewendet. Es gibt keine Ablehnen-/Ignorieren-Auswahl mehr. Ist eine Voraussetzung nicht erfüllt, hat die Karte automatisch keine Wirkung; sie wird dennoch als gezogen erfasst.
+- **Kartennummern verborgen:** Die Kartenansichten zeigen nur „Ereigniskarte“, nicht die interne Kartennummer. Die Nummern der Spielfelder bleiben sichtbar.
+- **Stärker hervorgehobene Spieler- und Feldnummern** sowie deutlichere Umrandungen.
+- **Popup beim Betreten jedes Felds:** Die aktuelle Person sieht Feldbild, Erklärung und – bei Investitionen oder Unternehmensentscheidungen – die zugehörigen Auswahlknöpfe. Andere Spieler sehen das geteilte Brett, aber kein Feld-Popup. Der aktive Spieler kann sein Popup schließen und über „Feld-Popup öffnen“ wieder aufrufen. Die Berechtigungen werden zusätzlich vom Server geprüft.
+- **Kein Ausscheiden bei negativem Kapital:** Das Unternehmen darf weiter würfeln und positive bzw. kostenlose Entscheidungen wählen. Ausgaben bleiben gesperrt, wenn das aktuelle Kapital zur Zahlung nicht reicht. Auch Unternehmen mit Schulden gehen in die Endwertung ein.
+
+### Beispiel für die Strafskalierung
+
+| Startkapital | Faktor | CO₂-Preis-Feld (je t) | CO₂-Preisschock (je t) | Auditüberschreitung (je t) |
+| ---: | ---: | ---: | ---: | ---: |
+| 500.000 € | 0,5 | 50 € | 25 € | 50 € |
+| 1.000.000 € | 1,0 | 100 € | 50 € | 100 € |
+| 2.000.000 € | 2,0 | 200 € | 100 € | 200 € |
+
+**Formel:** `Strafe = relevante t CO₂e × Basispreis €/t × max(0,1; min(10; Startkapital / 1.000.000))`. Im CO₂-Audit zählen nur die Tonnen oberhalb der zulässigen Auditgrenze.
+
+## GitHub/Render aktualisieren
+
+1. Erstelle vor einem Update bei Bedarf einen Spielstand-Export bzw. beende aktive Runden; Render kann den laufenden Server beim Deploy neu starten und lokale Spielstanddateien auf dem Free-Tarif verlieren.
+2. Lade den **Inhalt** des Ordners `CO2_Factory_Multiplayer` ins Hauptverzeichnis deines bestehenden GitHub-Repositories (nicht die ZIP selbst). Dateiänderungen mit demselben Pfad überschreiben alte Versionen.
+3. Unter `public/` befinden sich die Bilder und die Browser-Oberfläche. **Achte darauf, dass der Ordner `public/img` vollständig mit hochgeladen wird.**
+4. Klicke auf **Commit changes**. Render aktualisiert bei aktiviertem Auto-Deploy automatisch.
+5. Verwende weiterhin die bisherige Render-URL. Host-Konfiguration: Build `npm install`, Start `npm start`, Root Directory leer, sofern `package.json` direkt im Repo liegt.
+
+**Geänderte Projektdateien gegenüber V1.1:** `engine.js`, `server.js`, `package.json`, `public/client.js`, `public/index.html`, `public/style.css`, `public/game-data.json`, `test/game.test.js`, `test/http.test.js`, `README.md`.
+
+---
+
 # CO₂ Factory – Multiplayer für 2 bis 8 Geräte
 
 **Version:** 1.0 (04.11.2026)  

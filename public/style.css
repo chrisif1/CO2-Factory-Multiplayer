@@ -86,3 +86,62 @@
  .scope-pills{grid-template-columns:1fr}
  .summary-right,.top-controls{gap:8px}
 }
+
+/* V1.2: stabilere Konturen und sichtbarere Spielernummern */
+.cell{border:2px solid #728b87;border-top-width:6px;box-shadow:inset 0 0 0 1px #ffffffb3}
+.cell.event{border-color:#af883a;border-top-color:#b88b32;background:#fff5db}
+.cell.current{outline:4px solid #063d37;outline-offset:1px;z-index:2}
+.cell .num{font-size:12px;border:1px solid #9eaeab;padding:2px 5px;color:#143a35;background:#fff}
+.token{height:26px;width:26px;font-size:14px;font-weight:900;border:2px solid #fff;box-shadow:0 1px 0 2px #253e3a,0 2px 5px #113b3640;line-height:1}
+.player-head .indicator{height:30px;width:30px;font-size:15px;font-weight:900;border:2px solid #fff;box-shadow:0 0 0 1px #3b6159}
+.player-card.active{border-width:3px}
+.field-head-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.field-head-actions button{font-size:12px;min-height:36px;padding:6px 10px}
+.event-result{background:#fff6df;border:1px solid #d8b66f;border-radius:11px;padding:13px;margin:12px 0}
+.event-result h4{font-size:17px;margin:5px 0 9px}
+.event-result p{margin:7px 0}
+.event-stamp{font-weight:900;letter-spacing:.12em;color:#946a17;font-size:11px}
+.field-result{border-left:4px solid #297c67;background:#eaf7f1;padding:10px 12px;border-radius:6px}
+
+/* Aktions-Popup (nur für den aktiven Spielenden) */
+body.modal-open{overflow:hidden}
+.field-popup-overlay{position:fixed;inset:0;display:flex;justify-content:center;align-items:center;padding:16px;background:rgba(11,29,29,.76);z-index:110}
+.field-popup-overlay[hidden]{display:none!important}
+.field-popup-box{width:min(640px,100%);max-height:calc(100vh - 32px);overflow:auto;overscroll-behavior:contain;background:#fff;border:2px solid #5e8277;border-radius:19px;padding:20px;box-shadow:0 30px 72px rgba(2,16,13,.43)}
+.field-popup-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.field-popup-head .eyebrow{font-size:13px;font-weight:900;color:#0a655d;letter-spacing:.16em}
+.popup-close{min-height:42px;min-width:42px;padding:6px;font-size:22px;border-radius:50%;background:#f5f8f7}
+.field-popup-card{display:grid;grid-template-columns:128px minmax(0,1fr);gap:16px;align-items:center;border-radius:13px;background:#eff6f2;padding:12px}
+.field-popup-card.revealed{animation:fieldCardReveal .7s cubic-bezier(.16,.9,.35,1)}
+.field-popup-card img{width:128px;height:110px;object-fit:cover;border:2px solid #b6c9c3;border-radius:11px}
+.field-popup-card h2{font-size:25px;margin:0 0 5px;line-height:1.18}
+.popup-hint{margin:0;color:#576e67;font-size:12px}
+.field-popup-description{font-size:14px;line-height:1.48;margin:15px 0 12px}
+.field-popup-description p{margin:8px 0}
+.field-popup-actions{display:flex;gap:10px;flex-wrap:wrap;padding-top:12px;border-top:1px solid #d5e3de}
+.field-popup-actions button{flex:1;min-width:170px;min-height:46px;text-align:left}
+.field-popup-actions .button-choice{min-width:100%;max-width:100%}
+@keyframes fieldCardReveal{0%{opacity:.1;transform:perspective(600px) rotateY(76deg) translateY(-10px)}100%{opacity:1;transform:perspective(600px) rotateY(0) translateY(0)}}
+@media(max-width:780px){
+ .cell{border-width:2px;border-top-width:5px}
+ .cell .num{font-size:11px}
+ .token{height:23px;width:23px;font-size:12px}
+ .player-head .indicator{width:29px;height:29px;font-size:14px}
+ .field-head-actions{width:100%;justify-content:space-between}
+ .field-popup-overlay{padding:9px;align-items:center}
+ .field-popup-box{max-height:calc(100dvh - 18px);padding:14px;border-radius:14px}
+ .field-popup-card{grid-template-columns:90px minmax(0,1fr);gap:10px;padding:9px}
+ .field-popup-card img{width:90px;height:85px}
+ .field-popup-card h2{font-size:20px}
+ .field-popup-description{font-size:13px;margin:10px 0}
+ .field-popup-actions{display:grid;grid-template-columns:1fr;gap:8px}
+ .field-popup-actions button{width:100%;min-width:0}
+}
+@media(max-width:520px){
+ .cell .num{font-size:10px;left:2px;top:2px}
+ .token{width:21px;height:21px;font-size:11px;border-width:2px}
+ .field-popup-card{grid-template-columns:72px minmax(0,1fr)}
+ .field-popup-card img{width:72px;height:68px}
+ .field-popup-card h2{font-size:17px}
+}
+@media(prefers-reduced-motion:reduce){.field-popup-card.revealed{animation:none}}
