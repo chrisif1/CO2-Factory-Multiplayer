@@ -4,7 +4,7 @@
       "number": 1,
       "name": "Geschäftsjahr",
       "type": "Geschäftsjahr",
-      "description": "Beim Überqueren: Geschäftsjahr +1; Jahresergebnis (200 000 € als Basis plus laufende Maßnahmen-/Entscheidungseffekte) zum Kapital addieren. Aktuelle jährliche Scope-1/2/3-Summe zu den kumulierten Emissionen addieren.",
+      "description": "Beim Überqueren von Feld 1 erhältst du dein aktuelles Jahresergebnis. Landest du genau auf Feld 1, wird das Jahresergebnis doppelt verbucht. Die Jahresemissionen zählen dabei nur einmal.",
       "capital": 0,
       "annual": 0,
       "scope": [
@@ -12,7 +12,8 @@
         0,
         0
       ],
-      "conditions": "Landung auf Start bucht nur einmal. Nach dem 8. Jahresabschluss wird das Unternehmen eingefroren; keine weitere Zielfeldaktion. Startkapital, Startemissionen, Ziel und Gesamtbudget sind vor Spielbeginn einstellbar."
+      "conditions": "Landung auf Start bucht nur einmal. Nach dem 8. Jahresabschluss wird das Unternehmen eingefroren; keine weitere Zielfeldaktion. Startkapital, Startemissionen, Ziel und Gesamtbudget sind vor Spielbeginn einstellbar.",
+      "sourceNumber": 1
     },
     {
       "number": 2,
@@ -26,24 +27,11 @@
         -10,
         0
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 2
     },
     {
       "number": 3,
-      "name": "Ereignis",
-      "type": "Ereigniskarte",
-      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
-      "capital": 0,
-      "annual": 0,
-      "scope": [
-        0,
-        0,
-        0
-      ],
-      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen."
-    },
-    {
-      "number": 4,
       "name": "Druckluft optimieren",
       "type": "Investition",
       "description": "Maßnahme kaufen oder verzichten. Investition: 50 000 €. Dauerhafte nominale Reduktion: 25 t CO₂e/Jahr.",
@@ -54,7 +42,23 @@
         -25,
         0
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 4
+    },
+    {
+      "number": 4,
+      "name": "Ereignis",
+      "type": "Ereigniskarte",
+      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen.",
+      "sourceNumber": 3
     },
     {
       "number": 5,
@@ -103,7 +107,8 @@
           ],
           "reason": "Keine wirtschaftlichen oder ökologischen Änderungen."
         }
-      ]
+      ],
+      "sourceNumber": 5
     },
     {
       "number": 6,
@@ -117,7 +122,8 @@
         -100,
         0
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 6
     },
     {
       "number": 7,
@@ -131,7 +137,8 @@
         0,
         0
       ],
-      "conditions": "Zusätzliche Spielabgabe beim Betreten. Keine zusätzliche Emissions- oder Jahresbuchung. Reduzierte jährliche Emissionen senken diese Zahlung."
+      "conditions": "Zusätzliche Spielabgabe beim Betreten. Keine zusätzliche Emissions- oder Jahresbuchung. Reduzierte jährliche Emissionen senken diese Zahlung.",
+      "sourceNumber": 7
     },
     {
       "number": 8,
@@ -145,24 +152,11 @@
         0,
         0
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 8
     },
     {
       "number": 9,
-      "name": "Ereignis",
-      "type": "Ereigniskarte",
-      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
-      "capital": 0,
-      "annual": 0,
-      "scope": [
-        0,
-        0,
-        0
-      ],
-      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen."
-    },
-    {
-      "number": 10,
       "name": "Effiziente Maschinen",
       "type": "Investition",
       "description": "Maßnahme kaufen oder verzichten. Investition: 250 000 €. Dauerhafte nominale Reduktion: 120 t CO₂e/Jahr.",
@@ -173,13 +167,14 @@
         -60,
         0
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 10
     },
     {
-      "number": 11,
-      "name": "CO₂-Audit",
-      "type": "Audit",
-      "description": "CO₂ prüfen. Grenze = gerundet max(Ziel, Startemissionen − Absenkung × (abgeschlossene Jahre + 1)). Gebühr = max(0, aktuelle jährliche Emissionen − Grenze) × 100 €/t × Startkapitalfaktor.",
+      "number": 10,
+      "name": "Ereignis",
+      "type": "Ereigniskarte",
+      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
       "capital": 0,
       "annual": 0,
       "scope": [
@@ -187,10 +182,11 @@
         0,
         0
       ],
-      "conditions": "Auditgrenze und Absenkung richten sich nach der eingestellten Anzahl von Geschäftsjahren. Bei 8 Jahren, 1.000 t Startemissionen und 400 t Ziel sinkt die Grenze um 75 t pro Jahr. Normaler Besuch ohne Aussetzen; nach Versetzung von Feld 31 folgt Audit-Aufenthalt. Keine CO₂-Buchung."
+      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen.",
+      "sourceNumber": 9
     },
     {
-      "number": 12,
+      "number": 11,
       "name": "Elektrische Stapler",
       "type": "Investition",
       "description": "Maßnahme kaufen oder verzichten. Investition: 80 000 €. Dauerhafte nominale Reduktion: 30 t CO₂e/Jahr.",
@@ -201,10 +197,11 @@
         0,
         0
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 12
     },
     {
-      "number": 13,
+      "number": 12,
       "name": "Lieferantenstrategie",
       "type": "Entscheidung",
       "description": "Die Einkaufsabteilung muss den Stahlbezug und die Materialqualität neu organisieren.",
@@ -250,10 +247,11 @@
           ],
           "reason": "Kürzere Transportketten und Lieferantenaudit."
         }
-      ]
+      ],
+      "sourceNumber": 13
     },
     {
-      "number": 14,
+      "number": 13,
       "name": "Routenzug",
       "type": "Investition",
       "description": "Maßnahme kaufen oder verzichten. Investition: 100 000 €. Dauerhafte nominale Reduktion: 40 t CO₂e/Jahr.",
@@ -264,10 +262,11 @@
         0,
         -25
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 14
     },
     {
-      "number": 15,
+      "number": 14,
       "name": "Grünstromvertrag",
       "type": "Investition",
       "description": "Maßnahme kaufen oder verzichten. Investition: 0 €. Dauerhafte nominale Reduktion: 180 t CO₂e/Jahr.",
@@ -278,13 +277,14 @@
         -180,
         0
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 15
     },
     {
-      "number": 16,
-      "name": "Ereignis",
-      "type": "Ereigniskarte",
-      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
+      "number": 15,
+      "name": "CO₂-Audit",
+      "type": "Audit",
+      "description": "Dein Jahres-CO₂ wird mit dem CO₂-Ziel verglichen. Je Tonne oberhalb des Ziels wird die nach dem Startkapital skalierte Auditgebühr fällig.",
       "capital": 0,
       "annual": 0,
       "scope": [
@@ -292,10 +292,11 @@
         0,
         0
       ],
-      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen."
+      "conditions": "Auditgrenze und Absenkung richten sich nach der eingestellten Anzahl von Geschäftsjahren. Bei 8 Jahren, 1.000 t Startemissionen und 400 t Ziel sinkt die Grenze um 75 t pro Jahr. Normaler Besuch ohne Aussetzen; nach Versetzung von Feld 31 folgt Audit-Aufenthalt. Keine CO₂-Buchung.",
+      "sourceNumber": 11
     },
     {
-      "number": 17,
+      "number": 16,
       "name": "Klimaarme Lieferanten",
       "type": "Investition",
       "description": "Maßnahme kaufen oder verzichten. Investition: 150 000 €. Dauerhafte nominale Reduktion: 120 t CO₂e/Jahr.",
@@ -306,7 +307,23 @@
         0,
         -120
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 17
+    },
+    {
+      "number": 17,
+      "name": "Ereignis",
+      "type": "Ereigniskarte",
+      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen.",
+      "sourceNumber": 16
     },
     {
       "number": 18,
@@ -355,7 +372,8 @@
           ],
           "reason": "Keine direkten Effekte."
         }
-      ]
+      ],
+      "sourceNumber": 18
     },
     {
       "number": 19,
@@ -369,7 +387,8 @@
         0,
         -100
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 19
     },
     {
       "number": 20,
@@ -383,7 +402,8 @@
         0,
         0
       ],
-      "conditions": "Bei jedem Besuch; keine weitere Voraussetzung. Keine direkte CO₂-Wirkung."
+      "conditions": "Bei jedem Besuch; keine weitere Voraussetzung. Keine direkte CO₂-Wirkung.",
+      "sourceNumber": 20
     },
     {
       "number": 21,
@@ -397,7 +417,8 @@
         0,
         0
       ],
-      "conditions": "Bei jedem Besuch; keine Investition oder andere Voraussetzung nötig. Keine direkte CO₂-Wirkung."
+      "conditions": "Bei jedem Besuch; keine Investition oder andere Voraussetzung nötig. Keine direkte CO₂-Wirkung.",
+      "sourceNumber": 21
     },
     {
       "number": 22,
@@ -411,24 +432,11 @@
         -35,
         0
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 22
     },
     {
       "number": 23,
-      "name": "Ereignis",
-      "type": "Ereigniskarte",
-      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
-      "capital": 0,
-      "annual": 0,
-      "scope": [
-        0,
-        0,
-        0
-      ],
-      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen."
-    },
-    {
-      "number": 24,
       "name": "Predictive Maintenance",
       "type": "Investition",
       "description": "Maßnahme kaufen oder verzichten. Investition: 60 000 €. Dauerhafte nominale Reduktion: 20 t CO₂e/Jahr.",
@@ -439,7 +447,23 @@
         -10,
         0
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 24
+    },
+    {
+      "number": 24,
+      "name": "Ereignis",
+      "type": "Ereigniskarte",
+      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen.",
+      "sourceNumber": 23
     },
     {
       "number": 25,
@@ -488,7 +512,8 @@
           ],
           "reason": "Besseres Scheduling und weniger Leerlauf."
         }
-      ]
+      ],
+      "sourceNumber": 25
     },
     {
       "number": 26,
@@ -502,7 +527,8 @@
         0,
         -60
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 26
     },
     {
       "number": 27,
@@ -516,7 +542,8 @@
         0,
         0
       ],
-      "conditions": "Zusätzliche Spielabgabe beim Betreten. Keine zusätzliche Emissions- oder Jahresbuchung. Reduzierte jährliche Emissionen senken diese Zahlung."
+      "conditions": "Zusätzliche Spielabgabe beim Betreten. Keine zusätzliche Emissions- oder Jahresbuchung. Reduzierte jährliche Emissionen senken diese Zahlung.",
+      "sourceNumber": 27
     },
     {
       "number": 28,
@@ -530,24 +557,11 @@
         0,
         -35
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 28
     },
     {
       "number": 29,
-      "name": "Ereignis",
-      "type": "Ereigniskarte",
-      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
-      "capital": 0,
-      "annual": 0,
-      "scope": [
-        0,
-        0,
-        0
-      ],
-      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen."
-    },
-    {
-      "number": 30,
       "name": "Emissionsarmer Stahl",
       "type": "Investition",
       "description": "Maßnahme kaufen oder verzichten. Investition: 180 000 €. Dauerhafte nominale Reduktion: 130 t CO₂e/Jahr.",
@@ -558,13 +572,14 @@
         0,
         -130
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 30
     },
     {
-      "number": 31,
-      "name": "Zum Audit",
-      "type": "Versetzung zum Audit",
-      "description": "Sofort auf Feld 11 versetzen und Audit durchführen. Im nächsten eigenen Zug: Sofortberatung zum nach Startkapital skalierten Preis (40.000 € bei 1 Mio. € Startkapital) zahlen und normal würfeln ODER genau einen Zug aussetzen.",
+      "number": 30,
+      "name": "Ereignis",
+      "type": "Ereigniskarte",
+      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
       "capital": 0,
       "annual": 0,
       "scope": [
@@ -572,10 +587,11 @@
         0,
         0
       ],
-      "conditions": "Versetzung bucht kein Geschäftsjahr und keine Emissionen. Auditgebühr wird sofort fällig. Sofortberatung nur bei ausreichendem Kapital; danach Aufenthalt aufgehoben."
+      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen.",
+      "sourceNumber": 29
     },
     {
-      "number": 32,
+      "number": 31,
       "name": "Digitale Planung",
       "type": "Investition",
       "description": "Maßnahme kaufen oder verzichten. Investition: 70 000 €. Dauerhafte nominale Reduktion: 40 t CO₂e/Jahr.",
@@ -586,10 +602,11 @@
         -10,
         -20
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 32
     },
     {
-      "number": 33,
+      "number": 32,
       "name": "Transport & Distribution",
       "type": "Entscheidung",
       "description": "Der Transportmix für Rohmaterial und Auslieferung muss festgelegt werden.",
@@ -635,10 +652,11 @@
           ],
           "reason": "Zusatzgeschäft mit erheblich höherem Transportfußabdruck."
         }
-      ]
+      ],
+      "sourceNumber": 33
     },
     {
-      "number": 34,
+      "number": 33,
       "name": "Wärmepumpe",
       "type": "Investition",
       "description": "Maßnahme kaufen oder verzichten. Investition: 160 000 €. Dauerhafte nominale Reduktion: 90 t CO₂e/Jahr.",
@@ -649,24 +667,11 @@
         0,
         0
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 34
     },
     {
-      "number": 35,
-      "name": "Ereignis",
-      "type": "Ereigniskarte",
-      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
-      "capital": 0,
-      "annual": 0,
-      "scope": [
-        0,
-        0,
-        0
-      ],
-      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen."
-    },
-    {
-      "number": 36,
+      "number": 34,
       "name": "Prozessoptimierung",
       "type": "Investition",
       "description": "Maßnahme kaufen oder verzichten. Investition: 85 000 €. Dauerhafte nominale Reduktion: 40 t CO₂e/Jahr.",
@@ -677,10 +682,26 @@
         -20,
         0
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 36
     },
     {
-      "number": 37,
+      "number": 35,
+      "name": "Zum Audit",
+      "type": "Versetzung zum Audit",
+      "description": "Sofort zum gegenüberliegenden Audit auf Feld 15 versetzen und die Auditgebühr bezahlen. Im nächsten eigenen Zug: Sofortberatung bezahlen oder einmal aussetzen.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Versetzung bucht kein Geschäftsjahr und keine Emissionen. Auditgebühr wird sofort fällig. Sofortberatung nur bei ausreichendem Kapital; danach Aufenthalt aufgehoben.",
+      "sourceNumber": 31
+    },
+    {
+      "number": 36,
       "name": "Produktdesign & Kreislauf",
       "type": "Entscheidung",
       "description": "Das Getriebe wird überarbeitet. Die Konstruktionsentscheidung beeinflusst Materialbedarf und Recycling.",
@@ -726,7 +747,23 @@
           ],
           "reason": "Geringerer Entwicklungsaufwand; materialintensivere Ausführung."
         }
-      ]
+      ],
+      "sourceNumber": 37
+    },
+    {
+      "number": 37,
+      "name": "Ereignis",
+      "type": "Ereigniskarte",
+      "description": "Eine Ereigniskarte wird gezogen und sofort automatisch angewendet. Die Wirkung gilt verbindlich; danach den Zug beenden.",
+      "capital": 0,
+      "annual": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Stapel zu Spielbeginn gemischt; nach 20 gezogenen Karten dieselbe Reihenfolge erneut. Gilt für das aktive Unternehmen. Karteneffekte verändern Geld oder dauerhafte jährliche Emissionen.",
+      "sourceNumber": 35
     },
     {
       "number": 38,
@@ -740,7 +777,8 @@
         0,
         -80
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 38
     },
     {
       "number": 39,
@@ -754,7 +792,8 @@
         0,
         0
       ],
-      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0."
+      "conditions": "Je Unternehmen einmal kaufbar; Kapital muss ausreichen. Mehrere Unternehmen dürfen dieselbe Maßnahme kaufen. Wirkung ab Kauf; Jahresbuchung beim nächsten Start. Jeder Scope mindestens 0.",
+      "sourceNumber": 39
     },
     {
       "number": 40,
@@ -768,7 +807,8 @@
         0,
         0
       ],
-      "conditions": "Bei jedem Besuch; keine weitere Voraussetzung. Keine direkte CO₂-Wirkung."
+      "conditions": "Bei jedem Besuch; keine weitere Voraussetzung. Keine direkte CO₂-Wirkung.",
+      "sourceNumber": 40
     }
   ],
   "cards": [

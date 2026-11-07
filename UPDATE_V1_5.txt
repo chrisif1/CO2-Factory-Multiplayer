@@ -1,0 +1,7 @@
+V1.5: CO2-Zielrennen mit fairer Nachziehrunde statt Geschäftsjahreslimit.
+Standardwerte 300.000 Euro Kapital und 100.000 Euro Jahresergebnis.
+Direkt auf Feld 1 wird das aktuelle Jahresergebnis doppelt ausgezahlt.
+Größere Figuren, Unternehmensdaten in der Mitte, lesbare gesperrte Investments.
+Audit 15 und Zum Audit 35 diagonal gegenüber. Ereignisse regelmäßig verteilt.
+Alle Dateien und den gesamten public-Ordner einschließlich goal.css und SVGs aktualisieren.
+Neue Regeln verwenden neue Räume und den getrennten Speicher storage/v15.

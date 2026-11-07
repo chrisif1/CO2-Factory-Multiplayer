@@ -22,16 +22,15 @@ async function api(url,method='GET',body=null,tokenOverride=null){
 }
 const endpoint=()=>`/api/rooms/${access.code}`;
 function setActiveTab(next){if(!['board','stats'].includes(next))return;view=next;for(const b of document.querySelectorAll('[data-view]'))b.classList.toggle('active',b.dataset.view===next);
- for(const tab of ['board','stats','cards','settings'])$(tab+'View').hidden=tab!==next;
- if(room){if(next==='stats')renderStats();if(next==='cards')renderCards();if(next==='settings')renderSettings();}}
+ for(const tab of ['board','stats'])$(tab+'View').hidden=tab!==next;
+ if(room){if(next==='stats')renderStats();}}
 function switchEntry(create){$('createForm').hidden=!create;$('joinForm').hidden=create;$('createTab').classList.toggle('selected',create);$('joinTab').classList.toggle('selected',!create);$('createTab').setAttribute('aria-selected',String(create));$('joinTab').setAttribute('aria-selected',String(!create));$('homeNotice').hidden=true;}
 $('createTab').addEventListener('click',()=>switchEntry(true));$('joinTab').addEventListener('click',()=>switchEntry(false));
-const years=$('homeYears');for(let i=1;i<=20;i++){const opt=new Option(String(i),String(i),false,i===8);years.add(opt)}
 $('createForm').addEventListener('submit',async ev=>{
  ev.preventDefault();const form=ev.currentTarget,vals=Object.fromEntries(new FormData(form));const name=String(vals.name).trim();
  if(!name)return showHomeError('Bitte gib einen Unternehmensnamen ein.');
  const button=form.querySelector('button[type="submit"]');button.disabled=true;
- try{const result=await api('/api/rooms','POST',{name,config:{hostOnly:vals.mode==='host',maxPlayers:vals.maxPlayers,maxYears:vals.maxYears,initialCash:vals.initialCash,annualIncome:vals.annualIncome,s1:vals.s1,s2:vals.s2,s3:vals.s3,goal:vals.goal}});
+ try{const result=await api('/api/rooms','POST',{name,config:{hostOnly:vals.mode==='host',maxPlayers:vals.maxPlayers,initialCash:vals.initialCash,annualIncome:vals.annualIncome,s1:vals.s1,s2:vals.s2,s3:vals.s3,goal:vals.goal}});
    attach(result);toast('Spielraum wurde erstellt. Teile jetzt den Einladungslink.');}
  catch(err){showHomeError(err.message)}finally{button.disabled=false}
 });
@@ -68,27 +67,36 @@ function render(){
  $('home').hidden=true;$('switchRoomBtn').hidden=false;
  if(!room.started){$('waiting').hidden=false;$('playing').hidden=true;renderLobby();return;}
  $('waiting').hidden=true;$('playing').hidden=false;renderHeader();renderBoard();renderPlayers();renderAction();renderLog();maybeShowFieldPopup();
- if(view==='stats')renderStats();else if(view==='cards')renderCards();else if(view==='settings')renderSettings();
+ if(view==='stats')renderStats();
  setBusy(actionBusy);
 }
 function renderLobby(){const c=room.config;$('roomCode').textContent=room.code;$('shareUrl').value=joinBase+'/?room='+room.code;renderJoinQr();$('hostRoleInfo').textContent=room.config.hostOnly?`Spielleitung: ${room.hostName} · spielt nicht mit`:'Spielleitung spielt selbst mit';$('playerCountTitle').textContent=`Spieler im Raum (${room.players.length}/${c.maxPlayers})`;
  const box=$('lobbyPlayers');box.textContent='';room.players.forEach((p,i)=>{const row=document.createElement('div');row.className='lobby-player';const left=document.createElement('div');left.className='left';const circ=document.createElement('span');circ.className='seat';circ.style.background=COLORS[i];circ.textContent=String(i+1);left.append(circ,document.createTextNode(p.name+(i===0&&!room.config.hostOnly?' · Spielleitung':'')));row.append(left);
  if(room.host&&(room.config.hostOnly||i!==0)){const kick=document.createElement('button');kick.className='subtle';kick.type='button';kick.textContent='Entfernen';kick.addEventListener('click',()=>postAction({type:'kick',playerId:p.id}));row.append(kick)}box.append(row)});
- $('lobbyConfig').innerHTML=`<dl><dt>Geschäftsjahre</dt><dd>${c.maxYears}</dd><dt>Maximale Spielerzahl</dt><dd>${c.maxPlayers}</dd><dt>Startkapital</dt><dd>${euro(c.initialCash)}</dd><dt>CO₂-Ziel</dt><dd>${fmt(c.goal)} t</dd></dl>`;
+ $('lobbyConfig').innerHTML=`<dl><dt>Spielende</dt><dd>CO₂-Ziel + Runde nachziehen</dd><dt>Maximale Spielerzahl</dt><dd>${c.maxPlayers}</dd><dt>Startkapital</dt><dd>${euro(c.initialCash)}</dd><dt>CO₂-Ziel</dt><dd>${fmt(c.goal)} t</dd></dl>`;
  $('beginBtn').hidden=!room.host;$('beginBtn').disabled=room.players.length<2;$('waitHostText').hidden=!!room.host;
 }
 $('copyInvite').addEventListener('click',async()=>{const val=$('shareUrl').value;try{await navigator.clipboard.writeText(val);toast('Einladungslink kopiert.')}catch{$('shareUrl').focus();$('shareUrl').select();toast('Link markieren und mit Strg+C kopieren.')}});
 $('beginBtn').addEventListener('click',()=>postAction({type:'start'}));
-function renderHeader(){const p=room.players[room.turn];$('mobileTurnName').textContent=`Spieler ${p.id+1} · ${p.name}`;$('mobileTurnField').textContent=`Feld ${currentFieldNumber()}`;$('turnNumber').textContent=`SPIELZUG ${room.turnNumber}`;$('turnTitle').textContent=room.gameOver?'Endwertung':`Am Zug: Spieler ${p.id+1} · ${p.name}`;
- $('turnHint').textContent=room.gameOver?'Alle Unternehmen haben abgeschlossen.':`Geschäftsjahr ${Math.min(room.config.maxYears,p.years+1)} von ${room.config.maxYears} · Feld ${p.pos+1} · ${myTurn()?'Du bist am Zug':'Warten auf Mitspieler'}`;
+function standings(){return room.players.filter(p=>!p.withdrawn).slice().sort((a,b)=>a.co2-b.co2||b.cash-a.cash||a.id-b.id);}
+function renderHeader(){
+ const leader=standings().find(x=>x.co2<=room.config.goal);
+ const p=room.gameOver?(leader||room.players[room.turn]):room.players[room.turn];
+ $('mobileTurnName').textContent=`Spieler ${p.id+1} · ${p.name}`;$('mobileTurnField').textContent=`Feld ${currentFieldNumber()}`;
+ $('turnNumber').textContent=room.finalRound?`LETZTE RUNDE ${room.finalRound.round}`:`RUNDE ${room.round||1} · ZUG ${room.turnNumber}`;
+ $('turnTitle').textContent=room.gameOver?'Endwertung':`Am Zug: Spieler ${p.id+1} · ${p.name}`;
+ const catchup=room.finalRound?` · ${room.finalRound.pendingIds.length} nachfolgende Unternehmen` : '';
+ $('turnHint').textContent=room.gameOver?'Endwertung nach Jahres-CO₂; bei Gleichstand entscheidet das Kapital.':`CO₂-Ziel ${fmt(room.config.goal)} t/Jahr · Jahr ${p.years+1} · Feld ${p.pos+1}${catchup}`;
  $('inGameCode').textContent=room.code;
  const phaseLabel={roll:'Bereit zum Würfeln',decision:'Entscheidung erforderlich',end:'Zug abgeschlossen',detention:'CO₂-Audit',over:'Spielende'};
- $('turnPill').textContent=room.gameOver?'Spielende':phaseLabel[room.phase]||'Spiel läuft';
- $('centerPlayer').textContent=room.gameOver?'Endwertung':p.name;
- $('centerInstruction').textContent=room.gameOver?'Im Verlauf-Tab findest du die Ergebnisse.':`${myTurn()?'Dein Zug':'Gemeinsames Brett'} · Jahr ${p.years+1}/${room.config.maxYears} · Feld ${p.pos+1}`;
+ $('turnPill').textContent=room.gameOver?'Spielende':room.finalRound?'Letzte Runde':phaseLabel[room.phase]||'Spiel läuft';
+ $('centerPlayer').textContent=p.name;
+ $('centerInstruction').textContent=room.gameOver?'Endwertung':`${myTurn()?'Dein Zug':'Gemeinsames Brett'} · Jahr ${p.years+1} · Feld ${p.pos+1}`;
+ $('focusMetrics').innerHTML=`<div><span>Kapital</span><strong>${euro(p.cash)}</strong></div><div><span>Jahresergebnis</span><strong>${p.annual>=0?'+':''}${euro(p.annual)}</strong></div><div><span>CO₂e / Jahr</span><strong>${fmt(p.co2)} t</strong></div><div><span>Kumuliert</span><strong>${fmt(p.cumulative)} t</strong></div>`;
  $('miniScopes').innerHTML=(p.scope||[0,0,0]).map((v,i)=>`<span>Scope ${i+1}<b>${fmt(v)} t</b></span>`).join('');
  $('rollBtn').disabled=!myTurn()||room.phase!=='roll';$('nextBtn').disabled=!myTurn()||room.phase!=='end';
- $('dieFace').textContent=room.dice>0?DICE[room.dice-1]:'–';$('roleBadge').textContent=room.host&&room.config.hostOnly?'SPIELLEITUNG':`SPIELER ${room.actorId+1}`;$('centerPopupBtn').hidden=!myTurn()||!['decision','detention'].includes(room.phase);$('playersToggle').textContent=`Unternehmen (${room.players.length})`;
+ $('dieFace').textContent=room.dice>0?DICE[room.dice-1]:'–';$('roleBadge').textContent=room.host&&room.config.hostOnly?'SPIELLEITUNG':`SPIELER ${room.actorId+1}`;
+ $('centerPopupBtn').hidden=!myTurn()||!['decision','detention'].includes(room.phase);$('playersToggle').textContent=`Unternehmen (${room.players.length})`;
 }
 function fieldCoords(ix){if(ix<15)return[6,14-ix];if(ix<21)return[20-ix,0];if(ix<35)return[0,ix-20];return[ix-34,14]}
 function hideFieldTooltip(){const tip=$('fieldTooltip');if(tip)tip.hidden=true;}
@@ -110,7 +118,7 @@ function renderBoard(){
  const shortDesc=desc.length>120?desc.slice(0,117)+'…':desc;
  const imgSrc=f.type==='Ereigniskarte'?'/img/event.svg':`/img/${String(f.number).padStart(2,'0')}.svg`;
  el.className=`cell ${style[f.type]||''} ${current.pos===idx&&!room.gameOver?'current':''}`;el.style.gridRow=String(r+1);el.style.gridColumn=String(c+1);el.setAttribute('aria-describedby','fieldTooltip');el.addEventListener('pointerenter',()=>showFieldTooltip(el,f));el.addEventListener('pointerleave',hideFieldTooltip);el.addEventListener('focus',()=>showFieldTooltip(el,f));el.addEventListener('blur',hideFieldTooltip);el.setAttribute('tabindex','0');el.setAttribute('role','button');el.setAttribute('aria-label',`Feld ${f.number}: ${f.name} öffnen`);el.addEventListener('click',()=>openFieldPopup(true,f.number));el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openFieldPopup(true,f.number);}});
- let chips='';room.players.forEach((p,i)=>{if(p.pos===idx&&!p.withdrawn)chips+=`<span class="token" style="--c:${COLORS[i]}" title="Spieler ${i+1}: ${clean(p.name)}" aria-label="Spieler ${i+1}: ${clean(p.name)}">${i+1}</span>`});
+ let chips='';room.players.forEach((p,i)=>{if(p.pos===idx&&!p.withdrawn)chips+=`<span class="token${p.id===room.turn&&!room.gameOver?' current-token':''}" style="--c:${COLORS[i]}" title="Spieler ${i+1}: ${clean(p.name)}" aria-label="Spieler ${i+1}: ${clean(p.name)}">${i+1}</span>`});
  const occupants=room.players.filter(p=>p.pos===idx&&!p.withdrawn).length;el.classList.toggle('occupied',occupants>0);el.classList.toggle('crowded',occupants>4);
  el.innerHTML=`<span class="num">${f.number}</span><img class="field-img" src="${imgSrc}" alt="${clean(f.name)}"><div class="field-name">${clean(f.name)}</div><div class="tokens">${chips}</div>`;b.append(el);
  });
@@ -118,22 +126,27 @@ function renderBoard(){
 function renderPlayers(){renderBoardPlayers();const box=$('playersList');box.textContent='';room.players.forEach((p,i)=>{
  const node=document.createElement('div');node.className='player-card'+(i===room.turn?' active':'')+(p.finished?' done':'');
  const v=p.scope||[0,0,0];const start=room.config.starting.reduce((s,x)=>s+x,0);
- node.innerHTML=`<div class="player-head"><span><span class="indicator" style="--c:${COLORS[i]}">${i+1}</span>${clean(p.name)}</span><span>${p.withdrawn?'Ausgestiegen':p.finished?'Fertig':p.cash<0?'Schulden':p.years+'/'+room.config.maxYears}</span></div><div class="player-metrics"><span>Kapital</span><strong>${euro(p.cash)}</strong><span>CO₂e/Jahr</span><strong>${fmt(p.co2)} t</strong><span>Scope 1 / 2 / 3</span><strong>${v.map(x=>fmt(x)).join(' / ')}</strong><span>Kumuliert</span><strong>${fmt(p.cumulative)} t</strong><span>Jahresergebnis</span><strong>${euro(p.annual)}</strong></div><div class="player-progress"><span style="width:${start>0?Math.max(0,Math.min(100,(1-p.co2/start)*100)):0}%"></span></div>`;box.append(node)});
+ node.innerHTML=`<div class="player-head"><span><span class="indicator" style="--c:${COLORS[i]}">${i+1}</span>${clean(p.name)}</span><span>${p.withdrawn?'Ausgestiegen':room.gameOver?'Abgeschlossen':p.cash<0?'Schulden':'Jahr '+(p.years+1)}</span></div><div class="player-metrics"><span>Kapital</span><strong>${euro(p.cash)}</strong><span>CO₂e/Jahr</span><strong>${fmt(p.co2)} t</strong><span>Scope 1 / 2 / 3</span><strong>${v.map(x=>fmt(x)).join(' / ')}</strong><span>Kumuliert</span><strong>${fmt(p.cumulative)} t</strong><span>Jahresergebnis</span><strong>${euro(p.annual)}</strong></div><div class="player-progress"><span style="width:${start>0?Math.max(0,Math.min(100,(1-p.co2/start)*100)):0}%"></span></div>`;box.append(node)});
  $('playerTotal').textContent=`${room.players.length}/${room.config.maxPlayers}`;
 }
 function renderLog(){const el=$('gameLog');el.textContent='';room.logs.slice(0,25).forEach(t=>{const p=document.createElement('p');p.textContent=t;el.append(p)})}
 function landing(){const p=room?.players[room.turn];if(room?.landing?.playerId===p?.id)return room.landing;const e=room?.lastEvent;return e?.kind==='roll'&&e.playerId===p?.id?{...e,fieldNumber:e.landedField||p.pos+1}:null;}
 function currentFieldNumber(){return landing()?.fieldNumber||room.players[room.turn].pos+1;}
 function controls(title,html,buttons){$('actionTitle').textContent=title;$('fieldTag').textContent=`Feld ${currentFieldNumber()}`;$('actionDescription').innerHTML=html;
- const buildButton=o=>{const btn=document.createElement('button');btn.type='button';if(o.primary)btn.className='primary';if(o.detail){btn.classList.add('button-choice');btn.innerHTML=`<strong>${clean(o.label)}</strong><small>${clean(o.detail)}</small>`;}else btn.textContent=o.label;
-  btn.disabled=!!o.disabled;btn.dataset.disabled=String(!!o.disabled);btn.addEventListener('click',o.action);return btn;};
+ const buildButton=o=>{const btn=document.createElement('button');btn.type='button';if(o.primary)btn.className='primary';if(o.detail||o.disabledReason){btn.classList.add('button-choice');btn.innerHTML=`<strong>${clean(o.label)}</strong><small>${clean(o.disabledReason||o.detail)}</small>`;}else btn.textContent=o.label;
+  btn.disabled=!!o.disabled;btn.setAttribute('aria-disabled',String(!!o.disabled));if(o.disabledReason)btn.title=o.disabledReason;btn.dataset.disabled=String(!!o.disabled);btn.addEventListener('click',o.action);return btn;};
  for(const id of (popupMode==='action'?['actionButtons','fieldPopupButtons']:['actionButtons'])){const wrap=$(id);wrap.textContent='';buttons.forEach(o=>wrap.append(buildButton(o)));}
  if(popupMode==='action'){$('fieldPopupTitle').textContent=title.replace(/ · (Investition|Unternehmensentscheidung)$/,'');$('fieldPopupDescription').innerHTML=html;setPopupField(currentFieldNumber());}
  $('fieldPopupOpen').hidden=!myTurn()||room?.gameOver;
 }
 function renderAction(){const p=room.players[room.turn],f=DATA.fields[p.pos],active=myTurn();
- if(room.gameOver){const viable=room.players.filter(p=>!p.withdrawn&&p.years>=room.config.maxYears).sort((a,b)=>a.cumulative-b.cumulative||b.cash-a.cash);const leader=viable[0];$('centerPlayer').textContent=leader?`🏆 ${leader.name}`:'Endwertung';$('centerInstruction').textContent=leader?`Sieger · ${fmt(leader.cumulative)} t CO₂e kumuliert · ${euro(leader.cash)}`:'Alle Unternehmen haben abgeschlossen.';
- const ranking=viable.map((v,i)=>`<p><strong>${i+1}. ${clean(v.name)}</strong> · ${fmt(v.cumulative)} t kumuliert · ${euro(v.cash)}</p>`).join('');controls('Spiel beendet',leader?`<p>🏆 Sieger: <strong>${clean(leader.name)}</strong> mit ${fmt(leader.cumulative)} t CO₂e.</p>${ranking}`:'<p>Noch kein Unternehmen hat die Zieljahre erreicht.</p>',[]);return;}
+ if(room.gameOver){
+ const viable=standings(),leader=viable.find(v=>v.co2<=room.config.goal);
+ $('centerPlayer').textContent=leader?`🏆 ${leader.name}`:'Spiel beendet';
+ $('centerInstruction').textContent=leader?`Sieger · ${fmt(leader.co2)} t CO₂e/Jahr · ${euro(leader.cash)}`:'Kein verbleibendes Unternehmen am CO₂-Ziel.';
+ const ranking=viable.map((v,i)=>`<p><strong>${i+1}. ${clean(v.name)}</strong> · ${fmt(v.co2)} t/Jahr · ${euro(v.cash)}${v.co2<=room.config.goal?' · Ziel erreicht':''}</p>`).join('');
+ controls('Spiel beendet',leader?`<p>🏆 Sieger: <strong>${clean(leader.name)}</strong> mit ${fmt(leader.co2)} t CO₂e/Jahr.</p>${ranking}`:`<p>Kein verbleibendes Unternehmen hat das CO₂-Ziel erreicht.</p>${ranking}`,[]);return;
+ }
  if(!active){controls('Gemeinsamer Spielstand',`<p><strong>${clean(p.name)}</strong> ist am Zug. Die Bewegung und Entscheidungen erscheinen hier automatisch.</p>`,[]);return;}
  if(room.phase==='roll'){controls('Würfeln',`<p>Du bist dran. Würfle und lande auf einem von 40 Feldern.</p>`,[{label:'🎲 Würfeln',primary:true,action:()=>postAction({type:'roll'})}]);return;}
  if(room.phase==='detention'){controls('Audit-Aufenthalt',`<p>Nach der Versetzung zum Audit kannst du für <strong>${euro(room.auditReleaseFee)}</strong> eine Sofortberatung bezahlen oder einen Zug aussetzen.</p>`,[
@@ -147,6 +160,7 @@ function renderAction(){const p=room.players[room.turn],f=DATA.fields[p.pos],act
         details+=`<div class="event-result"><span class="event-stamp">EREIGNISKARTE · VERPFLICHTEND</span><h4>${clean(card.title)}</h4><p>${clean(card.action)}</p><p><strong>Automatisch angewendet:</strong> ${e?.valid?'Ja':'Voraussetzung nicht erfüllt – ohne Wirkung'} · Kapital ${e?.cash>=0?'+':''}${euro(e?.cash||0)}</p><p>Scope-Wirkung: ${(e?.scope||[0,0,0]).map((x,i)=>`S${i+1} ${x>=0?'+':''}${fmt(x,3)} t`).join(' · ')}</p></div>`;
       }else details+=`<p class="field-result">${clean(ev.message||'')}</p>`;
    }
+   if(ev?.closing)details+=`<p class="field-result"><strong>${ev.closing.multiplier===2?'Volltreffer auf Feld 1 – doppeltes Jahresergebnis':'Jahresabschluss'}:</strong> ${euro(ev.closing.payout)} verbucht (${ev.closing.multiplier} × ${euro(ev.closing.annual)}). Die Jahresemissionen wurden einmal erfasst.</p>`;
    if(ev?.resolution)details+=`<p class="field-result"><strong>Deine Auswahl:</strong> ${clean(ev.resolution)}</p>`;
    if(p.cash<0)details+=`<p><strong>Hinweis:</strong> Dein Unternehmen hat ${euro(p.cash)} Kapital. Du bleibst im Spiel und kannst weiter würfeln.</p>`;
    controls(landed.name,details,[{label:'Zug beenden →',primary:true,action:()=>postAction({type:'end'})}]);return;
@@ -155,7 +169,7 @@ function renderAction(){const p=room.players[room.turn],f=DATA.fields[p.pos],act
  if(q.kind==='invest'){
   const v=DATA.fields[q.index],cost=Math.max(0,-safeNum(v.capital)),owned=p.owned.includes(v.number);
   controls(`${v.name} · Investition`,`<p>${clean(v.description)}</p><p><strong>Einmalige Kosten:</strong> ${euro(cost)} · <strong>Jahresergebnis:</strong> ${v.annual>=0?'+':''}${euro(v.annual)}/Jahr</p><p><strong>Scope-Effekt:</strong> ${v.scope.map((x,i)=>`S${i+1} ${x>0?'+':''}${fmt(x)} t`).join(' · ')}</p>`,[
-    {label:owned?'Bereits gekauft':`Investieren (${euro(cost)})`,primary:true,disabled:owned||(cost>0&&p.cash<cost),action:()=>postAction({type:'invest',choice:'buy'})},
+    {label:owned?'Bereits gekauft':cost>0&&p.cash<cost?`Nicht finanzierbar (${euro(cost)})`:`Investieren (${euro(cost)})`,primary:true,disabled:owned||(cost>0&&p.cash<cost),disabledReason:owned?'Diese Maßnahme wurde bereits gekauft.':cost>0&&p.cash<cost?`Verfügbar: ${euro(p.cash)} · Es fehlen ${euro(cost-p.cash)}.`:null,action:()=>postAction({type:'invest',choice:'buy'})},
     {label:'Verzichten',action:()=>postAction({type:'invest',choice:'pass'})}]);return;
  }
  if(q.kind==='choose'){
@@ -242,7 +256,7 @@ function renderStats(){
  graph('co2Chart','co2');graph('budgetChart','cash');
  $('legend').innerHTML=room.players.map((p,i)=>`<span><i style="background:${COLORS[i]}"></i>${clean(p.name)}</span>`).join('');
  const chosen=room.players.filter(p=>chartSelection==='all'||String(p.id)===chartSelection);
- $('statsTable').innerHTML=`<thead><tr><th>Unternehmen</th><th>Jahre</th><th>CO₂e/Jahr</th><th>Kumuliert</th><th>Budget</th></tr></thead><tbody>${chosen.map(p=>`<tr><td>${clean(p.name)}</td><td>${p.years}/${room.config.maxYears}</td><td>${fmt(p.co2)} t</td><td>${fmt(p.cumulative)} t</td><td>${euro(p.cash)}</td></tr>`).join('')}</tbody>`;
+ $('statsTable').innerHTML=`<thead><tr><th>Unternehmen</th><th>Jahre</th><th>CO₂e/Jahr</th><th>Kumuliert</th><th>Budget</th></tr></thead><tbody>${chosen.map(p=>`<tr><td>${clean(p.name)}</td><td>${p.years}</td><td>${fmt(p.co2)} t</td><td>${fmt(p.cumulative)} t</td><td>${euro(p.cash)}</td></tr>`).join('')}</tbody>`;
 }
 function graph(id,key){const svg=$(id),chosen=room.players.filter(p=>chartSelection==='all'||String(p.id)===chartSelection),series=chosen.map(p=>({p,pts:room.trends[p.id]||[]})),all=series.flatMap(a=>a.pts);
  if(!all.length){svg.innerHTML='<text x="80" y="130">Noch keine Daten</text>';return;}
@@ -257,22 +271,11 @@ function graph(id,key){const svg=$(id),chosen=room.players.filter(p=>chartSelect
    for(const pt of s.pts.filter((_,i)=>s.pts.length<=24||i===0||i===s.pts.length-1)){const cx=x(pt.turn),cy=y(pt[key]);html+=`<circle cx="${cx}" cy="${cy}" r="4" fill="${color}" stroke="#fff" stroke-width="1.3"><title>${clean(s.p.name)} · Zug ${pt.turn}: ${key==='cash'?euro(pt[key]):fmt(pt[key])+' t CO₂e'}</title></circle>`;}}
  svg.innerHTML=html;
 }
-let cardsRendered=false;
-function renderCards(){if(cardsRendered||!DATA)return;const grid=$('cardsGrid');grid.innerHTML=DATA.cards.map(c=>`<article class="info-card"><small>EREIGNISKARTE</small><h3>${clean(c.title)}</h3><p>${clean(c.action)}</p><details><summary>Formel, Dauer und Annahmen</summary><p><b>Dauer:</b> ${clean(c.duration)}</p><p><b>Formel:</b> ${clean(c.formula)}</p><p><b>Annahmen:</b> ${clean(c.assumptions)}</p><p><b>Bedingung:</b> ${clean(c.conditions)}</p></details></article>`).join('');cardsRendered=true;}
-let paramRevision=-1;
-function renderSettings(){if(!room||paramRevision===room.revision)return;paramRevision=room.revision;
- const list=$('paramList');list.textContent='';for(const [key,p]of Object.entries(DATA.parameters)){
-  const row=document.createElement('div');row.className='param-row';
-  const label=document.createElement('span');label.textContent=p.name;const unit=document.createElement('small');unit.textContent=p.unit;label.append(unit);
-  const input=document.createElement('input');input.type='number';input.step='any';input.value=String(room.params[key]);input.disabled=!room.host;input.title=p.note||p.name;
-  input.addEventListener('change',()=>{const v=Number(input.value);if(!Number.isFinite(v)||v<0){toast('Bitte einen nichtnegativen Wert eingeben.',true);input.value=room.params[key];return;}postAction({type:'setParam',key,value:v})});
-  row.append(label,input);list.append(row);
- }
-}
 function renderBoardPlayers(){
  $('boardPlayers').style.setProperty('--score-rows',String(Math.ceil(room.players.length/2)));
- $('boardPlayerCount').textContent=room.players.length+'/'+room.config.maxPlayers;
- $('boardPlayers').innerHTML=room.players.map((p,i)=>`<div class="board-player${i===room.turn?' active':''}${p.finished?' finished':''}" title="${clean(p.name)}"><span class="board-seat" style="--c:${COLORS[i]}">${i+1}</span><div><strong>${clean(p.name)}${p.withdrawn?' · ausgestiegen':''}</strong><span class="board-player-cash${p.cash<0?' debt':''}">${euro(p.cash)}</span><small>${fmt(p.co2,0)} t CO₂e · ${p.withdrawn?'Ausgestiegen':p.finished?'Fertig':`Jahr ${Math.min(p.years+1,room.config.maxYears)}/${room.config.maxYears}`}</small></div></div>`).join('');
+ $('boardPlayerCount').textContent=`${room.players.filter(p=>!p.withdrawn).length}/${room.players.length} aktiv · Ziel ${fmt(room.config.goal,0)} t`;
+ const winner=room.gameOver?standings().find(p=>p.co2<=room.config.goal):null;
+ $('boardPlayers').innerHTML=room.players.map((p,i)=>`<div class="board-player${!room.gameOver&&i===room.turn?' active':''}${p.withdrawn?' withdrawn':''}${winner?.id===p.id?' winner':''}" title="${clean(p.name)} · Kapital ${euro(p.cash)} · Jahresergebnis ${euro(p.annual)} · ${fmt(p.co2)} t CO₂e/Jahr"><span class="board-seat" style="--c:${COLORS[i]}">${i+1}</span><div><strong>${clean(p.name)}${p.withdrawn?' · ausgestiegen':''}</strong><span class="board-player-cash${p.cash<0?' debt':''}">${euro(p.cash)}</span><span class="board-player-annual${p.annual<0?' debt':''}" aria-label="Jahresergebnis ${euro(p.annual)}"><i class="annual-prefix">Jahr: </i>${p.annual>=0?'+':''}${euro(p.annual)}<em class="annual-suffix">/J</em></span><small>${fmt(p.co2,0)} t CO₂e/Jahr · ${p.withdrawn?'Ausgestiegen':p.co2<=room.config.goal?'Ziel erreicht':`Jahr ${p.years+1}`}</small></div></div>`).join('');
 }
 function renderJoinQr(){
  const url=$('shareUrl').value;if(url===lastQrUrl)return;lastQrUrl=url;

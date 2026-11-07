@@ -1,8 +1,8 @@
 {
   "name": "co2-factory-multiplayer",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "private": true,
-  "description": "CO₂ Factory Multiplayer – Querformat, Professorenmodus und QR-Code",
+  "description": "CO₂ Factory – Zielrennen mit Nachziehrunde und Unternehmensdaten",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

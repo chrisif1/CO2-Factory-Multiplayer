@@ -1,11 +1,14 @@
-CO2 Factory V1.4
+CO2 Factory V1.5
 
 START-WINDOWS.bat bzw. npm start. Browser: http://localhost:3000
-Beim Erstellen die Rolle Spielleitung ohne mitzuspielen auswählen.
-Teilnehmer scannen den QR-Code und geben ihren Unternehmensnamen ein.
-Für lokale Runden müssen alle Geräte im selben erreichbaren WLAN sein.
-Ab zwei Unternehmen darf die Spielleitung starten; bis zu acht sind möglich.
-Das rechteckige Brett passt sich an PC, Tablet und Handyquerformat an.
-Felder antippen/klicken für vollständige Texte und Entscheidungen.
-Unternehmen und Protokoll oben öffnen für weitere Kennzahlen.
-Wer Spiel verlassen bestätigt, scheidet aus; das nächste aktive Unternehmen spielt weiter.
+Startwerte: 300.000 Euro Kapital, 100.000 Euro Jahresergebnis.
+Spielleitung ohne mitzuspielen wählen; Teilnehmer scannen den QR-Code.
+Lokal müssen alle Geräte im selben erreichbaren Netz sein.
+Ab zwei Unternehmen starten, bis zu acht sind möglich.
+Das CO2-Ziel ersetzt die bisherige feste Anzahl Geschäftsjahre.
+Ziel erreicht: Nur die in dieser Runde noch folgenden Spieler ziehen nach.
+Am Ziel gewinnt der niedrigste Jahres-CO2-Wert, bei Gleichstand das höhere Kapital.
+Direkt auf Feld 1: doppeltes aktuelles Jahresergebnis; beim Überqueren: einfach.
+Felder anklicken/antippen für den vollständigen Text und Entscheidungen.
+Kapital, Jahresergebnis und CO2-Werte stehen in der Brettmitte.
+Wer Spiel verlassen bestätigt, scheidet aus; das nächste Unternehmen spielt weiter.

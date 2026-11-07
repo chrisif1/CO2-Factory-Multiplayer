@@ -1,86 +1,135 @@
 'use strict';
-const test=require('node:test');
-const assert=require('node:assert/strict');
+const test=require('node:test'),assert=require('node:assert/strict');
+const fs=require('node:fs'),path=require('node:path');
 const E=require('../engine');
-function lobby(opts={}){const r=E.createRoom('ABC234','Team A',{maxYears:2,maxPlayers:8,...opts});E.joinRoom(r,'Team B');return r;}
-function start(r){E.action(r,r.players[0].token,{type:'start'});}
-function actor(r){return r.players[r.turn].token;}
-function endIf(r){if(r.phase==='decision'){const k=r.pending.kind;if(k==='invest')E.action(r,actor(r),{type:'invest',choice:'pass'});else if(k==='choose')E.action(r,actor(r),{type:'choose',option:2});else E.action(r,actor(r),{type:'event',choice:'ignore'});}if(r.phase==='end')E.action(r,actor(r),{type:'end'});}
-test('Spielraum 2–8 Spieler und host-only Start',()=>{
- const r=lobby();assert.equal(r.players.length,2);assert.throws(()=>E.action(r,r.players[1].token,{type:'start'}),/Spielleitung/);
- for(let i=3;i<=8;i++)E.joinRoom(r,'Team '+i);assert.equal(r.players.length,8);
- assert.throws(()=>E.joinRoom(r,'zu viel'),/voll/);start(r);assert.equal(r.phase,'roll');assert.throws(()=>E.joinRoom(r,'zu spät'),/begonnen/);
- const pub=E.publicRoom(r,r.players[1].token);assert.equal(pub.players.length,8);assert.ok(!JSON.stringify(pub).includes(r.hostToken));assert.ok(!JSON.stringify(pub).includes(r.players[1].token));
+const field=source=>E.FIELDS.find(f=>f.sourceNumber===source);
+function lobby(config={},n=3){const r=E.createRoom('TEST23','Professor',{hostOnly:true,...config});for(let i=0;i<n;i++)E.joinRoom(r,'Team '+(i+1));return r;}
+function start(config={},n=3){const r=lobby(config,n);E.action(r,r.hostToken,{type:'start'});return r;}
+function land(r,source){const f=field(source),p=r.players[r.turn];p.pos=(f.number+38)%40;E.action(r,p.token,{type:'roll'},{forcedDie:1});return p;}
+function end(r){E.action(r,r.players[r.turn].token,{type:'end'});}
+function pass(r){const p=r.players[r.turn];if(r.phase==='decision'){if(r.pending.kind==='invest')E.action(r,p.token,{type:'invest',choice:'pass'});else{const f=E.FIELDS[r.pending.index],i=f.options.findIndex(o=>o.cash>=0||p.cash>=-o.cash);E.action(r,p.token,{type:'choose',option:i});}}if(r.phase==='detention')E.action(r,p.token,{type:'detention',choice:'skip'});if(r.phase==='end')end(r);}
+
+test('Standardwerte 300.000 € Kapital, 100.000 € Ergebnis, keine Geschäftsjahresgrenze',()=>{
+ const r=lobby({maxYears:1});assert.equal(r.config.initialCash,300000);assert.equal(r.config.annualIncome,100000);assert.equal(r.config.maxYears,undefined);
+ assert.equal(r.players[0].cash,300000);assert.equal(r.players[0].annual,100000);
+ const html=fs.readFileSync(path.join(__dirname,'../public/index.html'),'utf8');assert.doesNotMatch(html,/homeYears|name="maxYears"/);assert.match(html,/value="300000"/);assert.match(html,/value="100000"/);
 });
-test('Aktueller Spieler darf würfeln, andere werden blockiert',()=>{
- const r=lobby();start(r);assert.throws(()=>E.action(r,r.players[1].token,{type:'roll'}),/am Zug/);
- E.action(r,actor(r),{type:'roll'},{forcedDie:4});assert.equal(r.phase,'decision');assert.equal(r.pending.kind,'choose');assert.equal(r.players[0].pos,4);
- assert.throws(()=>E.action(r,r.players[1].token,{type:'choose',option:0}),/am Zug/);
- E.action(r,actor(r),{type:'choose',option:1});assert.equal(r.players[0].decisions[0],5);
- E.action(r,actor(r),{type:'end'});assert.equal(r.turn,1);
+test('Spielleitung ohne Figur und acht Teilnehmer, nur der Host darf starten',()=>{
+ const r=E.createRoom('TEST23','Professor',{hostOnly:true});assert.equal(r.players.length,0);assert.equal(E.publicRoom(r,r.hostToken).actorId,null);
+ assert.throws(()=>E.action(r,r.hostToken,{type:'start'}),/Mindestens/);
+ for(let i=0;i<8;i++)E.joinRoom(r,'Werk '+i);assert.throws(()=>E.joinRoom(r,'Neuntes'),/voll/);
+ assert.throws(()=>E.action(r,r.players[0].token,{type:'start'}),/Spielleitung/);E.action(r,r.hostToken,{type:'start'});
+ assert.throws(()=>E.action(r,r.hostToken,{type:'roll'}),/nimmt nicht/);assert.equal(r.players.length,8);
 });
-test('Investition verändert Kapital, Ergebnis und CO₂ und ist exklusiv pro Unternehmen',()=>{
- const r=lobby();start(r);E.action(r,actor(r),{type:'roll'},{forcedDie:1});assert.equal(r.pending.kind,'invest');
- E.action(r,actor(r),{type:'invest',choice:'buy'});
- assert.equal(r.players[0].cash,970000);assert.equal(r.players[0].annual,208000);assert.equal(r.players[0].base[1],290);assert.ok(r.players[0].owned.includes(2));
+test('Mitspielender Host bleibt als wählbare Alternative erhalten',()=>{
+ const r=E.createRoom('TEST23','Host',{hostOnly:false});E.joinRoom(r,'Gast');E.action(r,r.hostToken,{type:'start'});assert.equal(E.publicRoom(r,r.hostToken).actorId,0);
+ E.action(r,r.hostToken,{type:'roll'},{forcedDie:1});assert.equal(r.players[0].pos,1);
 });
-test('20 Pflicht-Ereignisse: Wirkung direkt beim Würfeln und keine Ablehnungsoption',()=>{
- const r=lobby();start(r);r.players[0].pos=1;r.deck[0]=17;
- E.action(r,actor(r),{type:'roll'},{forcedDie:1});
- assert.equal(r.lastEvent.eventId,17);assert.equal(r.phase,'end');assert.equal(r.pending,null);
- assert.equal(r.history.length,1);assert.equal(r.history[0].ignored,true);
- assert.throws(()=>E.action(r,actor(r),{type:'event',choice:'ignore'}),/automatisch/);
- const v=lobby();start(v);v.players[0].pos=1;v.deck[0]=1;
- E.action(v,actor(v),{type:'roll'},{forcedDie:1});
- assert.equal(v.players[0].cash,950000);assert.equal(v.history[0].cash,-50000);
- assert.equal(v.history.length,1);assert.equal(v.phase,'end');
- v.players[0].owned.push(6);
- const e=E.eventEffect(v,17,v.players[0]);assert.equal(e.valid,true);assert.equal(e.term,'temporary');
- v.players[0].temp=[0,12,23];v.players[0].pos=39;
- E.yearClose(v,v.players[0]);assert.deepEqual(v.players[0].temp,[0,0,0]);
- for(let i=1;i<=20;i++){const effect=E.eventEffect(v,i,v.players[0]);assert.equal(effect.scope.length,3);assert.ok(Number.isFinite(effect.cash));assert.ok(effect.scope.every(Number.isFinite));}
+test('Neue Feldanordnung: 40 Felder, Audit in gegenüberliegenden Ecken, Ereignisse gleichmäßig',()=>{
+ assert.equal(E.FIELDS.length,40);assert.deepEqual(E.FIELDS.map(f=>f.number),Array.from({length:40},(_,i)=>i+1));assert.equal(new Set(E.FIELDS.map(f=>f.sourceNumber)).size,40);
+ assert.equal(E.FIELDS[14].type,'Audit');assert.equal(E.FIELDS[34].type,'Versetzung zum Audit');
+ const events=E.FIELDS.filter(f=>f.type==='Ereigniskarte').map(f=>f.number);assert.deepEqual(events,[4,10,17,24,30,37]);
+ const gaps=events.map((n,i)=>(events[(i+1)%events.length]-n+40)%40);assert.ok(gaps.every(g=>g===6||g===7));
 });
-test('Überqueren von Start bucht genau ein Jahr, Ende nach vereinbarter Dauer',()=>{
- const r=lobby({maxYears:1});start(r);r.players[0].pos=38;
- E.action(r,actor(r),{type:'roll'},{forcedDie:3});assert.equal(r.players[0].pos,1);assert.equal(r.players[0].years,1);assert.equal(r.players[0].cumulative,1000);assert.equal(r.players[0].cash,1200000);assert.equal(r.players[0].finished,true);
- E.action(r,actor(r),{type:'end'});assert.equal(r.turn,1);
- r.players[1].pos=39;E.action(r,actor(r),{type:'roll'},{forcedDie:2});E.action(r,actor(r),{type:'end'});
- assert.equal(r.gameOver,true);assert.equal(r.phase,'over');
+test('LED-Investition bucht Kosten, Jahresergebnis und CO₂ exakt einmal',()=>{
+ const r=start();const p=land(r,2);E.action(r,p.token,{type:'invest',choice:'buy'});assert.equal(p.cash,270000);assert.equal(p.annual,108000);assert.equal(p.base[1],290);
+ assert.deepEqual(p.owned,[field(2).number]);assert.throws(()=>E.action(r,p.token,{type:'invest',choice:'buy'}));
 });
-test('Negatives Kapital beendet keinen Spielzug und erlaubt das Weiterspielen',()=>{
- const r=lobby();start(r);const p=r.players[0];p.cash=10;p.pos=9;
- E.action(r,actor(r),{type:'roll'},{forcedDie:1});
- assert.ok(p.cash<0);assert.equal(p.bankrupt,false);assert.equal(r.phase,'end');
- E.action(r,actor(r),{type:'end'});assert.equal(r.turn,1);
- r.players[1].pos=9;E.action(r,actor(r),{type:'roll'},{forcedDie:1});E.action(r,actor(r),{type:'end'});
- assert.equal(r.turn,0);assert.equal(r.gameOver,false);
- E.action(r,actor(r),{type:'roll'},{forcedDie:1});assert.equal(p.pos,11);
+test('Unbezahlbare Investition wird abgewiesen, Verzicht funktioniert',()=>{
+ const r=start(),p=r.players[0];p.cash=1;land(r,26);assert.throws(()=>E.action(r,p.token,{type:'invest',choice:'buy'}),/Kapital/);assert.equal(p.cash,1);E.action(r,p.token,{type:'invest',choice:'pass'});end(r);assert.equal(r.turn,1);
 });
-test('CO₂-Preis und Audit proportional zum Startkapital, Referenz 1 Mio. €',()=>{
- for(const [cash,factor] of [[500000,.5],[1000000,1],[2000000,2]]){
-  const room=lobby({initialCash:cash});start(room);
-  assert.equal(E.co2Factor(room),factor);
-  const p=room.players[0];p.pos=6;
-  E.action(room,actor(room),{type:'roll'},{forcedDie:1}); // Feld 8, kein Preis
-  // Separate auditable scenario
-  const audit=lobby({initialCash:cash});start(audit);audit.players[0].pos=9;
-  E.action(audit,actor(audit),{type:'roll'},{forcedDie:1});
-  assert.equal(audit.players[0].cash,cash-30000*factor);
-  const tax=lobby({initialCash:cash});start(tax);
-  E.action(tax,actor(tax),{type:'roll'},{forcedDie:6});
-  assert.equal(tax.players[0].cash,cash-100000*factor);
-  assert.equal(E.auditReleaseFee(tax),40000*factor);
+test('Kostenloser Grünstromvertrag ist auch bei Schulden zulässig',()=>{
+ const r=start(),p=r.players[0];p.cash=-20000;land(r,15);E.action(r,p.token,{type:'invest',choice:'buy'});assert.equal(p.cash,-20000);assert.ok(p.owned.includes(field(15).number));
+});
+test('Zugrechte und feste Parameter bleiben serverseitig geschützt',()=>{
+ const r=start();assert.throws(()=>E.action(r,r.players[1].token,{type:'roll'}),/am Zug/);
+ for(const token of [r.hostToken,r.players[0].token])assert.throws(()=>E.action(r,token,{type:'setParam',key:'5',value:100}),/gesperrt/);
+ assert.ok(!JSON.stringify(E.publicRoom(r,r.hostToken)).includes(r.hostToken));
+});
+test('Alle 20 Pflicht-Ereignisse wirken genau einmal und sind nicht ablehnbar',()=>{
+ for(let id=1;id<=20;id++){const r=start(),p=r.players[0];p.owned.push(field(6).number);r.deck[0]=id;const effect=E.eventEffect(r,id,p),cash=p.cash;land(r,3);
+  assert.equal(r.history.length,1);assert.equal(r.pending,null);assert.equal(r.phase,'end');assert.equal(p.cash,cash+(effect.valid?effect.cash:0));
+  assert.throws(()=>E.action(r,p.token,{type:'event',choice:'ignore'}),/automatisch/);assert.throws(()=>E.action(r,p.token,{type:'roll'}));assert.equal(r.history.length,1);
  }
 });
-test('Unternehmensentscheidung mit Schulden: kostenlose oder positive Optionen erlaubt',()=>{
- const r=lobby();start(r);const p=r.players[0];p.cash=-20000;
- E.action(r,actor(r),{type:'roll'},{forcedDie:4});
- assert.equal(r.pending.kind,'choose');
- E.action(r,actor(r),{type:'choose',option:2});
- assert.equal(p.cash,-20000);assert.equal(r.phase,'end');
+test('PV und Predictive-Maintenance-Bedingungen folgen den Maßnahmen statt alten Feldnummern',()=>{
+ const r=start(),p=r.players[0];assert.equal(E.eventEffect(r,17,p).valid,false);p.owned.push(field(6).number);assert.equal(E.eventEffect(r,17,p).valid,true);
+ assert.equal(E.eventEffect(r,5,p).valid,true);p.owned.push(field(24).number);assert.equal(E.eventEffect(r,5,p).valid,false);
 });
-test('Berechnungsparameter sind für Host und Gäste gesperrt',()=>{
- const r=lobby();start(r);const original=r.params['5'];
- for(const p of r.players)assert.throws(()=>E.action(r,p.token,{type:'setParam',key:'5',value:1000}),/gesperrt/);
- assert.equal(r.params['5'],original);
+test('CO₂-Strafen skalieren auch bei 0 und hohen Startwerten exakt',()=>{
+ for(const cash of [0,10000,300000,1000000,20000000]){const r=start({initialCash:cash});assert.equal(E.co2Charge(r,100,1000),cash/10);assert.equal(E.auditReleaseFee(r),cash*.04);}
+});
+test('Audit prüft das CO₂-Ziel, Versetzung geht korrekt auf Feld 15',()=>{
+ const r=start(),p=land(r,31);assert.equal(p.pos,14);assert.equal(r.landing.fieldNumber,35);assert.equal(p.detained,true);assert.equal(p.cash,282000);assert.equal(p.years,0);
+});
+test('Normales Überqueren von Start zahlt ein Jahresergebnis und zählt Emissionen einmal',()=>{
+ const r=start(),p=r.players[0];p.pos=38;E.action(r,p.token,{type:'roll'},{forcedDie:3});assert.equal(p.pos,1);assert.equal(p.years,1);assert.equal(p.cash,400000);assert.equal(p.cumulative,1000);assert.equal(r.landing.closing.multiplier,1);assert.equal(p.finished,false);
+});
+test('Exakte Landung auf Feld 1 zahlt doppelt, aber kumuliert CO₂ nur einmal',()=>{
+ const r=start(),p=r.players[0];p.pos=37;E.action(r,p.token,{type:'roll'},{forcedDie:3});assert.equal(p.pos,0);assert.equal(p.years,1);assert.equal(p.cash,500000);assert.equal(p.cumulative,1000);assert.equal(r.landing.closing.payout,200000);assert.equal(r.landing.closing.multiplier,2);
+});
+test('Exakte Landung verdoppelt das aktuelle Ergebnis inklusive Investitionswirkung',()=>{
+ const r=start(),p=r.players[0];p.annual=108000;p.pos=39;E.action(r,p.token,{type:'roll'},{forcedDie:1});assert.equal(p.cash,516000);assert.equal(r.landing.closing.payout,216000);
+});
+test('Auch ein negatives Jahresergebnis wird genau auf Feld 1 verdoppelt',()=>{
+ const r=start(),p=r.players[0];p.annual=-5000;p.pos=39;E.action(r,p.token,{type:'roll'},{forcedDie:1});assert.equal(p.cash,290000);assert.equal(p.cumulative,1000);
+});
+test('Es gibt nach acht oder zwanzig Jahren kein automatisches Ausscheiden',()=>{
+ const r=start({maxYears:1}),p=r.players[0];for(let i=0;i<21;i++)E.yearClose(r,p);assert.equal(p.years,21);assert.equal(p.finished,false);assert.equal(r.gameOver,false);
+});
+test('Erster Spieler erreicht Ziel: alle späteren Spieler dürfen genau einmal nachziehen',()=>{
+ const r=start(),p=r.players[0];p.base=[100,100,250];land(r,6);E.action(r,p.token,{type:'invest',choice:'buy'});assert.equal(E.footprint(p),350);assert.deepEqual(r.finalRound.pendingIds,[1,2]);assert.equal(r.gameOver,false);end(r);
+ assert.equal(r.turn,1);land(r,2);E.action(r,r.players[1].token,{type:'invest',choice:'pass'});end(r);assert.equal(r.turn,2);land(r,2);E.action(r,r.players[2].token,{type:'invest',choice:'pass'});end(r);
+ assert.equal(r.gameOver,true);assert.deepEqual(r.players.map(p=>p.turns),[1,1,1]);assert.equal(r.finishReason,'goal');
+});
+test('Ziel in der Mitte der Reihenfolge gibt früheren Spielern keinen Extrazug',()=>{
+ const r=start({},4);land(r,2);E.action(r,r.players[0].token,{type:'invest',choice:'pass'});end(r);assert.equal(r.turn,1);
+ r.players[1].base=[100,100,200];land(r,20);assert.deepEqual(r.finalRound.pendingIds,[2,3]);end(r);
+ for(let i=2;i<=3;i++){assert.equal(r.turn,i);land(r,2);E.action(r,r.players[i].token,{type:'invest',choice:'pass'});end(r);}
+ assert.equal(r.gameOver,true);assert.deepEqual(r.players.map(p=>p.turns),[1,1,1,1]);
+});
+test('Erreicht der letzte Spieler das Ziel, endet die Partie nach dessen Zug',()=>{
+ const r=start();for(let i=0;i<2;i++){land(r,2);E.action(r,r.players[i].token,{type:'invest',choice:'pass'});end(r);}
+ r.players[2].base=[100,100,200];land(r,20);assert.deepEqual(r.finalRound.pendingIds,[]);assert.equal(r.gameOver,false);end(r);assert.equal(r.gameOver,true);
+});
+test('Ein späterer Nachzieher darf ebenfalls das Ziel erreichen und besser abschneiden',()=>{
+ const r=start(),p=r.players[0];p.base=[100,100,200];land(r,20);end(r);
+ const q=r.players[1];q.base=[80,70,150];land(r,20);end(r);land(r,2);E.action(r,r.players[2].token,{type:'invest',choice:'pass'});end(r);
+ assert.equal(r.finalRound.triggerPlayerId,0);assert.equal(E.ranking(r)[0].id,1);assert.equal(r.gameOver,true);
+});
+test('Gleichstand beim Jahres-CO₂ wird nach verbleibendem Kapital entschieden',()=>{
+ const r=start();r.players[0].base=[100,100,200];r.players[1].base=[100,100,200];r.players[0].cash=5;r.players[1].cash=10;assert.equal(E.ranking(r)[0].id,1);
+});
+test('Sind bereits beim Start alle am Ziel, endet die Partie bei gleicher Zugzahl null',()=>{
+ const r=start({goal:1000});assert.equal(r.gameOver,true);assert.deepEqual(r.players.map(p=>p.turns),[0,0,0]);
+});
+test('Negatives Kapital scheidet niemanden aus, positive Entscheidungen bleiben möglich',()=>{
+ const r=start(),p=r.players[0];p.cash=-20000;land(r,5);E.action(r,p.token,{type:'choose',option:0});assert.equal(p.cash,90000);assert.equal(p.withdrawn,undefined);end(r);assert.equal(r.turn,1);
+});
+test('Aktiver Ausstieg verwirft die Entscheidung und gibt den nächsten Würfelzug frei',()=>{
+ const r=start(),p=land(r,5);assert.equal(r.phase,'decision');E.action(r,p.token,{type:'leave'});assert.equal(p.withdrawn,true);assert.equal(r.turn,1);assert.equal(r.pending,null);assert.equal(r.phase,'roll');assert.throws(()=>E.action(r,p.token,{type:'roll'}),/ausgestiegen/);
+});
+test('Ausgestiegene Nachzieher werden übersprungen, ohne die letzte Runde zu verlängern',()=>{
+ const r=start();r.players[0].base=[100,100,200];land(r,20);E.action(r,r.players[2].token,{type:'leave'});end(r);assert.equal(r.turn,1);land(r,2);E.action(r,r.players[1].token,{type:'invest',choice:'pass'});end(r);assert.equal(r.gameOver,true);assert.ok(!E.ranking(r).some(p=>p.id===2));
+});
+test('Wenn der Zielauslöser aussteigt, bleiben Nachziehrechte der anderen bestehen',()=>{
+ const r=start();r.players[0].base=[100,100,200];land(r,20);E.action(r,r.players[0].token,{type:'leave'});assert.equal(r.turn,1);assert.deepEqual(r.finalRound.pendingIds,[1,2]);assert.equal(r.gameOver,false);
+});
+test('Alle aussteigen beendet das Spiel; Ausstieg des reinen Professors ändert keine Züge',()=>{
+ const r=start();E.action(r,r.hostToken,{type:'leave'});assert.equal(r.turn,0);for(const p of r.players)E.action(r,p.token,{type:'leave'});assert.equal(r.gameOver,true);assert.equal(r.finishReason,'withdrawal');
+});
+test('Ausstieg in der Lobby gibt Platz und Nummer frei',()=>{
+ const r=lobby();E.action(r,r.players[0].token,{type:'leave'});assert.equal(r.players.length,2);assert.equal(r.players[0].id,0);assert.equal(E.joinRoom(r,'Neu').id,2);
+});
+test('QR-Code bleibt lokal und skaliert für HTTPS sowie LAN-Adressen',()=>{
+ const factory=require('../public/qrcode');for(const url of ['https://co2-factory-multiplayer.onrender.com/?room=TEST23','http://192.168.1.10:3000/?room=TEST23']){const qr=factory(0,'M');qr.addData(url);qr.make();assert.ok(qr.getModuleCount()>20);assert.match(qr.createSvgTag({cellSize:6,margin:24,scalable:true}),/viewBox/);}
+});
+test('Acht Unternehmen können mit den Standardwerten bis zum CO₂-Ziel spielen',()=>{
+ const r=start({},8);let steps=0;
+ while(!r.gameOver&&steps++<8000){const p=r.players[r.turn];if(r.phase==='roll')E.action(r,p.token,{type:'roll'},{forcedDie:1+steps%6});
+ else if(r.phase==='decision'&&r.pending.kind==='invest'){const f=E.FIELDS[r.pending.index],cost=Math.max(0,-f.capital);E.action(r,p.token,{type:'invest',choice:!p.owned.includes(f.number)&&(cost===0||p.cash>=cost)?'buy':'pass'});}
+ else if(r.phase==='decision'){const f=E.FIELDS[r.pending.index],candidates=f.options.map((o,i)=>({o,i})).filter(x=>x.o.cash>=0||p.cash>=-x.o.cash).sort((a,b)=>a.o.scope.reduce((x,y)=>x+y,0)-b.o.scope.reduce((x,y)=>x+y,0));E.action(r,p.token,{type:'choose',option:candidates[0].i});}
+ else pass(r);}
+ assert.ok(steps<8000);assert.equal(r.finishReason,'goal');assert.ok(E.ranking(r)[0]&&E.footprint(E.ranking(r)[0])<=r.config.goal);
+ const turns=r.players.map(p=>p.turns);assert.equal(Math.max(...turns),Math.min(...turns));
 });

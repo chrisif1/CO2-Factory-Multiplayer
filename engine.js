@@ -3,6 +3,9 @@ const crypto = require('node:crypto');
 const DATA = require('./public/game-data.json');
 const FIELDS = DATA.fields;
 const CARDS = DATA.cards;
+const AUDIT_INDEX=FIELDS.findIndex(f=>f.type==='Audit');
+const PV_FIELD=FIELDS.find(f=>f.sourceNumber===6).number;
+const MAINTENANCE_FIELD=FIELDS.find(f=>f.sourceNumber===24).number;
 const DEFAULT_PARAMS = Object.fromEntries(Object.entries(DATA.parameters).map(([k,v])=>[k,Number(v.value)]));
 const money = v=>Math.round(v*100)/100;
 const number = (v,def,min,max) => {const n=Number(v);return Number.isFinite(n)?Math.max(min,Math.min(max,n)):def;};
@@ -19,15 +22,15 @@ const shuffle = a=>{const b=a.slice();for(let i=b.length-1;i>0;i--){const j=cryp
 const token = ()=>crypto.randomBytes(24).toString('hex');
 const safeName = (s,fallback) => String(s||'').trim().replace(/[\u0000-\u001f\u007f]/g,'').slice(0,36)||fallback;
 function createRoom(code, name, input={}){
- const cfg={hostOnly:input.hostOnly===true,maxPlayers: Math.trunc(number(input.maxPlayers,8,2,8)), maxYears: Math.trunc(number(input.maxYears,8,1,20)), initialCash:number(input.initialCash,1000000,0,1e11), annualIncome:number(input.annualIncome,200000,-1e10,1e10), starting:[number(input.s1,250,0,1e7),number(input.s2,300,0,1e7),number(input.s3,450,0,1e7)],goal:number(input.goal,400,0,1e8)};
- const hostToken=token();const room={code,createdAt:Date.now(),updatedAt:Date.now(),revision:1,started:false,gameOver:false,config:cfg,hostToken,hostName:safeName(name,'Spielleitung'),players:[],turn:0,turnNumber:1,dice:0,phase:'lobby',pending:null,deck:shuffle(Array.from({length:20},(_,i)=>i+1)),cursor:0,params:{...DEFAULT_PARAMS},logs:[],trends:[],history:[],lastEvent:null,landing:null};
+ const cfg={hostOnly:input.hostOnly===true,maxPlayers: Math.trunc(number(input.maxPlayers,8,2,8)), initialCash:number(input.initialCash,300000,0,1e11), annualIncome:number(input.annualIncome,100000,-1e10,1e10), starting:[number(input.s1,250,0,1e7),number(input.s2,300,0,1e7),number(input.s3,450,0,1e7)],goal:number(input.goal,400,0,1e8)};
+ const hostToken=token();const room={code,rulesVersion:'1.5',round:1,finalRound:null,finishReason:null,createdAt:Date.now(),updatedAt:Date.now(),revision:1,started:false,gameOver:false,config:cfg,hostToken,hostName:safeName(name,'Spielleitung'),players:[],turn:0,turnNumber:1,dice:0,phase:'lobby',pending:null,deck:shuffle(Array.from({length:20},(_,i)=>i+1)),cursor:0,params:{...DEFAULT_PARAMS},logs:[],trends:[],history:[],lastEvent:null,landing:null};
  if(!cfg.hostOnly){const player=joinRoom(room,name);player.token=hostToken;}return room;
 }
 function joinRoom(room,name){
  if(room.started)throw Error('Das Spiel hat bereits begonnen.');
  if(room.players.length>=room.config.maxPlayers)throw Error('Der Spielraum ist voll.');
  const id=room.players.length, cfg=room.config;
- const p={id,token:token(),name:safeName(name,`Unternehmen ${id+1}`),pos:0,cash:cfg.initialCash,annual:cfg.annualIncome,base:cfg.starting.slice(),temp:[0,0,0],years:0,cumulative:0,owned:[],decisions:[],detained:false,bankrupt:false,finished:false};
+ const p={id,token:token(),name:safeName(name,`Unternehmen ${id+1}`),pos:0,cash:cfg.initialCash,annual:cfg.annualIncome,base:cfg.starting.slice(),temp:[0,0,0],years:0,cumulative:0,owned:[],decisions:[],detained:false,bankrupt:false,finished:false,turns:0,goalReachedTurn:null};
  room.players.push(p);room.trends[id]=[];record(room,p,'Spielbeginn');change(room,'join',`${p.name} ist dem Spiel beigetreten.`,{playerId:id});return p;
 }
 function change(room,kind,message,details={}){
@@ -46,17 +49,30 @@ function changeScope(p,deltas,permanent){
  else p.temp=p.temp.map((v,i)=>Math.max(-p.base[i],v+Number(deltas[i]||0)));
 }
 function checkBankrupt(p){p.bankrupt=false;} // Schulden sind zulässig; keine Insolvenz-Ausscheidung.
-function yearClose(room,p){
- const emitted=footprint(p);p.cumulative+=emitted;p.cash+=p.annual;p.years++;p.temp=[0,0,0];
- if(p.years>=room.config.maxYears)p.finished=true;
+function yearClose(room,p,multiplier=1){
+ const emitted=footprint(p),payout=p.annual*multiplier;
+ p.cumulative+=emitted;p.cash+=payout;p.years++;p.temp=[0,0,0];
  checkBankrupt(p);record(room,p,`Jahresabschluss ${p.years}`);
- return {emitted,year:p.years,annual:p.annual};
+ return {emitted,year:p.years,annual:p.annual,multiplier,payout};
 }
 function audit(room,p){
- const c=room.config,initial=sum(c.starting);
- const boundary=Math.round(Math.max(c.goal,initial-Math.max(0,(initial-c.goal)/c.maxYears)*(p.years+1)));
- const penalty=co2Charge(room,100,footprint(p)-boundary);p.cash-=penalty;
+ const boundary=room.config.goal,penalty=co2Charge(room,100,footprint(p)-boundary);p.cash-=penalty;
  checkBankrupt(p);record(room,p,'CO₂-Audit');return {boundary,penalty};
+}
+function ranking(room){
+ return room.players.filter(p=>!p.withdrawn).slice().sort((a,b)=>footprint(a)-footprint(b)||b.cash-a.cash||a.id-b.id);
+}
+function finishGame(room,reason){
+ room.gameOver=true;room.phase='over';room.pending=null;room.dice=0;room.finishReason=reason;
+ for(const p of room.players)if(!p.withdrawn)p.finished=true;
+ change(room,'over',reason==='goal'?'Spiel beendet – das CO₂-Ziel wurde erreicht und alle nachfolgenden Unternehmen haben nachgezogen.':'Spiel beendet – es sind keine aktiven Unternehmen mehr übrig.');
+}
+function checkGoal(room,p){
+ if(p.withdrawn||footprint(p)>room.config.goal)return;
+ if(p.goalReachedTurn===null)p.goalReachedTurn=room.turnNumber;
+ if(room.finalRound)return;
+ room.finalRound={round:room.round,triggerPlayerId:p.id,triggerTurn:room.turnNumber,pendingIds:room.players.filter(x=>x.id>p.id&&!x.withdrawn).map(x=>x.id)};
+ change(room,'goal',`${p.name} hat das CO₂-Ziel erreicht. Die laufende Runde wird noch beendet.`,{playerId:p.id});
 }
 function eventEffect(room,id,p){
  const x=k=>number(room.params[String(k)],DEFAULT_PARAMS[String(k)]||0,-1e10,1e10);
@@ -66,7 +82,7 @@ function eventEffect(room,id,p){
   case 2:e.cash=-(x(5)*x(24)+x(6)*x(25));e.note='Stromverbrauch × Strompreisaufschlag + Erdgasverbrauch × Gaspreisaufschlag.';break;
   case 3:if(footprint(p)<=600){e.cash=100000;e.note='Footprint ≤ 600 t: Kundenprämie.'}else e.note='Footprint über 600 t: kein Bonus.';break;
   case 4:e.scope[2]=-x(11)*x(26)*x(19)*x(27)/1000;e.term='permanent';break;
-  case 5:if(p.owned.includes(24)){e.note='Predictive Maintenance vorhanden: keine Ausfallkosten.';e.valid=false;break;}e.cash=-x(45);e.scope[1]=x(28)*x(15)/1000;e.scope[2]=(x(29)*x(19)+x(28)*x(16))/1000;e.term='temporary';break;
+  case 5:if(p.owned.includes(MAINTENANCE_FIELD)){e.note='Predictive Maintenance vorhanden: keine Ausfallkosten.';e.valid=false;break;}e.cash=-x(45);e.scope[1]=x(28)*x(15)/1000;e.scope[2]=(x(29)*x(19)+x(28)*x(16))/1000;e.term='temporary';break;
   case 6:e.cash=40000;break;
   case 7:e.scope[2]=x(30)*x(31)/1000;e.term='temporary';break;
   case 8:e.scope[1]=-x(5)*x(32)*x(15)/1000;e.scope[2]=-x(5)*x(32)*x(16)/1000;e.term='permanent';e.note='Nur bislang nicht eingesparte kWh anrechnen.';break;
@@ -78,17 +94,24 @@ function eventEffect(room,id,p){
   case 14:e.scope[2]=x(11)*x(38)*x(19)/1000;e.term='temporary';break;
   case 15:e.scope[2]=x(39)*(x(20)-x(21))/1000;e.term='temporary';break;
   case 16:e.scope[2]=-x(13)*x(40)*x(20)/1000;e.term='permanent';e.note='Bereits verlagerte t·km nicht doppelt zählen.';break;
-  case 17:case 18:if(!p.owned.includes(6)){e.valid=false;e.note='Keine PV-Anlage gekauft: Karte ohne Wirkung.';break;}if(x(12)<=0){e.valid=false;e.note='PV-Jahresertrag 0: keine Wirkung.';break;}const s=id===17?-1:1;e.scope[1]=s*x(12)*x(41)*x(15)/1000;e.scope[2]=s*x(12)*x(41)*x(16)/1000;e.term='temporary';break;
+  case 17:case 18:if(!p.owned.includes(PV_FIELD)){e.valid=false;e.note='Keine PV-Anlage gekauft: Karte ohne Wirkung.';break;}if(x(12)<=0){e.valid=false;e.note='PV-Jahresertrag 0: keine Wirkung.';break;}const s=id===17?-1:1;e.scope[1]=s*x(12)*x(41)*x(15)/1000;e.scope[2]=s*x(12)*x(41)*x(16)/1000;e.term='temporary';break;
   case 19:if(x(42)<=0||x(43)<=0){e.valid=false;e.note='Keine wirksame Kältemittelleckage hinterlegt.';break;}e.scope[0]=x(42)*x(43)/1000;e.term='temporary';break;
   case 20:e.scope[2]=-x(14)*x(44)*(x(22)-x(23))/1000;e.term='permanent';break;
  }
  return e;
 }
 function advanceTurn(room){
- const n=room.players.length;let next=-1;
- for(let k=1;k<=n;k++){const i=(room.turn+k)%n,p=room.players[i];if(!p.finished&&!p.withdrawn){next=i;break;}}
- room.pending=null;room.landing=null;room.dice=0;
- if(next<0){room.gameOver=true;room.phase='over';change(room,'over','Spiel beendet – alle Unternehmen haben abgeschlossen oder sind ausgestiegen.');return;}
+ const previous=room.turn;room.pending=null;room.landing=null;room.dice=0;
+ let next=-1;
+ if(room.finalRound){
+  room.finalRound.pendingIds=room.finalRound.pendingIds.filter(id=>id!==previous&&!room.players[id]?.withdrawn);
+  next=room.finalRound.pendingIds[0]??-1;
+  if(next<0){finishGame(room,'goal');return;}
+ }else{
+  for(let k=1;k<=room.players.length;k++){const i=(previous+k)%room.players.length;if(!room.players[i].withdrawn){next=i;break;}}
+  if(next<0){finishGame(room,'withdrawal');return;}
+  if(next<=previous)room.round++;
+ }
  room.turn=next;room.turnNumber++;room.phase=room.players[next].detained?'detention':'roll';
  change(room,'next',`Jetzt ist ${room.players[next].name} am Zug.`,{playerId:next});
 }
@@ -113,7 +136,8 @@ function action(room,actorToken,input={},options={}){
   if(!host)throw Error('Nur die Spielleitung darf starten.');
   if(room.started)throw Error('Das Spiel läuft bereits.');
   if(room.players.length<2)throw Error('Mindestens zwei Spieler müssen beitreten.');
-  room.started=true;room.phase='roll';change(room,'start','Das Spiel wurde gestartet.');return;
+  room.started=true;room.phase='roll';change(room,'start','Das Spiel wurde gestartet.');
+  if(room.players.every(p=>footprint(p)<=room.config.goal))finishGame(room,'goal');return;
  }
  if(type==='setParam')throw Error('Parameter sind in dieser Spielversion gesperrt.');
  if(!room.started||room.gameOver)throw Error('Es läuft kein Spiel.');
@@ -129,7 +153,7 @@ function action(room,actorToken,input={},options={}){
    p.cash-=fee;p.detained=false;room.phase='roll';record(room,p,'Sofortberatung');change(room,'auditPay',`${p.name} zahlt ${money(fee)} € für die Sofortberatung.`);return;
   }
   if(input.choice==='skip'){
-   p.detained=false;room.phase='end';change(room,'auditSkip',`${p.name} setzt den Spielzug im Audit aus.`);return;
+   p.detained=false;room.phase='end';change(room,'auditSkip',`${p.name} setzt den Spielzug im Audit aus.`);checkGoal(room,p);return;
   }
   throw Error('Ungültige Auditentscheidung.');
  }
@@ -137,7 +161,7 @@ function action(room,actorToken,input={},options={}){
   if(room.phase!=='roll'||p.detained||p.finished)throw Error('Würfeln ist derzeit nicht möglich.');
   const die=Number.isInteger(options.forcedDie)&&options.forcedDie>=1&&options.forcedDie<=6?options.forcedDie:crypto.randomInt(1,7);
   room.dice=die;let pos=p.pos+die,closing=null;
-  if(pos>=40){closing=yearClose(room,p);pos-=40;}
+  if(pos>=40){closing=yearClose(room,p,pos===40?2:1);pos-=40;}
   p.pos=pos;room.phase='end';room.pending=null;
   const landedField=FIELDS[pos].number;
   let eventId=null,eventResult=null,details='';
@@ -158,7 +182,7 @@ function action(room,actorToken,input={},options={}){
       break;
     }
     case 'Audit':{const a=audit(room,p);details=`Auditgebühr ${money(a.penalty)} € bei Grenze ${a.boundary} t.`;break;}
-    case 'Versetzung zum Audit':{p.pos=10;const a=audit(room,p);p.detained=true;details=`Zum Audit versetzt: ${money(a.penalty)} € Gebühr.`;break;}
+    case 'Versetzung zum Audit':{p.pos=AUDIT_INDEX;const a=audit(room,p);p.detained=true;details=`Zum Audit versetzt: ${money(a.penalty)} € Gebühr.`;break;}
     case 'CO₂-Preis':{const cost=co2Charge(room,100,footprint(p));p.cash-=cost;checkBankrupt(p);record(room,p,'CO₂-Preis');details=`CO₂-Abgabe ${money(cost)} € (Satz: ${money(100*co2Factor(room))}/t).`;break;}
     case 'Förderung':p.cash+=60000;record(room,p,'Innovationsförderung');details='+60.000 € Förderung.';break;
     case 'Wissenstransfer':p.cash+=20000;record(room,p,'Wissenstransfer');details='+20.000 € Wissenstransfer.';break;
@@ -166,7 +190,7 @@ function action(room,actorToken,input={},options={}){
   }
   const msg=`${p.name} würfelt ${die} auf Feld ${p.pos+1}${closing?` · Jahr ${closing.year}: ${money(closing.emitted)} t CO₂e`:''}${details?` · ${details}`:''}.`;
   room.landing={fieldNumber:landedField,playerId:p.id,turnNumber:room.turnNumber,eventId,eventResult,closing,message:msg,resolution:null};
-  change(room,'roll',msg,{die,playerId:p.id,eventId,eventResult,closing,landedField});return;
+  change(room,'roll',msg,{die,playerId:p.id,eventId,eventResult,closing,landedField});if(room.phase==='end')checkGoal(room,p);return;
  }
  if(type==='invest'){
   if(room.phase!=='decision'||room.pending?.kind!=='invest')throw Error('Keine offene Investition.');
@@ -179,7 +203,7 @@ function action(room,actorToken,input={},options={}){
    change(room,'invest',`${p.name} kauft ${field.name} für ${money(cost)} €.`);
   }else if(input.choice==='pass')change(room,'invest',`${p.name} verzichtet auf ${field.name}.`);
   else throw Error('Ungültige Investitionsoption.');
-  room.phase='end';room.pending=null;if(room.landing)room.landing.resolution=room.lastEvent.message;return;
+  room.phase='end';room.pending=null;if(room.landing)room.landing.resolution=room.lastEvent.message;checkGoal(room,p);return;
  }
  if(type==='choose'){
   if(room.phase!=='decision'||room.pending?.kind!=='choose')throw Error('Keine offene Unternehmensentscheidung.');
@@ -188,12 +212,12 @@ function action(room,actorToken,input={},options={}){
   if(p.decisions.includes(field.number))throw Error('Entscheidung bereits getroffen.');
   const o=field.options[ix];if(o.cash<0&&p.cash< -o.cash)throw Error('Für diese Entscheidung reicht das Kapital nicht aus.');
   p.cash+=o.cash;p.annual+=o.annual;changeScope(p,o.scope,true);p.decisions.push(field.number);record(room,p,`Entscheidung ${field.number}`);
-  room.phase='end';room.pending=null;change(room,'choose',`${p.name}: ${field.name} – ${o.name}.`);if(room.landing)room.landing.resolution=room.lastEvent.message;return;
+  room.phase='end';room.pending=null;change(room,'choose',`${p.name}: ${field.name} – ${o.name}.`);if(room.landing)room.landing.resolution=room.lastEvent.message;checkGoal(room,p);return;
  }
  if(type==='event')throw Error('Ereigniskarten werden automatisch angewendet und können nicht abgelehnt werden.');
  if(type==='end'){
   if(room.phase!=='end')throw Error('Der Zug ist noch nicht abgeschlossen.');
-  advanceTurn(room);return;
+  p.turns++;advanceTurn(room);return;
  }
  throw Error('Aktion nicht bekannt.');
 }
@@ -201,7 +225,7 @@ function publicRoom(room,who){
  const players=room.players.map(p=>{const {token,...publicP}=p;return {...publicP,bankrupt:false,scope:scopes(p),co2:footprint(p)};});
  let pending=null;const actor=room.players.find(p=>p.token===who);const current=room.players[room.turn];
  if(room.pending){pending={...room.pending};if(pending.kind==='event')pending.effect=eventEffect(room,pending.card,current);}
- return {code:room.code,revision:room.revision,started:room.started,gameOver:room.gameOver,config:room.config,players,turn:room.turn,turnNumber:room.turnNumber,dice:room.dice,phase:room.phase,pending,params:room.params,co2Factor:co2Factor(room),auditReleaseFee:auditReleaseFee(room),logs:room.logs,trends:room.trends,history:room.history,lastEvent:room.lastEvent,landing:room.landing||null,actorId:actor?.id??null,hostName:room.hostName||room.players[0]?.name||'Spielleitung',host:who===room.hostToken};
+ return {code:room.code,revision:room.revision,started:room.started,gameOver:room.gameOver,config:room.config,round:room.round,finalRound:room.finalRound,finishReason:room.finishReason,ranking:ranking(room).map(p=>p.id),players,turn:room.turn,turnNumber:room.turnNumber,dice:room.dice,phase:room.phase,pending,params:room.params,co2Factor:co2Factor(room),auditReleaseFee:auditReleaseFee(room),logs:room.logs,trends:room.trends,history:room.history,lastEvent:room.lastEvent,landing:room.landing||null,actorId:actor?.id??null,hostName:room.hostName||room.players[0]?.name||'Spielleitung',host:who===room.hostToken};
 }
-module.exports={DATA,FIELDS,CARDS,DEFAULT_PARAMS,createRoom,joinRoom,action,publicRoom,eventEffect,scopes,footprint,yearClose,co2Factor,co2Charge,auditReleaseFee};
+module.exports={DATA,FIELDS,CARDS,DEFAULT_PARAMS,createRoom,joinRoom,action,publicRoom,eventEffect,scopes,footprint,yearClose,co2Factor,co2Charge,auditReleaseFee,checkGoal,ranking};
 
