@@ -9,46 +9,11 @@
         1366,
         768
       ],
-      "fields": 40,
       "allFields": true,
       "cards": true,
       "cardText": true,
       "focus": true,
-      "annualLines": 8,
-      "pieces": [
-        {
-          "w": 29,
-          "n": "1"
-        },
-        {
-          "w": 29,
-          "n": "2"
-        },
-        {
-          "w": 29,
-          "n": "3"
-        },
-        {
-          "w": 29,
-          "n": "4"
-        },
-        {
-          "w": 29,
-          "n": "5"
-        },
-        {
-          "w": 29,
-          "n": "6"
-        },
-        {
-          "w": 29,
-          "n": "7"
-        },
-        {
-          "w": 29,
-          "n": "8"
-        }
-      ]
+      "goal": true
     },
     {
       "viewport": [
@@ -59,46 +24,11 @@
         1024,
         768
       ],
-      "fields": 40,
       "allFields": true,
       "cards": true,
       "cardText": true,
       "focus": true,
-      "annualLines": 8,
-      "pieces": [
-        {
-          "w": 22.015625,
-          "n": "1"
-        },
-        {
-          "w": 22.015625,
-          "n": "2"
-        },
-        {
-          "w": 22.015625,
-          "n": "3"
-        },
-        {
-          "w": 22.015625,
-          "n": "4"
-        },
-        {
-          "w": 22.015625,
-          "n": "5"
-        },
-        {
-          "w": 22.015625,
-          "n": "6"
-        },
-        {
-          "w": 22.015625,
-          "n": "7"
-        },
-        {
-          "w": 22.015625,
-          "n": "8"
-        }
-      ]
+      "goal": true
     },
     {
       "viewport": [
@@ -109,46 +39,11 @@
         844,
         390
       ],
-      "fields": 40,
       "allFields": true,
       "cards": true,
       "cardText": true,
       "focus": true,
-      "annualLines": 8,
-      "pieces": [
-        {
-          "w": 17.71875,
-          "n": "1"
-        },
-        {
-          "w": 17.71875,
-          "n": "2"
-        },
-        {
-          "w": 17.71875,
-          "n": "3"
-        },
-        {
-          "w": 17.71875,
-          "n": "4"
-        },
-        {
-          "w": 17.71875,
-          "n": "5"
-        },
-        {
-          "w": 17.71875,
-          "n": "6"
-        },
-        {
-          "w": 17.71875,
-          "n": "7"
-        },
-        {
-          "w": 17.71875,
-          "n": "8"
-        }
-      ]
+      "goal": true
     },
     {
       "viewport": [
@@ -159,46 +54,11 @@
         668,
         375
       ],
-      "fields": 40,
       "allFields": true,
       "cards": true,
       "cardText": true,
       "focus": true,
-      "annualLines": 8,
-      "pieces": [
-        {
-          "w": 14.015625,
-          "n": "1"
-        },
-        {
-          "w": 14.015625,
-          "n": "2"
-        },
-        {
-          "w": 14.015625,
-          "n": "3"
-        },
-        {
-          "w": 14.015625,
-          "n": "4"
-        },
-        {
-          "w": 14.015625,
-          "n": "5"
-        },
-        {
-          "w": 14.015625,
-          "n": "6"
-        },
-        {
-          "w": 14.015625,
-          "n": "7"
-        },
-        {
-          "w": 14.015625,
-          "n": "8"
-        }
-      ]
+      "goal": true
     },
     {
       "viewport": [
@@ -209,57 +69,33 @@
         568,
         320
       ],
-      "fields": 40,
       "allFields": true,
       "cards": true,
       "cardText": true,
       "focus": true,
-      "annualLines": 8,
-      "pieces": [
-        {
-          "w": 14,
-          "n": "1"
-        },
-        {
-          "w": 14,
-          "n": "2"
-        },
-        {
-          "w": 14,
-          "n": "3"
-        },
-        {
-          "w": 14,
-          "n": "4"
-        },
-        {
-          "w": 14,
-          "n": "5"
-        },
-        {
-          "w": 14,
-          "n": "6"
-        },
-        {
-          "w": 14,
-          "n": "7"
-        },
-        {
-          "w": 14,
-          "n": "8"
-        }
-      ]
+      "goal": true
     }
   ],
   "errors": [],
-  "formDefaults": true,
-  "auditCorners": true,
-  "disabled": {
-    "color": "rgb(37, 50, 60)",
-    "background": "rgb(227, 232, 236)",
-    "opacity": "1",
-    "contrast": 10.636516027812727
-  },
-  "doubleIncome": true,
-  "finalRound": true
+  "mergedOverview": true,
+  "sharedEvent": true,
+  "eventArchive": true,
+  "reducedMotion": true,
+  "bonus": true,
+  "choiceSafeguard": true,
+  "animationThemes": [
+    "carbon",
+    "power",
+    "cold",
+    "heat",
+    "transport",
+    "sun",
+    "grid",
+    "materials",
+    "rain"
+  ],
+  "personalReflection": true,
+  "stickyClose": true,
+  "resultsReopen": true,
+  "startingCorrection": true
 }

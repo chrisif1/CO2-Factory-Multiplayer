@@ -1,5 +1,8 @@
 'use strict';
 const crypto = require('node:crypto');
+const {globalEffect,definitions:GLOBAL_EVENTS}=require('./global-events');
+const {reflection}=require('./reflection');
+const {fitStarting,allowedOption}=require('./feasibility');
 const DATA = require('./public/game-data.json');
 const FIELDS = DATA.fields;
 const CARDS = DATA.cards;
@@ -23,14 +26,15 @@ const token = ()=>crypto.randomBytes(24).toString('hex');
 const safeName = (s,fallback) => String(s||'').trim().replace(/[\u0000-\u001f\u007f]/g,'').slice(0,36)||fallback;
 function createRoom(code, name, input={}){
  const cfg={hostOnly:input.hostOnly===true,maxPlayers: Math.trunc(number(input.maxPlayers,8,2,8)), initialCash:number(input.initialCash,300000,0,1e11), annualIncome:number(input.annualIncome,100000,-1e10,1e10), starting:[number(input.s1,250,0,1e7),number(input.s2,300,0,1e7),number(input.s3,450,0,1e7)],goal:number(input.goal,400,0,1e8)};
- const hostToken=token();const room={code,rulesVersion:'1.5',round:1,finalRound:null,finishReason:null,createdAt:Date.now(),updatedAt:Date.now(),revision:1,started:false,gameOver:false,config:cfg,hostToken,hostName:safeName(name,'Spielleitung'),players:[],turn:0,turnNumber:1,dice:0,phase:'lobby',pending:null,deck:shuffle(Array.from({length:20},(_,i)=>i+1)),cursor:0,params:{...DEFAULT_PARAMS},logs:[],trends:[],history:[],lastEvent:null,landing:null};
+ Object.assign(cfg,fitStarting(cfg.starting,cfg.goal,FIELDS));
+ const hostToken=token();const room={code,rulesVersion:'1.6',round:1,finalRound:null,finishReason:null,createdAt:Date.now(),updatedAt:Date.now(),revision:1,started:false,gameOver:false,config:cfg,hostToken,hostName:safeName(name,'Spielleitung'),players:[],turn:0,turnNumber:1,dice:0,phase:'lobby',pending:null,deck:shuffle(Array.from({length:CARDS.length},(_,i)=>i+1)),cursor:0,globalEvents:[],globalSequence:0,params:{...DEFAULT_PARAMS},logs:[],trends:[],history:[],lastEvent:null,landing:null};
  if(!cfg.hostOnly){const player=joinRoom(room,name);player.token=hostToken;}return room;
 }
 function joinRoom(room,name){
  if(room.started)throw Error('Das Spiel hat bereits begonnen.');
  if(room.players.length>=room.config.maxPlayers)throw Error('Der Spielraum ist voll.');
  const id=room.players.length, cfg=room.config;
- const p={id,token:token(),name:safeName(name,`Unternehmen ${id+1}`),pos:0,cash:cfg.initialCash,annual:cfg.annualIncome,base:cfg.starting.slice(),temp:[0,0,0],years:0,cumulative:0,owned:[],decisions:[],detained:false,bankrupt:false,finished:false,turns:0,goalReachedTurn:null};
+ const p={id,token:token(),name:safeName(name,`Unternehmen ${id+1}`),pos:0,cash:cfg.initialCash,annual:cfg.annualIncome,base:cfg.starting.slice(),temp:[0,0,0],years:0,cumulative:0,owned:[],investments:[],decisions:[],decisionHistory:[],eventExperience:[],detained:false,bankrupt:false,finished:false,turns:0,goalReachedTurn:null};
  room.players.push(p);room.trends[id]=[];record(room,p,'Spielbeginn');change(room,'join',`${p.name} ist dem Spiel beigetreten.`,{playerId:id});return p;
 }
 function change(room,kind,message,details={}){
@@ -71,10 +75,11 @@ function checkGoal(room,p){
  if(p.withdrawn||footprint(p)>room.config.goal)return;
  if(p.goalReachedTurn===null)p.goalReachedTurn=room.turnNumber;
  if(room.finalRound)return;
- room.finalRound={round:room.round,triggerPlayerId:p.id,triggerTurn:room.turnNumber,pendingIds:room.players.filter(x=>x.id>p.id&&!x.withdrawn).map(x=>x.id)};
+ room.finalRound={round:room.round,triggerPlayerId:p.id,triggerTurn:room.turnNumber,pendingIds:room.players.filter(x=>x.id>room.turn&&!x.withdrawn).map(x=>x.id)};
  change(room,'goal',`${p.name} hat das CO₂-Ziel erreicht. Die laufende Runde wird noch beendet.`,{playerId:p.id});
 }
 function eventEffect(room,id,p){
+ const global=globalEffect(room,id,p,FIELDS);if(global)return global;
  const x=k=>number(room.params[String(k)],DEFAULT_PARAMS[String(k)]||0,-1e10,1e10);
  const e={cash:0,scope:[0,0,0],term:'cash',note:'',valid:true};
  switch(id){
@@ -161,7 +166,7 @@ function action(room,actorToken,input={},options={}){
   if(room.phase!=='roll'||p.detained||p.finished)throw Error('Würfeln ist derzeit nicht möglich.');
   const die=Number.isInteger(options.forcedDie)&&options.forcedDie>=1&&options.forcedDie<=6?options.forcedDie:crypto.randomInt(1,7);
   room.dice=die;let pos=p.pos+die,closing=null;
-  if(pos>=40){closing=yearClose(room,p,pos===40?2:1);pos-=40;}
+  if(pos>=40){closing=yearClose(room,p,pos===40?1.2:1);pos-=40;}
   p.pos=pos;room.phase='end';room.pending=null;
   const landedField=FIELDS[pos].number;
   let eventId=null,eventResult=null,details='';
@@ -171,14 +176,20 @@ function action(room,actorToken,input={},options={}){
     case 'Investition':room.phase='decision';room.pending={kind:'invest',index:pos};break;
     case 'Entscheidung':if(!p.decisions.includes(field.number)){room.phase='decision';room.pending={kind:'choose',index:pos};}break;
     case 'Ereigniskarte':{
-      eventId=room.deck[room.cursor];room.cursor=(room.cursor+1)%20;
-      // Pflicht-Ereignis: die Wirkung wird sofort beim Betreten angewendet.
-      const e=eventEffect(room,eventId,p);eventResult={cash:0,scope:[0,0,0],term:e.term,valid:e.valid,note:e.note};
-      if(e.valid){p.cash+=e.cash;changeScope(p,e.scope,e.term==='permanent');eventResult.cash=e.cash;eventResult.scope=e.scope;}
-      checkBankrupt(p);
-      room.history.push({player:p.name,card:eventId,year:p.years+1,ignored:!e.valid,cash:eventResult.cash,scope:eventResult.scope,term:e.term});
-      record(room,p,`Ereignis ${eventId}`);
-      details=`${CARDS[eventId-1].title}: ${e.valid?'Wirkung automatisch angewendet':'ohne Wirkung (Voraussetzung nicht erfüllt)'}.`;
+      eventId=room.deck[room.cursor];room.cursor=(room.cursor+1)%room.deck.length;
+      const card=CARDS[eventId-1],targets=card.global?room.players.filter(t=>!t.withdrawn):[p],results=[];
+      for(const target of targets){
+       const e=eventEffect(room,eventId,target),before=scopes(target);let actual=[0,0,0];
+       if(e.valid){target.cash+=e.cash;changeScope(target,e.scope,e.term==='permanent');actual=scopes(target).map((n,i)=>money(n-before[i]));}
+       const result={playerId:target.id,name:target.name,cash:e.valid?e.cash:0,scope:actual,term:e.term,valid:e.valid,note:e.note,baselineCash:e.baselineCash??e.cash,baselineScope:e.baselineScope??e.scope,factor:e.factor??1,protections:e.protections||[]};
+       results.push(result);if(target.id===p.id)eventResult=result;
+       checkBankrupt(target);
+       room.history.push({player:target.name,playerId:target.id,card:eventId,global:!!card.global,year:target.years+1,ignored:!e.valid,cash:result.cash,scope:actual,term:e.term});
+       if(card.global)target.eventExperience.push({...result,card:eventId,title:card.title,turn:room.turnNumber});
+       record(room,target,card.title);
+      }
+      if(card.global){room.globalSequence++;room.globalEvents.push({id:room.globalSequence,card:eventId,title:card.title,description:card.action,theme:card.theme,icon:GLOBAL_EVENTS[eventId].icon,lesson:GLOBAL_EVENTS[eventId].lesson,triggerPlayerId:p.id,turn:room.turnNumber,results});if(room.globalEvents.length>60)room.globalEvents.shift();}
+      details=`${card.global?'Globales Ereignis - ':''}${card.title}: automatisch angewendet.`;
       break;
     }
     case 'Audit':{const a=audit(room,p);details=`Auditgebühr ${money(a.penalty)} € bei Grenze ${a.boundary} t.`;break;}
@@ -190,7 +201,7 @@ function action(room,actorToken,input={},options={}){
   }
   const msg=`${p.name} würfelt ${die} auf Feld ${p.pos+1}${closing?` · Jahr ${closing.year}: ${money(closing.emitted)} t CO₂e`:''}${details?` · ${details}`:''}.`;
   room.landing={fieldNumber:landedField,playerId:p.id,turnNumber:room.turnNumber,eventId,eventResult,closing,message:msg,resolution:null};
-  change(room,'roll',msg,{die,playerId:p.id,eventId,eventResult,closing,landedField});if(room.phase==='end')checkGoal(room,p);return;
+  change(room,'roll',msg,{die,playerId:p.id,eventId,eventResult,closing,landedField});if(room.phase==='end'){checkGoal(room,p);if(eventId&&CARDS[eventId-1].global)for(const target of room.players)checkGoal(room,target);}return;
  }
  if(type==='invest'){
   if(room.phase!=='decision'||room.pending?.kind!=='invest')throw Error('Keine offene Investition.');
@@ -198,7 +209,8 @@ function action(room,actorToken,input={},options={}){
   if(input.choice==='buy'){
    if(p.owned.includes(field.number))throw Error('Investition bereits gekauft.');
    if(cost>0&&p.cash<cost)throw Error('Nicht genügend Kapital.');
-   p.cash+=Number(field.capital)||0;p.annual+=Number(field.annual)||0;changeScope(p,field.scope,true);p.owned.push(field.number);
+   const before=p.base.slice();p.cash+=Number(field.capital)||0;p.annual+=Number(field.annual)||0;changeScope(p,field.scope,true);p.owned.push(field.number);
+   p.investments.push({fieldNumber:field.number,turn:room.turnNumber,scope:p.base.map((n,i)=>money(n-before[i]))});
    record(room,p,`Investition ${field.number}`);
    change(room,'invest',`${p.name} kauft ${field.name} für ${money(cost)} €.`);
   }else if(input.choice==='pass')change(room,'invest',`${p.name} verzichtet auf ${field.name}.`);
@@ -208,10 +220,11 @@ function action(room,actorToken,input={},options={}){
  if(type==='choose'){
   if(room.phase!=='decision'||room.pending?.kind!=='choose')throw Error('Keine offene Unternehmensentscheidung.');
   const field=FIELDS[room.pending.index],ix=Number(input.option);
+  if(ix===-1){room.phase='end';room.pending=null;change(room,'choose',`${p.name} vertagt ${field.name}.`);if(room.landing)room.landing.resolution=room.lastEvent.message;checkGoal(room,p);return;}
   if(!Number.isInteger(ix)||ix<0||ix>=field.options.length)throw Error('Ungültige Auswahl.');
   if(p.decisions.includes(field.number))throw Error('Entscheidung bereits getroffen.');
-  const o=field.options[ix];if(o.cash<0&&p.cash< -o.cash)throw Error('Für diese Entscheidung reicht das Kapital nicht aus.');
-  p.cash+=o.cash;p.annual+=o.annual;changeScope(p,o.scope,true);p.decisions.push(field.number);record(room,p,`Entscheidung ${field.number}`);
+  const o=field.options[ix];if(!allowedOption(room,p,o,FIELDS))throw Error('Diese Entscheidung würde das CO₂-Ziel mit den verbleibenden Investitionen unerreichbar machen.');if(o.cash<0&&p.cash< -o.cash)throw Error('Für diese Entscheidung reicht das Kapital nicht aus.');
+  p.cash+=o.cash;p.annual+=o.annual;changeScope(p,o.scope,true);p.decisions.push(field.number);p.decisionHistory.push({fieldNumber:field.number,option:ix,name:o.name,cash:o.cash,annual:o.annual,scope:o.scope,turn:room.turnNumber});record(room,p,`Entscheidung ${field.number}`);
   room.phase='end';room.pending=null;change(room,'choose',`${p.name}: ${field.name} – ${o.name}.`);if(room.landing)room.landing.resolution=room.lastEvent.message;checkGoal(room,p);return;
  }
  if(type==='event')throw Error('Ereigniskarten werden automatisch angewendet und können nicht abgelehnt werden.');
@@ -224,8 +237,8 @@ function action(room,actorToken,input={},options={}){
 function publicRoom(room,who){
  const players=room.players.map(p=>{const {token,...publicP}=p;return {...publicP,bankrupt:false,scope:scopes(p),co2:footprint(p)};});
  let pending=null;const actor=room.players.find(p=>p.token===who);const current=room.players[room.turn];
- if(room.pending){pending={...room.pending};if(pending.kind==='event')pending.effect=eventEffect(room,pending.card,current);}
- return {code:room.code,revision:room.revision,started:room.started,gameOver:room.gameOver,config:room.config,round:room.round,finalRound:room.finalRound,finishReason:room.finishReason,ranking:ranking(room).map(p=>p.id),players,turn:room.turn,turnNumber:room.turnNumber,dice:room.dice,phase:room.phase,pending,params:room.params,co2Factor:co2Factor(room),auditReleaseFee:auditReleaseFee(room),logs:room.logs,trends:room.trends,history:room.history,lastEvent:room.lastEvent,landing:room.landing||null,actorId:actor?.id??null,hostName:room.hostName||room.players[0]?.name||'Spielleitung',host:who===room.hostToken};
+ if(room.pending){pending={...room.pending};if(pending.kind==='choose')pending.blockedOptions=FIELDS[pending.index].options.map(o=>!allowedOption(room,current,o,FIELDS));if(pending.kind==='event')pending.effect=eventEffect(room,pending.card,current);}
+ return {code:room.code,revision:room.revision,started:room.started,gameOver:room.gameOver,config:room.config,round:room.round,finalRound:room.finalRound,finishReason:room.finishReason,ranking:ranking(room).map(p=>p.id),players,turn:room.turn,turnNumber:room.turnNumber,dice:room.dice,phase:room.phase,pending,params:room.params,co2Factor:co2Factor(room),auditReleaseFee:auditReleaseFee(room),logs:room.logs,trends:room.trends,history:room.history,globalEvents:room.globalEvents,reflections:room.gameOver?room.players.map(p=>reflection(room,p,FIELDS,footprint)):[],lastEvent:room.lastEvent,landing:room.landing||null,actorId:actor?.id??null,hostName:room.hostName||room.players[0]?.name||'Spielleitung',host:who===room.hostToken};
 }
-module.exports={DATA,FIELDS,CARDS,DEFAULT_PARAMS,createRoom,joinRoom,action,publicRoom,eventEffect,scopes,footprint,yearClose,co2Factor,co2Charge,auditReleaseFee,checkGoal,ranking};
+module.exports={DATA,FIELDS,CARDS,DEFAULT_PARAMS,createRoom,joinRoom,action,publicRoom,eventEffect,scopes,footprint,yearClose,co2Factor,co2Charge,auditReleaseFee,checkGoal,ranking,reflection:(room,p)=>reflection(room,p,FIELDS,footprint)};
 

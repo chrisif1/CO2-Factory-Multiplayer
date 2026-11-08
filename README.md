@@ -1,76 +1,113 @@
-# CO₂ Factory Multiplayer V1.5
+# CO₂ Factory Multiplayer V1.6
 
 ## Starten
 
-Node.js ab Version 20. START-WINDOWS.bat, START-MAC-LINUX.sh oder `npm start` ausführen.
-Im Browser http://localhost:3000 öffnen. Es sind keine zusätzlichen npm-Pakete erforderlich.
+Node.js ab Version 20 installieren. START-WINDOWS.bat, START-MAC-LINUX.sh oder `npm start`
+ausführen. Im Browser http://localhost:3000 öffnen. Es sind keine zusätzlichen npm-Pakete nötig.
 
-## Ziel und Spielende
+## Neu in dieser Version
 
-Die Einstellung Geschäftsjahre entfällt. Sobald ein aktives Unternehmen nach seiner
-Feldaktion das eingestellte CO₂-Ziel erreicht oder unterschreitet, beginnt die letzte Runde.
-Nur die in dieser Runde noch folgenden Unternehmen ziehen nach. Beispiel: Spieler 2 von 4
-erreicht das Ziel; Spieler 3 und 4 spielen noch, Spieler 1 erhält keinen zusätzlichen Zug.
-So haben alle verbliebenen Unternehmen gleich viele Züge. Ausgestiegene werden übersprungen.
+- Eine gemeinsame Schaltfläche **Unternehmen & Protokoll** rechts oben mit den Bereichen
+  Unternehmen, Protokoll und Weltereignisse.
+- Unternehmenskarten in der Brettmitte sind anklickbar und per Tastatur bedienbar. Die Ansicht
+  zeigt gekaufte Investitionen, Kosten, Jahreswirkung, tatsächlich verbuchte dauerhafte
+  Scope-Minderung und die gewählten Unternehmensentscheidungen.
+- Das eingestellte CO₂-Ziel steht groß im Kopf des Spiels.
+- Feld 1 zahlt bei direkter Landung das **1,2-Fache des aktuellen Jahresergebnisses** aus.
+  Beim Überqueren bleibt es beim einfachen Ergebnis. Jahre und Emissionen zählen einmal.
+- Ein Podest für die ersten drei nicht ausgestiegenen Unternehmen erscheint am Ende.
+  Bei zwei Unternehmen werden zwei Plätze dargestellt; bei vollständigem Ausstieg kein Podest.
+- Jeder Spieler erhält einen eigenen Reflexionsbericht mit seiner Strategie, Investitionen,
+  laufenden Auswirkungen, Ereignisschutz, Entscheidungen und Fragen für die Nachbesprechung.
+  Die Spielleitung kann alle Berichte auswählen; jeder Teilnehmer startet mit seinem eigenen.
 
-Unter den nicht ausgestiegenen Unternehmen am Ziel gewinnt der niedrigste aktuelle
-Jahres-CO₂-Wert; bei Gleichstand entscheidet das höhere Kapital. Die kumulierten Emissionen
-werden weiterhin angezeigt, entscheiden aber nicht die Zielwertung. Wenn bereits alle
-Unternehmen beim Start am Ziel sind, endet das Spiel ohne Spielzüge.
+## Erreichbarkeit des CO₂-Ziels
 
-## Änderungen in V1.5
+Die Anfangsemissionen werden bei Raumerstellung mit den verfügbaren Investitionen verglichen.
+Zu hohe Werte werden im gleichen Verhältnis reduziert und je Scope auf zwei Dezimalstellen
+abgerundet. Im Wartebereich stehen die ursprünglichen und die verwendeten Werte.
+Die Standardwerte 250 / 300 / 450 t bei Ziel 400 t bleiben unverändert.
 
-- Standardwerte: 300.000 € Startkapital und 100.000 € Jahresergebnis.
-- Direkte Landung auf Feld 1 zahlt das doppelte aktuelle Jahresergebnis aus. Beim Überqueren
-  gibt es das einfache Jahresergebnis. Das gilt auch für ein negatives Jahresergebnis;
-  Jahreszähler und kumulierte Emissionen werden jeweils nur einmal fortgeschrieben.
-- Größere, nummerierte Figuren mit deutlicher Umrandung und Hervorhebung der aktiven Figur.
-  Bei mehreren Figuren auf demselben Feld werden diese platzsparend angeordnet.
-- Unternehmensdaten in der Brettmitte: Kapital, Jahresergebnis, aktuelle CO₂-Emissionen und
-  kumulierte Emissionen. Alle Unternehmenskarten zeigen auch ihr Jahresergebnis.
-- Gesperrte Investments haben dunklen Text auf hellem Hintergrund und nennen verfügbares
-  Kapital sowie den fehlenden Betrag.
-- Audit auf Feld 15 unten links; Zum Audit auf Feld 35 oben rechts, diagonal gegenüber.
-- Ereignisfelder 4, 10, 17, 24, 30 und 37, im Abstand von sechs oder sieben Feldern.
-- Ohne feste Laufzeit vergleicht das Audit die aktuellen Emissionen mit dem eingestellten
-  CO₂-Ziel. Die Abgabe pro Tonne darüber skaliert weiterhin mit dem Startkapital.
+Die Startprüfung reserviert zusätzlich die jeweils größten positiven Scope-Wirkungen aller
+Unternehmensentscheidungen. Während des Spiels wird jede Entscheidung erneut geprüft:
+Die Summe der nach allen noch verfügbaren Investitionen verbleibenden Scope-Emissionen darf
+das Ziel nicht überschreiten. Eine Option, die das Ziel unerreichbar machen würde, ist
+serverseitig gesperrt und entsprechend beschriftet. Kostenloses Vertagen bleibt möglich,
+ohne die Entscheidung dauerhaft zu verbrauchen. Deshalb ist kein zufälliges positives
+Ereignis erforderlich, um das Ziel rechnerisch zu erreichen.
 
-## Spielleitung und Beitreten
+Das ist eine Prüfung der Emissionspotenziale. Investitionen müssen weiterhin finanziert und
+die entsprechenden Felder erreicht werden; sie garantiert keine bestimmte Spieldauer oder
+automatischen wirtschaftlichen Erfolg. Zeitweilige Ereignisemissionen enden am nächsten
+eigenen Jahresabschluss. Es gibt keine feste Zahl von Geschäftsjahren.
 
-Beim Erstellen zwischen Spielleitung ohne mitzuspielen und mitspielender Spielleitung wählen.
-Im Professorenmodus hat die Spielleitung keine Figur, kein Unternehmen und keinen Zug.
-Zwei bis acht Unternehmen können zusätzlich teilnehmen; nur die Spielleitung startet.
-Teilnehmer scannen den lokal erzeugten QR-Code in der Lobby, geben ihren Namen ein und treten bei.
-Der QR-Code enthält nur den Einladungslink und keine Zugangstoken.
-Bei lokalem Start wird eine LAN-Adresse vorgeschlagen. Die Geräte müssen im selben erreichbaren
-Netz sein; gegebenenfalls die passende Netzwerkadresse auswählen. Auf Render wird die dortige
-Webadresse verwendet. Beitreten ist vor Spielbeginn möglich.
+## Globale Ereignisse
 
-## Weitere Regeln und Bedienung
+Der Stapel hat 23 Ereignisse: neun globale und vierzehn lokale. Alle sind verpflichtend und
+werden beim Ziehen automatisch genau einmal angewendet. Globale Ereignisse betreffen alle
+nicht ausgestiegenen Unternehmen, unabhängig davon, wer die Karte gezogen hat.
 
-Ereignisse wirken verpflichtend, sofort und genau einmal. Negatives Kapital bedeutet kein
-Ausscheiden. Nicht finanzierbare Ausgaben sind gesperrt, kostenlose oder positive Optionen
-bleiben möglich. Entscheidungs-Popups gehören der Person am Zug. Alle können Felder zur
-Information öffnen. Ereignistab und Parameterbereich bleiben deaktiviert.
-CO₂-Abgaben, Auditkosten und CO₂-Preisschock skalieren mit dem Startkapital (1 Mio. € = 100 %).
-Ein bestätigter Ausstieg entfernt die Figur und überspringt das Unternehmen in der Zugfolge.
-Bei Ausstieg der aktiven Person geht der Zug sofort weiter. Sind alle ausgestiegen, endet das Spiel.
+| Ereignis | Wirkung ohne Schutz | Zusammenhang mit Investitionen |
+|---|---|---|
+| CO₂-Preisschock | 50 €/t × Startkapitalfaktor × aktuelle Jahresemissionen | Bereits vermiedene Tonnen werden nicht belastet. |
+| Strompreiserhöhung | Stromverbrauch × Preisaufschlag | PV schützt vollständig im Spiel; LED −10 %, Druckluft −10 %, effiziente Maschinen −25 %, Antriebe −10 % der Restbelastung. |
+| Kältewelle | 18.000 € und zusätzlicher Heizbedarf | Dämmung −60 %, Wärmerückgewinnung −35 %, Wärmepumpe −50 %. |
+| Hitzewelle | 16.000 € und zusätzlicher Kühlstrom | Dämmung −50 %, PV −40 %, Antriebe −15 %. |
+| Bahnstreik | 12.000 € und Transportemissionen | Schieneninvestition erhöht Streikexposition um 50 %; digitale Planung senkt die Restwirkung um 60 %. |
+| Sonnenreiches Jahr | Ohne PV keine Wirkung | Mit PV: 12.000 € Mehrertrag und zeitweilig geringere Stromemissionen. |
+| Netzengpass | 30.000 € Ausfallkosten | PV −30 %, Predictive Maintenance −50 %, Antriebe −25 %. |
+| Rohstoffpreisschub | 40.000 € Mehrkosten | Recyclingmaterial −60 %, materialarmes Design −40 %, Mehrweg −20 %. |
+| Starkregen & Lieferketten | 25.000 € und 12 t Scope 3 | Digitale Planung −60 %, Routenzug −25 %. |
 
-Das rechteckige Brett mit allen 40 Feldern passt sich PC, Tablet und Handy im Querformat an.
-Auf kleinen Bildschirmen werden Feldnamen gekürzt; vollständige Texte stehen im Popup.
-Unternehmen und Protokoll oben öffnen für weitere Details. Das FH-Logo ist entfernt.
+Schutzwirkungen werden auf die verbleibende Belastung multipliziert, nicht addiert. Beispiel:
+Dämmung und PV reduzieren Hitzekosten auf 16.000 × 0,5 × 0,6 = 4.800 €.
+Diese Zusammenhänge sind transparente didaktische Spielannahmen, keine Prognosen realer
+Anlagen. Insbesondere ist vollständiger PV-Schutz vor einer Strompreiserhöhung vereinfacht;
+bei einem Netzengpass schützt PV im Spiel nur teilweise.
 
-## Update auf GitHub / Render
+Jede globale Meldung zeigt allen Teilnehmern und der Spielleitung die individuellen Wirkungen
+mit Begründung und Lernhinweis. Wetter, Energie, Material und Transport haben passende
+Animationen; bei reduzierter Bewegung werden diese abgeschaltet. Meldungen können in der
+gemeinsamen Übersicht erneut geöffnet werden. Die letzten 60 Meldungen bleiben im Archiv;
+der persönliche Bericht berücksichtigt alle während der aktiven Teilnahme erfassten Ereignisse.
+Ein Wechsel des aktiven Spielers überschreibt die Meldung nicht. Geld wird sofort verbucht;
+zeitweilige Emissionsänderungen gelten bis zum nächsten eigenen Jahresabschluss.
 
-Den Inhalt dieses Ordners in das Hauptverzeichnis des bestehenden Projekts übernehmen.
-`public/` vollständig aktualisieren, einschließlich goal.css, landscape.css, qrcode.js,
-game-data.json und sämtlicher SVG-Feldbilder. Nicht nur die ZIP als einzelne Datei hochladen.
-Startbefehl: `npm start`. Neue Räume verwenden die Regeln 1.5. Spielstände werden getrennt
-unter storage/v15 gespeichert; ältere Räume werden wegen der neuen Feldanordnung nicht geladen.
-Der Download des Pakets verändert die bisherige Live-Seite noch nicht.
+## Reflexion und Endwertung
 
-## Prüfung
+Sobald ein Unternehmen das CO₂-Ziel erreicht oder unterschreitet, ziehen nur die späteren
+Unternehmen der laufenden Runde nach. Bei einem globalen Ereignis kann auch ein anderes
+Unternehmen das Ziel erreichen; die Nachziehgrenze ist dann der gerade laufende Spielzug.
+Alle verbleibenden Unternehmen haben am Ende gleich viele abgeschlossene Züge.
+Platzierung: niedrigster aktueller Jahres-CO₂-Wert, bei Gleichstand höheres Kapital.
+Ausgestiegene sind ausgeschlossen. Wenn niemand am Ziel bleibt, gibt es keinen Zielsieger.
 
-`npm test`. Details in TESTBERICHT.md, Konsolenergebnis in TESTERGEBNISSE.txt.
-Vorschaubilder liegen unter vorschau/. Das Paket enthält keine Spielstände oder Zugangsdaten.
-Lizenzhinweis zum enthaltenen QR-Generator: THIRD_PARTY_NOTICES.md.
+Die Reflexion unterscheidet nominale und tatsächlich auf die dauerhafte Scope-Basis gebuchte
+Investitionswirkungen. Die gesamte Emissionsänderung enthält zusätzlich Entscheidungen und
+Ereignisse. Vermiedene Ereigniskosten vergleichen das gleiche Ereignis mit und ohne die
+hinterlegten Schutzmaßnahmen; das ist keine vollständige Alternativrechnung der Strategie.
+Einfache Amortisationen berücksichtigen weder Zinsen noch Ereignisse.
+
+## Bestehende Funktionen
+
+300.000 € Startkapital und 100.000 € Jahresergebnis als Standard. Reine Professoren-Spielleitung
+oder mitspielender Host; zwei bis acht Unternehmen. Lokaler QR-Code mit Einladungslink,
+ohne Zugangstoken. Bei lokalem Betrieb gleiche erreichbare WLAN-/LAN-Umgebung verwenden.
+Beitreten vor Spielbeginn. Nur die Spielleitung startet und nur die Person am Zug entscheidet.
+Negatives Kapital führt nicht zum Ausscheiden. Ein bestätigter Ausstieg entfernt die Figur und
+gibt gegebenenfalls sofort den nächsten Zug frei. Ereignistab und Parameter bleiben gesperrt.
+Audit auf Feld 15, Zum Audit auf Feld 35; regelmäßig verteilte Ereignisfelder. Rechteckiges
+Brett für PC, Tablet und Handy im Querformat. Vollständige Feldtexte im antippbaren Popup.
+
+## Aktualisieren und Prüfen
+
+Alle Dateien dieses Ordners im bestehenden Projekt ersetzen, insbesondere auch die neuen
+Module feasibility.js, global-events.js und reflection.js sowie public/experience.css.
+Den gesamten public-Ordner einschließlich game-data.json, Client und SVGs aktualisieren.
+Startbefehl auf Render: `npm start`. Neue Regeln verwenden neue Räume und storage/v16;
+ältere Spielstände werden wegen der geänderten Regeln getrennt gehalten.
+Der Download ändert die bisherige Render-Live-Version nicht.
+
+`npm test`: 50 Tests. Browserbericht in TESTBERICHT.md und TESTDARSTELLUNG.json.
+Vorschaubilder unter vorschau/. Das Paket enthält keine Spielstände oder Zugangstoken.
+Lizenz des enthaltenen QR-Generators: THIRD_PARTY_NOTICES.md.

@@ -1,0 +1,6 @@
+V1.6: 23 Ereignisse, davon 9 global und investitionsabhängig mit Animationen.
+Unternehmen & Protokoll zusammengelegt; Karten in der Mitte öffnen Investitionen.
+CO2-Ziel groß sichtbar, Startwertprüfung und laufender Zielschutz bei Entscheidungen.
+Direkt auf Feld 1: 1,2-faches Jahresergebnis. Podest und persönliche Reflexionsberichte.
+Neue Module feasibility.js, global-events.js, reflection.js und public/experience.css mitliefern.
+Alle Spieldateien und den vollständigen public-Ordner ersetzen. Neue Räume in storage/v16.

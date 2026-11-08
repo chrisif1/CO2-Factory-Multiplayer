@@ -1,49 +1,49 @@
-# Testbericht – V1.5, 07.11.2026
+# Testbericht – V1.6, 08.11.2026
 
-## Automatisierte Regeln und HTTP
+50 Regel- und HTTP-Tests erfolgreich. Enthalten: alle 23 Pflichtkarten genau einmal,
+globale und lokale Reichweite, PV-Schutz vor Strompreisen, multiplikative Wettervorsorge,
+Schienenabhängigkeit und Streik, Wartung/Netzengpass, Recycling/Rohstoffpreis,
+Planung/Starkregen, Sonnenertrag, ausgeschiedene Unternehmen, zeitweilige Emissionen,
+globale Zielerreichung, faire Nachziehrunde, Authentifizierung und persistierte Rollen.
 
-33 Tests erfolgreich. Geprüft wurden Standardwerte, Entfernung der Jahresbegrenzung,
-40 Felder, diagonale Auditpositionen, regelmäßige Ereignisabstände, Investitionen und
-Kapitalprüfung, negative Kapitalstände, verpflichtende Ereignisse genau einmal,
-stabile Photovoltaik-/Wartungsbezüge nach der Feldumordnung und CO₂-Kostenskalierung.
+Reflexion: eigene Käufe, Kosten, jährliche Effekte, nominale und tatsächliche dauerhafte
+Scope-Minderung an der Nullgrenze trotz zeitweiliger Effekte, persönliche Ereignisse und
+vermiedene Kosten. Berichte erst nach Spielende. Unveränderte Regeln für Schulden und Ausstieg.
+Exakte Landung auf Feld 1 verwendet 1,2 auch bei verändertem oder negativem Jahresergebnis.
 
-Jahresabschluss: normaler Betrag beim Überqueren, doppelter aktueller Betrag auf Feld 1,
-auch nach einer Änderung des Jahresergebnisses und bei negativem Jahresergebnis;
-Emissionen werden nur einmal fortgeschrieben. Kein automatisches Ende nach 21 Jahren.
+Zielschutz: Standardwerte bleiben unverändert; zu hohe Startwerte bei Zielen 0, 1, 100,
+350 und 400 t werden passend reduziert. Entscheidung mit unmöglicher Restminderung wird
+abgewiesen. Kostenloses Vertagen funktioniert. Verschiedene zulässige Kauf-/Entscheidungsfolgen
+erhalten die rechnerische Erreichbarkeit. Vollständige Simulation mit acht Unternehmen endet
+weiterhin am Ziel mit gleicher Zugzahl. Die Prüfung ersetzt keine Finanzierungsentscheidung.
 
-Zielrennen: erster, mittlerer und letzter Spieler als Auslöser; gleiche Zugzahlen;
-keine zusätzliche Runde; Nachziehender kann gewinnen; Kapital entscheidet Gleichstand;
-alle schon beim Start am Ziel; Ausstieg während eigener Entscheidung, außerhalb des
-eigenen Zuges, während der Nachziehrunde, des Auslösers und aller Unternehmen.
+## Chrome-Browserprüfung
 
-Vollständige Simulation mit acht Unternehmen und Standardwerten: reguläres Zielende
-mit gleicher Zahl abgeschlossener Züge. Professorenmodus, mitspielende Spielleitung,
-gesperrte Spielleitungszüge, Lobbyplätze, QR-Erzeugung, HTTP-Autorisierung und Persistenz
-sind ebenfalls abgedeckt.
+Reproduzierbare lokale Testpartien mit der tatsächlichen Spielengine und HTTP-Server,
+anschließend mit Playwright in echtem Chrome geöffnet und bedient.
+Gemeinsame Übersicht, Protokoll, Investitionsdetails und Tastatur-fähige Unternehmenskarten.
+Eine globale Hitzewelle gleichzeitig aus drei getrennten Browserkontexten betrachtet:
+Spielleitung, auslösender Spieler und weiterer Spieler. Alle sehen individuelle Ergebnisse,
+auch nachdem das Serverprotokoll bereits zum nächsten Spieler weitergeschaltet wurde.
+Bestätigte Meldung bleibt beim nächsten Poll geschlossen; Archiv kann sie erneut öffnen.
+Alle neun Ereignisthemen geprüft: carbon, power, cold, heat, transport, sun, grid, materials, rain.
+Animationen vorhanden, bei prefers-reduced-motion deaktiviert. Ein 1,2-Bonus-Popup geprüft.
+Gesperrte Luftfracht mit Erklärung und Vertagen über die Oberfläche geprüft.
 
-## Browserprüfung
+Podest zeigt drei Plätze in Reihenfolge 2–1–3. Eine kleine Überlappung der Bronze-Beschriftung
+wurde korrigiert. Bericht öffnet für den eigenen Spieler; Wechsel zu einem Unternehmen ohne
+Investitionen zeigt entsprechend anderes Feedback. Wiederöffnen nach Schließen funktioniert.
+Raumerstellung mit zu hohen Emissionen zeigt die automatische Anpassung im Wartebereich.
 
-Isolierte lokale Testpartien wurden in echtem Chrome mit Playwright geöffnet und bedient.
-Zwei bis acht Testunternehmen, Professorenansicht, Formularwerte, Audit-Popups,
-gesperrtes Investment mit Verzicht, doppelte Auszahlung auf Feld 1 sowie Nachziehen
-und anschließende Endwertung wurden über Oberfläche und HTTP geprüft.
-Die Testzustände wurden reproduzierbar mit der tatsächlichen Spielengine erzeugt.
+## Ansichten
 
-Alle 40 Felder, acht Unternehmenskarten, Namen, Kapital- und Jahresergebniszeilen sowie
-die zentralen Kennzahlen liegen innerhalb ihrer Bereiche. Keine Seitenüberläufe bei:
+1366 × 768, 1024 × 768, 844 × 390, 668 × 375 und 568 × 320:
+Alle 40 Felder, acht Unternehmenskarten samt Kapital/Jahresergebnis, zentrale Kennzahlen und
+großes CO₂-Ziel passen ins Fenster; kein Seiten- oder Brettscrollen. Investitionsdialoge
+passen in alle fünf Fenster. Ereignis- und Ergebnisdialoge passen auch ins kleine Querformat
+und lassen sich für längere Inhalte intern scrollen. Schließen bleibt im Reflexionsbericht
+beim Scrollen erreichbar. Keine abschließenden JavaScript-Fehler im Browser.
+Messdaten in TESTDARSTELLUNG.json, Konsolenergebnis in TESTERGEBNISSE.txt.
 
-- 1366 × 768 (PC)
-- 1024 × 768 (Tablet)
-- 844 × 390 (Handy quer)
-- 668 × 375 (kleines Handy quer)
-- 568 × 320 (sehr kleines Handy quer)
-
-Eine zunächst abgeschnittene Jahresergebniszeile in der kleinsten Ansicht wurde korrigiert;
-anschließend bestanden alle fünf Darstellungsprüfungen. Die Vorschaubilder zeigen den Endstand.
-Bei einzeln besetzten Feldern messen die Figuren je nach Ansicht 14 bis 29 Pixel.
-Der gesperrte Investmentknopf bleibt vollständig deckend und erreicht für Haupttext
-und Hintergrund ein gemessenes Kontrastverhältnis von 10,64:1.
-Keine abschließenden JavaScript-Fehler im Browser. Messdaten in TESTDARSTELLUNG.json.
-
-Es handelt sich um Browseransichten dieser Größen, nicht um Tests auf physischen Mobilgeräten.
-Die bisherige Render-Live-Version wurde nicht geändert.
+Dies sind Browseransichten, keine Tests auf physischen Mobilgeräten. Keine Aktualisierung
+der bisherigen Render-Live-Seite vorgenommen.

@@ -4,7 +4,7 @@
       "number": 1,
       "name": "Geschäftsjahr",
       "type": "Geschäftsjahr",
-      "description": "Beim Überqueren von Feld 1 erhältst du dein aktuelles Jahresergebnis. Landest du genau auf Feld 1, wird das Jahresergebnis doppelt verbucht. Die Jahresemissionen zählen dabei nur einmal.",
+      "description": "Beim Überqueren erhältst du dein aktuelles Jahresergebnis. Bei direkter Landung auf Feld 1 erhältst du das 1,2-Fache. Jahresemissionen werden einmal erfasst.",
       "capital": 0,
       "annual": 0,
       "scope": [
@@ -815,7 +815,7 @@
     {
       "number": 1,
       "title": "CO₂-Preisschock",
-      "action": "Der CO₂-Preis steigt unerwartet. Bezahle 50 € je aktueller jährlicher Tonne CO₂e, multipliziert mit dem Startkapitalfaktor.",
+      "action": "Alle aktiven Unternehmen zahlen 50 €/t × Startkapitalfaktor × aktuelle Jahresemissionen. Niedrigere Emissionen bedeuten geringere Kosten.",
       "capital": 0,
       "price": 50,
       "scope": [
@@ -823,17 +823,19 @@
         0,
         0
       ],
-      "conditions": "Zahlung = 50 €/t × Startkapitalfaktor × aktuelle jährliche Gesamt-CO₂e. Emissionsmenge selbst bleibt unverändert.",
-      "duration": "Geldwirkung einmalig, sofort.",
-      "formula": "Keine physische CO₂-Änderung: ΔScope 1/2/3 = 0. Zahlung = aktuelle jährliche Gesamt-CO₂e × 50 €/t × Startkapitalfaktor (min. 0,1; max. 10).",
-      "assumptions": "50 €/t bei 1 Mio. € Startkapital ist eine Spielannahme; im realen Modell kann ein gewählter CO₂-Schattenpreis eingesetzt werden.",
+      "conditions": "Automatisch für alle nicht ausgestiegenen Unternehmen, je nach gekauften Investitionen.",
+      "duration": "Einmalige sofortige Geldwirkung.",
+      "formula": "Investitionsabhängige Spielwirkung; die persönliche Berechnung steht in der Ereignisanzeige.",
+      "assumptions": "Didaktische Spielannahmen; keine Preis- oder Wetterprognose.",
       "reason": "Ein CO₂-Preis ändert nicht automatisch die physische Emissionsmenge; er bewertet sie finanziell.",
-      "source": "https://ghgprotocol.org/calculation-tools-faq"
+      "source": "",
+      "global": true,
+      "theme": "carbon"
     },
     {
       "number": 2,
-      "title": "Energiekrise",
-      "action": "Strom und Erdgas werden teurer. Bezahle die zusätzliche Jahresbelastung für den aktuellen Verbrauch.",
+      "title": "Strompreiserhöhung",
+      "action": "Alle aktiven Unternehmen tragen zusätzliche Stromkosten. PV schützt vollständig im Spiel; LED, Druckluft, effiziente Maschinen und Antriebe verringern die Restkosten.",
       "capital": -108000,
       "price": 0,
       "scope": [
@@ -841,12 +843,14 @@
         0,
         0
       ],
-      "conditions": "Kosten = Stromverbrauch × Strompreisaufschlag + Erdgasverbrauch × Gaspreisaufschlag.",
-      "duration": "Geldwirkung einmalig für das aktuelle Geschäftsjahr.",
-      "formula": "CO₂-Wirkung = 0. Finanzwirkung wird aus realen Energieverbräuchen berechnet.",
-      "assumptions": "1.200.000 kWh Strom; 300.000 kWh Gas; +0,08 €/kWh Strom; +0,04 €/kWh Gas.",
+      "conditions": "Automatisch für alle nicht ausgestiegenen Unternehmen, je nach gekauften Investitionen.",
+      "duration": "Einmalige sofortige Geldwirkung.",
+      "formula": "Investitionsabhängige Spielwirkung; die persönliche Berechnung steht in der Ereignisanzeige.",
+      "assumptions": "Didaktische Spielannahmen; keine Preis- oder Wetterprognose.",
       "reason": "Eine Preisänderung verändert ohne Verhaltens-/Produktionsänderung nicht den physischen Energieverbrauch.",
-      "source": "https://ghgprotocol.org/calculation-tools-faq"
+      "source": "",
+      "global": true,
+      "theme": "power"
     },
     {
       "number": 3,
@@ -864,7 +868,8 @@
       "formula": "CO₂-Wirkung = 0, solange keine zusätzliche Produktionsmenge ausgelöst wird. Bei echtem Mehrvolumen muss dieses separat bilanziert werden.",
       "assumptions": "600 t Grenzwert und 100.000 € Bonus sind Spielparameter.",
       "reason": "Ein Kundenbonus ist keine Emissionsminderung. Zusätzliche Produktion darf nicht stillschweigend emissionsfrei behandelt werden.",
-      "source": "https://ghgprotocol.org/calculation-tools-faq"
+      "source": "https://ghgprotocol.org/calculation-tools-faq",
+      "global": false
     },
     {
       "number": 4,
@@ -882,7 +887,8 @@
       "formula": "ΔCO₂ = Stahlmenge × Lieferantenanteil × EF_Stahl × EF-Verbesserung / 1000.",
       "assumptions": "300.000 kg Stahl; 20 % betroffen; 2,18 kg CO₂e/kg; 15 % geringerer Lieferanten-Footprint.",
       "reason": "Lieferantenänderungen werden realitätsnah über Menge × Unterschied im produktspezifischen Emissionsfaktor gerechnet.",
-      "source": "https://worldsteel.org/data/world-steel-in-figures/world-steel-in-figures-2026/ | final: Lieferanten-EPD / Excel 02"
+      "source": "https://worldsteel.org/data/world-steel-in-figures/world-steel-in-figures-2026/ | final: Lieferanten-EPD / Excel 02",
+      "global": false
     },
     {
       "number": 5,
@@ -900,7 +906,8 @@
       "formula": "Scope 2 = Nacharbeitsstrom × EF_Strom. Scope 3 = Zusatzschrott × EF_Stahl + Strom-Vorkette.",
       "assumptions": "400 kWh Nacharbeit; 500 kg zusätzlicher Stahl; Reparaturkosten 50.000 €.",
       "reason": "Ein Ausfall erzeugt nicht pauschal CO₂, sondern über zusätzliche Energie, Ausschuss und Ersatz-/Reparaturaufwand.",
-      "source": "https://ghgprotocol.org/calculation-tools-faq | https://worldsteel.org/data/world-steel-in-figures/world-steel-in-figures-2026/"
+      "source": "https://ghgprotocol.org/calculation-tools-faq | https://worldsteel.org/data/world-steel-in-figures/world-steel-in-figures-2026/",
+      "global": false
     },
     {
       "number": 6,
@@ -918,7 +925,8 @@
       "formula": "CO₂-Wirkung = 0. Eine Auszeichnung bestätigt Leistung, erzeugt aber nicht selbst eine zusätzliche Minderung.",
       "assumptions": "40.000 € ist ein Spielwert.",
       "reason": "Finanzielle Anerkennung und physische Emissionsminderung werden getrennt behandelt.",
-      "source": "Spielregel; keine Emissionsquelle"
+      "source": "Spielregel; keine Emissionsquelle",
+      "global": false
     },
     {
       "number": 7,
@@ -936,7 +944,8 @@
       "formula": "ΔCO₂ = zusätzliche LKW-km × EF_LKW / 1000.",
       "assumptions": "20.000 zusätzliche LKW-km; 0,891 kg CO₂e/km als Fallback-Beispiel.",
       "reason": "Transportemissionen werden über tatsächliche Distanz/Fahrleistung statt über eine pauschale Tonnageänderung berechnet.",
-      "source": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026 | final: Excel 02 / tatsächlicher Spediteur"
+      "source": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2026 | final: Excel 02 / tatsächlicher Spediteur",
+      "global": false
     },
     {
       "number": 8,
@@ -954,7 +963,8 @@
       "formula": "ΔScope2 = Strom × Einsparquote × EF_Strom. ΔScope3 = Strom × Einsparquote × Vorketten-EF.",
       "assumptions": "3 % des Gesamtstroms als konservative Spielannahme.",
       "reason": "Die Wirkung wird über vermiedene kWh berechnet; die 3 % sind keine allgemeine Branchenkennzahl, sondern eine transparente Annahme.",
-      "source": "https://ghgprotocol.org/calculation-tools-faq | https://secure.umweltbundesamt.at/co2mon/co2mon.html"
+      "source": "https://ghgprotocol.org/calculation-tools-faq | https://secure.umweltbundesamt.at/co2mon/co2mon.html",
+      "global": false
     },
     {
       "number": 9,
@@ -972,12 +982,13 @@
       "formula": "Mehrverbrauch = Druckluftstrom × 5 %. CO₂ = Mehrverbrauch × Stromfaktoren.",
       "assumptions": "100.000 kWh/Jahr Druckluft; +5 % Mehrverbrauch.",
       "reason": "Leckagen wirken über zusätzlichen Kompressorstrom; deshalb wird kein pauschaler CO₂-Wert angesetzt.",
-      "source": "https://ghgprotocol.org/calculation-tools-faq | https://secure.umweltbundesamt.at/co2mon/co2mon.html"
+      "source": "https://ghgprotocol.org/calculation-tools-faq | https://secure.umweltbundesamt.at/co2mon/co2mon.html",
+      "global": false
     },
     {
       "number": 10,
       "title": "Kältewelle",
-      "action": "Ein ungewöhnlich kaltes Jahr erhöht den Heizenergiebedarf.",
+      "action": "Alle aktiven Unternehmen haben zusätzlichen Heizbedarf und bis zu 18.000 € Kosten. Dämmung, Wärmerückgewinnung und Wärmepumpe dämpfen die Wirkung.",
       "capital": 0,
       "price": 0,
       "scope": [
@@ -985,17 +996,19 @@
         0,
         0.882
       ],
-      "conditions": "Nur der für Raumheizung verwendete Erdgasanteil wird erhöht; Prozessgas bleibt unverändert.",
-      "duration": "Für ein Geschäftsjahr.",
-      "formula": "Mehrgas = Erdgas × Heizanteil × 10 %. Scope1/3 = Mehrgas × Gasfaktoren.",
-      "assumptions": "300.000 kWh Gas; 60 % Heizung; +10 % Heizbedarf.",
+      "conditions": "Automatisch für alle nicht ausgestiegenen Unternehmen, je nach gekauften Investitionen.",
+      "duration": "Geld sofort; Emissionsänderung bis zum nächsten eigenen Jahresabschluss.",
+      "formula": "Investitionsabhängige Spielwirkung; die persönliche Berechnung steht in der Ereignisanzeige.",
+      "assumptions": "Didaktische Spielannahmen; keine Preis- oder Wetterprognose.",
       "reason": "Wetter wirkt primär auf Raumwärme. Die Trennung von Raum- und Prozesswärme verhindert Überschätzung.",
-      "source": "https://secure.umweltbundesamt.at/co2mon/co2mon.html"
+      "source": "",
+      "global": true,
+      "theme": "cold"
     },
     {
       "number": 11,
       "title": "Hitzewelle",
-      "action": "Zusätzliche Kühlung und Lüftung erhöhen den Stromverbrauch.",
+      "action": "Alle aktiven Unternehmen haben zusätzlichen Kühlbedarf und bis zu 16.000 € Kosten. Dämmung, PV und effiziente Antriebe dämpfen die Wirkung.",
       "capital": 0,
       "price": 0,
       "scope": [
@@ -1003,12 +1016,14 @@
         1.98,
         0.54
       ],
-      "conditions": "Nur auf Kühl-/Lüftungsstrom anwenden.",
-      "duration": "Für ein Geschäftsjahr.",
-      "formula": "Mehrstrom = Kühlung/Lüftung × 15 %. Scope2/3 = Mehrstrom × Stromfaktoren.",
-      "assumptions": "120.000 kWh/Jahr Kühlung/Lüftung; +15 %.",
+      "conditions": "Automatisch für alle nicht ausgestiegenen Unternehmen, je nach gekauften Investitionen.",
+      "duration": "Geld sofort; Emissionsänderung bis zum nächsten eigenen Jahresabschluss.",
+      "formula": "Investitionsabhängige Spielwirkung; die persönliche Berechnung steht in der Ereignisanzeige.",
+      "assumptions": "Didaktische Spielannahmen; keine Preis- oder Wetterprognose.",
       "reason": "Temperaturbedingter Mehrverbrauch wird auf die betroffenen Nebenaggregate begrenzt, nicht auf den gesamten Fabrikstrom.",
-      "source": "https://secure.umweltbundesamt.at/co2mon/co2mon.html"
+      "source": "",
+      "global": true,
+      "theme": "heat"
     },
     {
       "number": 12,
@@ -1026,7 +1041,8 @@
       "formula": "Stromeinsparung = CNC-Strom × 2 %. CO₂ = vermiedene kWh × Stromfaktoren.",
       "assumptions": "700.000 kWh/Jahr Zerspanung; 2 % Einsparung.",
       "reason": "KVP wird als messbare Verbrauchsänderung abgebildet. Die Einsparquote ist bewusst klein und transparent.",
-      "source": "https://ghgprotocol.org/calculation-tools-faq | wissenschaftlicher Hintergrund: Produktions-/KVP-Literatur im Projekt"
+      "source": "https://ghgprotocol.org/calculation-tools-faq | wissenschaftlicher Hintergrund: Produktions-/KVP-Literatur im Projekt",
+      "global": false
     },
     {
       "number": 13,
@@ -1044,7 +1060,8 @@
       "formula": "Vermiedenes Material = Stahlmenge × 1 %. Scope3-Minderung = vermiedene kg × EF_Stahl / 1000.",
       "assumptions": "300.000 kg Stahl/Jahr; 1 Prozentpunkt weniger Ausschuss.",
       "reason": "Materialeinsparung reduziert upstream-Emissionen nur bei tatsächlich vermiedenem Materialeinsatz; Recyclinggutschriften werden nicht doppelt gezählt.",
-      "source": "https://worldsteel.org/data/world-steel-in-figures/world-steel-in-figures-2026/ | final: Excel 01/02"
+      "source": "https://worldsteel.org/data/world-steel-in-figures/world-steel-in-figures-2026/ | final: Excel 01/02",
+      "global": false
     },
     {
       "number": 14,
@@ -1062,12 +1079,13 @@
       "formula": "Zusatzmaterial = Stahlmenge × 1 %. Scope3 = Zusatzmaterial × EF_Stahl / 1000.",
       "assumptions": "300.000 kg Stahl/Jahr; +1 Prozentpunkt Ausschuss.",
       "reason": "Ausschuss verursacht zusätzliche upstream-Materialemissionen, selbst wenn der Schrott später recycelt wird.",
-      "source": "https://worldsteel.org/data/world-steel-in-figures/world-steel-in-figures-2026/ | final: Excel 01/02"
+      "source": "https://worldsteel.org/data/world-steel-in-figures/world-steel-in-figures-2026/ | final: Excel 01/02",
+      "global": false
     },
     {
       "number": 15,
       "title": "Bahnstreik",
-      "action": "Ein Teil der Schienentransporte muss kurzfristig auf LKW verlagert werden.",
+      "action": "Alle aktiven Unternehmen tragen Umleitungskosten und zusätzliche Transportemissionen. Schieneninvestitionen erhöhen die Streikabhängigkeit, digitale Planung hilft bei der Umleitung.",
       "capital": 0,
       "price": 0,
       "scope": [
@@ -1075,12 +1093,14 @@
         0,
         10.800000000000002
       ],
-      "conditions": "Nur die tatsächlich verlagerten t·km ansetzen.",
-      "duration": "Einmaliger Effekt im aktuellen Geschäftsjahr.",
-      "formula": "ΔCO₂ = verlagerte t·km × (EF_Straße − EF_Schiene) / 1000.",
-      "assumptions": "100.000 t·km; Straße 0,135; Schiene 0,027 kg CO₂e/t·km (Fallback).",
+      "conditions": "Automatisch für alle nicht ausgestiegenen Unternehmen, je nach gekauften Investitionen.",
+      "duration": "Geld sofort; Emissionsänderung bis zum nächsten eigenen Jahresabschluss.",
+      "formula": "Investitionsabhängige Spielwirkung; die persönliche Berechnung steht in der Ereignisanzeige.",
+      "assumptions": "Didaktische Spielannahmen; keine Preis- oder Wetterprognose.",
       "reason": "Modalwechsel werden über die Differenz der transportleistungsspezifischen Faktoren berechnet.",
-      "source": "https://environment.govt.nz/assets/publications/Measuring-emissions-guidance-August-2022/Summary-PDF-Measuring-emissions-guidance-August-2022.pdf | final: Excel 02"
+      "source": "",
+      "global": true,
+      "theme": "transport"
     },
     {
       "number": 16,
@@ -1098,12 +1118,13 @@
       "formula": "Einsparung = Straßen-t·km × 15 % × EF_Straße / 1000.",
       "assumptions": "500.000 t·km/Jahr Straße; 15 % weniger Transportleistung.",
       "reason": "Transportoptimierung wirkt über vermiedene Tonnenkilometer; so bleibt die Karte skalierbar.",
-      "source": "https://environment.govt.nz/assets/publications/Measuring-emissions-guidance-August-2022/Summary-PDF-Measuring-emissions-guidance-August-2022.pdf | final: Excel 01/02"
+      "source": "https://environment.govt.nz/assets/publications/Measuring-emissions-guidance-August-2022/Summary-PDF-Measuring-emissions-guidance-August-2022.pdf | final: Excel 01/02",
+      "global": false
     },
     {
       "number": 17,
       "title": "Sonnenreiches Jahr",
-      "action": "Bei vorhandener PV-Anlage liegt der Jahresertrag 10 % über Plan und ersetzt zusätzlichen Netzstrom.",
+      "action": "Alle aktiven Unternehmen mit PV erhalten 12.000 € Mehrertrag und zeitweilig geringere Emissionen. Ohne PV keine Wirkung.",
       "capital": 0,
       "price": 0,
       "scope": [
@@ -1111,12 +1132,14 @@
         -1.65,
         -0.45
       ],
-      "conditions": "Nur wenn die Investition „Photovoltaik“ bereits gekauft wurde. Eigenverbrauch vorausgesetzt.",
-      "duration": "Für ein Geschäftsjahr.",
-      "formula": "Zusätzlicher PV-Eigenverbrauch = PV-Erzeugung × 10 %. Minderung = kWh × Stromfaktoren.",
-      "assumptions": "150.000 kWh/Jahr PV; +10 % nutzbarer Ertrag.",
+      "conditions": "Automatisch für alle nicht ausgestiegenen Unternehmen, je nach gekauften Investitionen.",
+      "duration": "Geld sofort; Emissionsänderung bis zum nächsten eigenen Jahresabschluss.",
+      "formula": "Investitionsabhängige Spielwirkung; die persönliche Berechnung steht in der Ereignisanzeige.",
+      "assumptions": "Didaktische Spielannahmen; keine Preis- oder Wetterprognose.",
       "reason": "CO₂-Wirkung entsteht nur, wenn zusätzlicher PV-Strom tatsächlich Netzbezug verdrängt.",
-      "source": "https://secure.umweltbundesamt.at/co2mon/co2mon.html | final: gemessene PV-Erzeugung / Excel 01"
+      "source": "",
+      "global": true,
+      "theme": "sun"
     },
     {
       "number": 18,
@@ -1134,7 +1157,8 @@
       "formula": "Fehlender PV-Ertrag = PV-Erzeugung × 10 %. Mehremission = Ersatz-Netzstrom × Stromfaktoren.",
       "assumptions": "150.000 kWh/Jahr PV; −10 % Ertrag.",
       "reason": "Der Ausfall wird nicht als pauschale Emission, sondern als zusätzlicher Netzstrombezug bilanziert.",
-      "source": "https://secure.umweltbundesamt.at/co2mon/co2mon.html | final: PV-Messdaten / Excel 01"
+      "source": "https://secure.umweltbundesamt.at/co2mon/co2mon.html | final: PV-Messdaten / Excel 01",
+      "global": false
     },
     {
       "number": 19,
@@ -1152,7 +1176,8 @@
       "formula": "Scope1 = Leckagemenge [kg] × GWP100 [kg CO₂e/kg] / 1000.",
       "assumptions": "Beispiel: 2 kg Leckage; GWP 2.088 (R410A-Beispiel).",
       "reason": "Fugitive Kältemittelemissionen werden massenbasiert mit dem GWP bewertet; daher kann schon eine kleine Leckage relevant sein.",
-      "source": "https://www.epa.gov/hfcs/technology-transitions-gwp-reference-table | final: Kältemitteltyp/GWP aus Excel 01/02"
+      "source": "https://www.epa.gov/hfcs/technology-transitions-gwp-reference-table | final: Kältemitteltyp/GWP aus Excel 01/02",
+      "global": false
     },
     {
       "number": 20,
@@ -1170,7 +1195,68 @@
       "formula": "Minderung = Pkw-pkm × 50 % × (EF_Pkw − EF_ÖPNV) / 1000.",
       "assumptions": "200.000 relevante Pkw-pkm/Jahr; 50 % Modal Shift; Fallback-Faktoren 0,160 vs. 0,035 kg/pkm.",
       "reason": "Der Effekt hängt von Personen-km und Verkehrsmittel ab; eine pauschale Mitarbeiterzahl wäre weniger belastbar.",
-      "source": "https://ghgprotocol.org/calculation-tools-faq | final: Excel 02 / Mobilitätsdaten"
+      "source": "https://ghgprotocol.org/calculation-tools-faq | final: Excel 02 / Mobilitätsdaten",
+      "global": false
+    },
+    {
+      "number": 21,
+      "title": "Netzengpass",
+      "action": "Ein Versorgungsengpass verursacht 30.000 € Ausfallkosten. PV, Predictive Maintenance und effiziente Antriebe reduzieren die Belastung.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Alle aktiven Unternehmen; abhängig von ihren Investitionen.",
+      "duration": "Einmalige Geldwirkung.",
+      "formula": "Investitionsabhängige Spielwirkung; persönliche Rechnung in der Ereignisanzeige.",
+      "assumptions": "Transparente didaktische Spielannahme.",
+      "reason": "Ein Versorgungsengpass verursacht 30.000 € Ausfallkosten. PV, Predictive Maintenance und effiziente Antriebe reduzieren die Belastung.",
+      "source": "",
+      "theme": "grid",
+      "global": true
+    },
+    {
+      "number": 22,
+      "title": "Rohstoffpreisschub",
+      "action": "Primärmaterial wird teurer: 40.000 € Zusatzkosten. Recyclingmaterial, materialarmes Design und Mehrwegverpackung verringern die Abhängigkeit.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Alle aktiven Unternehmen; abhängig von ihren Investitionen.",
+      "duration": "Einmalige Geldwirkung.",
+      "formula": "Investitionsabhängige Spielwirkung; persönliche Rechnung in der Ereignisanzeige.",
+      "assumptions": "Transparente didaktische Spielannahme.",
+      "reason": "Primärmaterial wird teurer: 40.000 € Zusatzkosten. Recyclingmaterial, materialarmes Design und Mehrwegverpackung verringern die Abhängigkeit.",
+      "source": "",
+      "theme": "materials",
+      "global": true
+    },
+    {
+      "number": 23,
+      "title": "Starkregen & Lieferketten",
+      "action": "Überflutete Verkehrswege führen zu 25.000 € Umwegkosten und 12 t zusätzlichen Scope-3-Emissionen. Digitale Planung und Routenzug dämpfen die Wirkung.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Alle aktiven Unternehmen; abhängig von ihren Investitionen.",
+      "duration": "Geld sofort; zusätzliche Emissionen bis zum nächsten eigenen Jahresabschluss.",
+      "formula": "Investitionsabhängige Spielwirkung; persönliche Rechnung in der Ereignisanzeige.",
+      "assumptions": "Transparente didaktische Spielannahme.",
+      "reason": "Überflutete Verkehrswege führen zu 25.000 € Umwegkosten und 12 t zusätzlichen Scope-3-Emissionen. Digitale Planung und Routenzug dämpfen die Wirkung.",
+      "source": "",
+      "theme": "rain",
+      "global": true
     }
   ],
   "parameters": {
