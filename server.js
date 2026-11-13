@@ -8,13 +8,13 @@ const E=require('./engine');
 const PORT=Number(process.env.PORT)||3000;
 const HOST=process.env.HOST||'0.0.0.0';
 const BASE=path.join(__dirname,'public');
-const STORE=process.env.CO2_DATA_DIR?path.resolve(process.env.CO2_DATA_DIR):path.join(__dirname,'storage','v16');
+const STORE=process.env.CO2_DATA_DIR?path.resolve(process.env.CO2_DATA_DIR):path.join(__dirname,'storage','v17');
 fs.mkdirSync(STORE,{recursive:true});
 const rooms=new Map();
 for(const name of fs.readdirSync(STORE)){
  if(!/^[A-HJ-NP-Z2-9]{6}\.json$/.test(name))continue;
  try{const data=JSON.parse(fs.readFileSync(path.join(STORE,name),'utf8'));
- if(data?.rulesVersion==='1.6'&&data?.code===name.slice(0,6)&&Array.isArray(data.players)&&data.players.length<=8&&data.hostToken)rooms.set(data.code,data);
+ if(data?.rulesVersion==='1.7'&&data?.code===name.slice(0,6)&&Array.isArray(data.players)&&data.players.length<=8&&data.hostToken)rooms.set(data.code,data);
  }catch(err){console.error('Spielstand konnte nicht geladen werden:',name,err.message)}
 }
 function persist(room){
@@ -37,7 +37,7 @@ function limited(req){
 }
 function staticFile(req,res,url){
  let file=url.pathname==='/'?'/index.html':url.pathname;
- if(!/^\/(?:index\.html|style\.css|refinements\.css|client\.js|qrcode\.js|landscape\.css|goal\.css|experience\.css|game-data\.json|img\/(?:\d{2}|event)\.svg)$/.test(file))return fault(res,404,'Datei nicht gefunden.');
+ if(!/^\/(?:index\.html|style\.css|refinements\.css|client\.js|qrcode\.js|landscape\.css|goal\.css|experience\.css|clarity\.css|game-data\.json|img\/(?:\d{2}|event)\.svg)$/.test(file))return fault(res,404,'Datei nicht gefunden.');
  const fullname=path.resolve(BASE,'.'+file);if(!fullname.startsWith(BASE+path.sep))return fault(res,404,'Datei nicht gefunden.');
  const mime=file.endsWith('.html')?'text/html; charset=utf-8':file.endsWith('.css')?'text/css; charset=utf-8':file.endsWith('.js')?'text/javascript; charset=utf-8':file.endsWith('.json')?'application/json; charset=utf-8':file.endsWith('.svg')?'image/svg+xml':'image/png';
  fs.readFile(fullname,(err,data)=>{

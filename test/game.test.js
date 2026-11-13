@@ -46,7 +46,7 @@ test('Zugrechte und feste Parameter bleiben serverseitig geschützt',()=>{
  for(const token of [r.hostToken,r.players[0].token])assert.throws(()=>E.action(r,token,{type:'setParam',key:'5',value:100}),/gesperrt/);
  assert.ok(!JSON.stringify(E.publicRoom(r,r.hostToken)).includes(r.hostToken));
 });
-test('Alle 23 Pflicht-Ereignisse wirken genau einmal und sind nicht ablehnbar',()=>{
+test('Alle 24 Pflicht-Ereignisse wirken genau einmal und sind nicht ablehnbar',()=>{
  for(let id=1;id<=E.CARDS.length;id++){const r=start(),p=r.players[0];p.owned.push(field(6).number);r.deck[0]=id;const effect=E.eventEffect(r,id,p),cash=p.cash;land(r,3);
   assert.equal(r.history.length,E.CARDS[id-1].global?r.players.length:1);assert.equal(r.pending,null);assert.equal(r.phase,'end');assert.equal(p.cash,cash+(effect.valid?effect.cash:0));
   assert.throws(()=>E.action(r,p.token,{type:'event',choice:'ignore'}),/automatisch/);assert.throws(()=>E.action(r,p.token,{type:'roll'}));assert.equal(r.history.length,E.CARDS[id-1].global?r.players.length:1);

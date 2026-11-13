@@ -284,7 +284,7 @@
       "number": 15,
       "name": "CO₂-Audit",
       "type": "Audit",
-      "description": "Dein Jahres-CO₂ wird mit dem CO₂-Ziel verglichen. Je Tonne oberhalb des Ziels wird die nach dem Startkapital skalierte Auditgebühr fällig.",
+      "description": "Dein Jahres-CO₂ wird mit dem CO₂-Ziel verglichen. Je Tonne oberhalb des Ziels wird die nach dem Startkapital skalierte Auditgebühr fällig. Mit einer gespeicherten Karte „Integriertes Managementsystem“ entfallen Auditgebühr und Audit-Aufenthalt automatisch. Die Karte wird dabei verbraucht und zurückgelegt.",
       "capital": 0,
       "annual": 0,
       "scope": [
@@ -689,7 +689,7 @@
       "number": 35,
       "name": "Zum Audit",
       "type": "Versetzung zum Audit",
-      "description": "Sofort zum gegenüberliegenden Audit auf Feld 15 versetzen und die Auditgebühr bezahlen. Im nächsten eigenen Zug: Sofortberatung bezahlen oder einmal aussetzen.",
+      "description": "Sofort zum gegenüberliegenden Audit auf Feld 15 versetzen und die Auditgebühr bezahlen. Im nächsten eigenen Zug: Sofortberatung bezahlen oder einmal aussetzen. Mit einer gespeicherten Karte „Integriertes Managementsystem“ entfallen Auditgebühr und Audit-Aufenthalt automatisch. Die Karte wird dabei verbraucht und zurückgelegt.",
       "capital": 0,
       "annual": 0,
       "scope": [
@@ -1257,6 +1257,25 @@
       "source": "",
       "theme": "rain",
       "global": true
+    },
+    {
+      "number": 24,
+      "title": "Integriertes Managementsystem",
+      "action": "Du hast ein integriertes Managementsystem aufgebaut. Bewahre diese persönliche Karte bis zum nächsten Audit auf. Sie verhindert dann automatisch die Auditgebühr und beim Feld „Zum Audit“ auch das Aussetzen. Anschließend kommt sie zurück in den Ereignisstapel.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Nur für das Unternehmen, das diese Karte zieht. Eine Karte im gemeinsamen Stapel, keine Mehrfachhaltung.",
+      "duration": "Aufbewahren bis zum nächsten Audit; danach erneut ziehbar.",
+      "formula": "Keine sofortige Geld- oder Emissionswirkung. Beim nächsten Audit wird die Gebühr erlassen; ein Audit-Aufenthalt entfällt.",
+      "assumptions": "Vereinfachte Spielregel: Ein Managementsystem verbessert die Auditvorbereitung.",
+      "reason": "Strukturierte Dokumentation, klare Zuständigkeiten und laufende Verbesserung unterstützen die Auditfähigkeit. Reale Managementsysteme garantieren keine Gebührenbefreiung.",
+      "source": "",
+      "global": false
     }
   ],
   "parameters": {

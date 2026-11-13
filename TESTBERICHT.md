@@ -1,49 +1,43 @@
-# Testbericht – V1.6, 08.11.2026
+# Testbericht – V1.7, 13.11.2026
 
-50 Regel- und HTTP-Tests erfolgreich. Enthalten: alle 23 Pflichtkarten genau einmal,
-globale und lokale Reichweite, PV-Schutz vor Strompreisen, multiplikative Wettervorsorge,
-Schienenabhängigkeit und Streik, Wartung/Netzengpass, Recycling/Rohstoffpreis,
-Planung/Starkregen, Sonnenertrag, ausgeschiedene Unternehmen, zeitweilige Emissionen,
-globale Zielerreichung, faire Nachziehrunde, Authentifizierung und persistierte Rollen.
+60 Regel- und HTTP-Tests erfolgreich. Die bisherigen Regeln einschließlich Zielschutz,
+Nachziehrunde, globaler Ereignisse, Reflexion, Schulden, Ausstieg und 1,2-Bonus bestehen weiter.
+Vollständige Simulation mit acht Unternehmen endet weiterhin am Ziel mit gleicher Zugzahl.
 
-Reflexion: eigene Käufe, Kosten, jährliche Effekte, nominale und tatsächliche dauerhafte
-Scope-Minderung an der Nullgrenze trotz zeitweiliger Effekte, persönliche Ereignisse und
-vermiedene Kosten. Berichte erst nach Spielende. Unveränderte Regeln für Schulden und Ausstieg.
-Exakte Landung auf Feld 1 verwendet 1,2 auch bei verändertem oder negativem Jahresergebnis.
+## Neue Karte
 
-Zielschutz: Standardwerte bleiben unverändert; zu hohe Startwerte bei Zielen 0, 1, 100,
-350 und 400 t werden passend reduziert. Entscheidung mit unmöglicher Restminderung wird
-abgewiesen. Kostenloses Vertagen funktioniert. Verschiedene zulässige Kauf-/Entscheidungsfolgen
-erhalten die rechnerische Erreichbarkeit. Vollständige Simulation mit acht Unternehmen endet
-weiterhin am Ziel mit gleicher Zugzahl. Die Prüfung ersetzt keine Finanzierungsentscheidung.
+24 Pflichtkarten: neun globale, fünfzehn persönliche/lokale. Managementsystem ohne sofortige
+Geld- oder CO₂-Wirkung; ausschließlich beim ziehenden Unternehmen aufbewahrt. Karte aus dem
+Stapel entfernt, Aufbewahrung über Jahresabschlüsse und fremde Züge. Direkter Auditbesuch und
+Versetzung zum Audit verbrauchen sie genau einmal. Keine Auditgebühr und keine Audit-Wartezeit.
+Nach dem Verbrauch kein weiterer Schutz, bis die Karte erneut gezogen wird. Rückgabe hinter
+allen anderen ziehbaren Karten; erneutes Ziehen und erneuter Verbrauch funktionieren.
+Ausstieg gibt die Karte frei. Serien-Speicherung erhält Besitz, Zähler und Stapel.
+Schutz bei Schulden und auch ohne anfallende Auditgebühr. Normales Bezahlen/Aussetzen ohne
+Karte bleibt unverändert. Kein Zugangstoken wird im veröffentlichten Spielstand übertragen.
 
-## Chrome-Browserprüfung
+## Browserprüfung
 
-Reproduzierbare lokale Testpartien mit der tatsächlichen Spielengine und HTTP-Server,
-anschließend mit Playwright in echtem Chrome geöffnet und bedient.
-Gemeinsame Übersicht, Protokoll, Investitionsdetails und Tastatur-fähige Unternehmenskarten.
-Eine globale Hitzewelle gleichzeitig aus drei getrennten Browserkontexten betrachtet:
-Spielleitung, auslösender Spieler und weiterer Spieler. Alle sehen individuelle Ergebnisse,
-auch nachdem das Serverprotokoll bereits zum nächsten Spieler weitergeschaltet wurde.
-Bestätigte Meldung bleibt beim nächsten Poll geschlossen; Archiv kann sie erneut öffnen.
-Alle neun Ereignisthemen geprüft: carbon, power, cold, heat, transport, sun, grid, materials, rain.
-Animationen vorhanden, bei prefers-reduced-motion deaktiviert. Ein 1,2-Bonus-Popup geprüft.
-Gesperrte Luftfracht mit Erklärung und Vertagen über die Oberfläche geprüft.
+Mit tatsächlicher Engine erzeugte lokale Testpartien über echten HTTP-Server in Chrome mit
+Playwright bedient. Derselbe Raum in drei unabhängigen Kontexten: aktiver Spieler, weiterer
+Spieler und Professor. Nur der aktive Spieler sieht „Du bist dran!“. Bestätigung unterdrückt
+Wiederholung beim Poll und nach Neuladen desselben Tabs. Nach HTTP-Spielzügen erscheint der
+Hinweis beim nächsten Spieler und beim nächsten eigenen Zug erneut.
+Ein offenes globales Ereignis verzögert den Zughinweis, bis es bestätigt ist; kein überlagertes
+Feld-Popup. Persönliche Managementsystem-Karte, Aufbewahrungsansicht und geschützter Audit
+im Browser geprüft. Am Ende Podest und Reflexion weiterhin erreichbar, kein Zughinweis mehr.
 
-Podest zeigt drei Plätze in Reihenfolge 2–1–3. Eine kleine Überlappung der Bronze-Beschriftung
-wurde korrigiert. Bericht öffnet für den eigenen Spieler; Wechsel zu einem Unternehmen ohne
-Investitionen zeigt entsprechend anderes Feedback. Wiederöffnen nach Schließen funktioniert.
-Raumerstellung mit zu hohen Emissionen zeigt die automatische Anpassung im Wartebereich.
-
-## Ansichten
+## Darstellung
 
 1366 × 768, 1024 × 768, 844 × 390, 668 × 375 und 568 × 320:
-Alle 40 Felder, acht Unternehmenskarten samt Kapital/Jahresergebnis, zentrale Kennzahlen und
-großes CO₂-Ziel passen ins Fenster; kein Seiten- oder Brettscrollen. Investitionsdialoge
-passen in alle fünf Fenster. Ereignis- und Ergebnisdialoge passen auch ins kleine Querformat
-und lassen sich für längere Inhalte intern scrollen. Schließen bleibt im Reflexionsbericht
-beim Scrollen erreichbar. Keine abschließenden JavaScript-Fehler im Browser.
-Messdaten in TESTDARSTELLUNG.json, Konsolenergebnis in TESTERGEBNISSE.txt.
+Alle 40 Felder und acht Unternehmenskarten samt Kapital/Jahresergebnis innerhalb des Fensters,
+kein Seiten- oder Brettscrollen. Zielwert genau einmal auf dem Brett. Doppelte Momentaufnahme,
+Scope-Kacheln und Markenüberschrift aus der Brettmitte entfernt. Investitionsdetails passen in
+alle fünf Ansichten. Zughinweis im kleinen Handyquerformat und Audit-Popup intern scrollbar.
+Start goldfarben, mit Rahmen und Richtungspfeil. Zusätzliche Prüfung mit acht Figuren auf Start
+bei PC-Größe und 568 × 320: Ein anfänglicher Überlauf wurde korrigiert; alle Figuren und die
+START-Beschriftung liegen danach vollständig im Feld. IMS-Kennzeichen in der Unternehmenskarte.
+Keine abschließenden JavaScript-Fehler im Browser.
 
-Dies sind Browseransichten, keine Tests auf physischen Mobilgeräten. Keine Aktualisierung
-der bisherigen Render-Live-Seite vorgenommen.
+Browseransichten, keine Tests auf physischen Mobilgeräten. Die Render-Live-Seite wurde nicht
+aktualisiert. Messdaten in TESTDARSTELLUNG.json, Vorschaubilder im Ordner vorschau/.

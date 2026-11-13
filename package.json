@@ -1,8 +1,8 @@
 {
   "name": "co2-factory-multiplayer",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "private": true,
-  "description": "CO₂ Factory – globale Ereignisse, Podest und persönliche Reflexion",
+  "description": "CO₂ Factory – gespeicherter Audit-Schutz und klare Zuganzeige",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

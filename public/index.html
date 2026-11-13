@@ -4,21 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0a5f57">
-<title>CO₂ Factory – Multiplayer V1.6</title>
-<link rel="stylesheet" href="/style.css?v=1.6.0">
-<link rel="stylesheet" href="/refinements.css?v=1.6.0">
-<link rel="stylesheet" href="/landscape.css?v=1.6.0">
-<link rel="stylesheet" href="/goal.css?v=1.6.0">
-<link rel="stylesheet" href="/experience.css?v=1.6.0">
-<script src="/qrcode.js?v=1.6.0" defer></script>
-<script src="/client.js?v=1.6.0" defer></script>
+<title>CO₂ Factory – Multiplayer V1.7</title>
+<link rel="stylesheet" href="/style.css?v=1.7.0">
+<link rel="stylesheet" href="/refinements.css?v=1.7.0">
+<link rel="stylesheet" href="/landscape.css?v=1.7.0">
+<link rel="stylesheet" href="/goal.css?v=1.7.0">
+<link rel="stylesheet" href="/experience.css?v=1.7.0">
+<link rel="stylesheet" href="/clarity.css?v=1.7.0">
+<script src="/qrcode.js?v=1.7.0" defer></script>
+<script src="/client.js?v=1.7.0" defer></script>
 </head>
 <body>
 <div id="fieldTooltip" class="field-tooltip" role="tooltip" hidden></div>
 <div class="layout">
   <header class="top">
     <div class="identity">
-      <div class="brand"><span>CO₂ FACTORY</span><small>Das Unternehmensplanspiel · Multiplayer V1.6</small></div>
+      <div class="brand"><span>CO₂ FACTORY</span><small>Das Unternehmensplanspiel · Multiplayer V1.7</small></div>
     </div>
     <div class="top-controls"><span class="connection" id="connectIndicator"><i></i> Spielbereit</span><button type="button" class="subtle" id="switchRoomBtn" hidden>Spiel verlassen</button></div>
   </header>
@@ -28,7 +29,7 @@
       <div class="eyebrow">GEMEINSAM STATT NACHEINANDER</div>
       <h1>Eine Fabrik.<br><em>Viele Entscheidungen.</em></h1>
       <p>Bis zu acht Unternehmen treten in einem gemeinsamen Spielraum an. Jeder würfelt und investiert auf seinem eigenen Gerät – alle sehen live dasselbe Brett.</p>
-      <div class="features"><span>● 40 Spielfelder</span><span>● 23 Ereigniskarten</span><span>● 2–8 Unternehmen</span><span>● WLAN & Internet</span></div>
+      <div class="features"><span>● 40 Spielfelder</span><span>● 24 Ereigniskarten</span><span>● 2–8 Unternehmen</span><span>● WLAN & Internet</span></div>
       <div class="hero-graphic"><div class="disc">CO₂<span>↓</span></div><div><strong>Investiere clever.</strong><small>Verringere Scope 1, 2 und 3 und behalte dein Kapital im Blick.</small></div></div>
     </div>
     <div class="panel entry">
@@ -64,7 +65,7 @@
       <div class="game-summary"><div><span class="eyebrow" id="turnNumber">SPIELZUG 1</span><h2 id="turnTitle">Am Zug: Unternehmen 1</h2><p id="turnHint">Bereit zum Würfeln</p></div><div class="summary-right"><div class="goal-banner" aria-label="Eingestelltes CO₂-Ziel"><span>CO₂-ZIEL</span><strong id="prominentGoal">400 <small>t/Jahr</small></strong></div><div class="room-mark"><span>RAUM</span><b id="inGameCode">------</b></div><span id="turnPill" class="pill">Bereit</span></div></div>
       <div class="game-layout">
         <div class="primary-column">
-          <div class="mobile-board-caption"><strong id="mobileTurnName"></strong><span id="mobileTurnField"></span><small>Feld antippen für Details</small></div><div class="board-frame"><div class="board" id="boardGrid"><div class="center" id="boardCenter"><div class="center-stage"><div class="center-kicker">CO₂ FACTORY <span id="roleBadge"></span></div><div class="center-player" id="centerPlayer">Würfeln und investieren</div><p id="centerInstruction">Der Spielstand aktualisiert sich automatisch.</p><div class="dice-stage"><div id="dieFace" class="die-face">⚀</div></div><div class="center-actions"><button type="button" class="primary" id="rollBtn">🎲 Würfeln</button><button type="button" id="nextBtn">Zug beenden</button><button type="button" id="centerPopupBtn" hidden>Entscheidung öffnen</button></div><div id="focusMetrics" class="focus-metrics" aria-label="Unternehmensdaten am Zug"></div><div id="miniScopes" class="scope-pills"></div></div><div class="board-scoreboard"><div class="scoreboard-heading">UNTERNEHMEN <span id="boardPlayerCount"></span></div><div id="boardPlayers" class="board-players"></div></div></div></div></div>
+          <div class="mobile-board-caption"><strong id="mobileTurnName"></strong><span id="mobileTurnField"></span><small>Feld antippen für Details</small></div><div class="board-frame"><div class="board" id="boardGrid"><div class="center" id="boardCenter"><div class="center-stage"><div class="center-player" id="centerPlayer">Würfel</div><p id="centerInstruction" hidden></p><div class="dice-stage"><div id="dieFace" class="die-face">⚀</div></div><div class="center-actions"><button type="button" class="primary" id="rollBtn">🎲 Würfeln</button><button type="button" id="nextBtn">Zug beenden</button><button type="button" id="centerPopupBtn" hidden>Entscheidung öffnen</button></div></div><div class="board-scoreboard"><div class="scoreboard-heading">UNTERNEHMEN <span id="boardPlayerCount"></span></div><div id="boardPlayers" class="board-players"></div></div></div></div></div>
           <div class="panel action"><div class="action-top"><div><span class="eyebrow">AKTUELLE AKTION</span><h3 id="actionTitle">Warten auf Spielstart</h3></div><div class="field-head-actions"><span id="fieldTag" class="field-tag">Feld 1</span><button type="button" id="fieldPopupOpen" class="subtle" hidden>Feld-Popup öffnen</button></div></div><div id="actionDescription" class="action-description"></div><div id="actionButtons" class="action-buttons"></div></div>
         </div>
         
@@ -74,6 +75,7 @@
 
   </div>
   <dialog id="dashboardDialog" class="dashboard-dialog"><div class="dashboard-heading"><h2 id="dashboardTitle">Unternehmen &amp; Protokoll</h2><button id="dashboardClose" type="button" aria-label="Übersicht schließen">×</button></div><div class="dashboard-tabs" aria-label="Übersicht wählen"><button type="button" data-dashboard="companies">Unternehmen</button><button type="button" data-dashboard="log">Protokoll</button><button type="button" data-dashboard="events">Weltereignisse</button></div><aside class="sidebar"><div id="dashboardCompanies" class="panel players-box"><div class="side-head"><h3>Unternehmen</h3><small id="playerTotal">0/8</small></div><div id="playersList" class="players-list"></div></div><div id="dashboardLog" class="panel log-box" hidden><h3>Spielprotokoll</h3><div id="gameLog" class="logs"></div></div><div id="dashboardEvents" class="panel" hidden><h3>Globale Ereignisse</h3><p class="helper">Alle Wirkungen werden automatisch angewendet. Ereignisse hier erneut ansehen.</p><div id="globalArchive"></div></div></aside></dialog>
+  <dialog id="turnDialog" class="turn-dialog" aria-labelledby="turnPopupTitle"><div class="turn-popup-kicker">DEIN SPIELZUG</div><div id="turnAvatar" class="turn-avatar" aria-hidden="true"></div><h2 id="turnPopupTitle">Du bist dran!</h2><p id="turnPopupName" class="turn-popup-name"></p><p id="turnPopupHint"></p><button type="button" id="turnReady" class="primary wide">Los geht’s</button></dialog>
   <dialog id="companyDialog" class="detail-dialog"><div class="dashboard-heading"><div><span class="eyebrow">UNTERNEHMEN IM DETAIL</span><h2 id="companyTitle"></h2></div><button type="button" id="companyClose" aria-label="Unternehmensansicht schließen">×</button></div><div id="companyContent"></div></dialog>
   <dialog id="globalDialog" class="global-dialog" aria-labelledby="globalTitle"><div id="globalScene" class="global-scene" aria-hidden="true"></div><div class="global-content"><div class="global-eyebrow">GLOBAL · ALLE AKTIVEN UNTERNEHMEN</div><div class="global-heading"><span id="globalIcon" aria-hidden="true"></span><h2 id="globalTitle"></h2></div><p id="globalDescription"></p><p class="global-duration">Geldwirkung sofort. Zeitweilige Emissionsänderungen gelten bis zum nächsten eigenen Jahresabschluss.</p><div id="globalResults" class="global-results"></div><div class="learning-note"><strong>Was steckt dahinter?</strong><p id="globalLesson"></p></div><p class="helper">Vereinfachtes Spielmodell; die tatsächliche Wirkung hängt in der Praxis von Anlage und Verbrauch ab.</p><button type="button" id="globalContinue" class="primary wide">Verstanden · weiter zum Spiel</button></div></dialog>
   <dialog id="resultsDialog" class="results-dialog" aria-labelledby="resultsTitle"><div class="dashboard-heading"><div><span class="eyebrow">GEMEINSAM ZURÜCKBLICKEN</span><h2 id="resultsTitle">Podest &amp; Reflexion</h2></div><button type="button" id="resultsClose" aria-label="Endwertung schließen">×</button></div><div id="podium" class="podium"></div><p id="rankingExplanation" class="helper"></p><div class="reflection-heading"><h3>Dein Reflexionsbericht</h3><label>Unternehmen<select id="reflectionPlayer"></select></label></div><div id="reflectionContent"></div></dialog>

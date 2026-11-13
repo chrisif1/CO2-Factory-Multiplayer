@@ -1,49 +1,73 @@
-# CO₂ Factory Multiplayer V1.6
+# CO₂ Factory Multiplayer V1.7
 
 ## Starten
 
-Node.js ab Version 20 installieren. START-WINDOWS.bat, START-MAC-LINUX.sh oder `npm start`
-ausführen. Im Browser http://localhost:3000 öffnen. Es sind keine zusätzlichen npm-Pakete nötig.
+Node.js ab Version 20. START-WINDOWS.bat, START-MAC-LINUX.sh oder `npm start` ausführen.
+Im Browser http://localhost:3000 öffnen. Keine zusätzlichen npm-Pakete erforderlich.
 
-## Neu in dieser Version
+## Neue persönliche Karte: Integriertes Managementsystem
 
-- Eine gemeinsame Schaltfläche **Unternehmen & Protokoll** rechts oben mit den Bereichen
-  Unternehmen, Protokoll und Weltereignisse.
-- Unternehmenskarten in der Brettmitte sind anklickbar und per Tastatur bedienbar. Die Ansicht
-  zeigt gekaufte Investitionen, Kosten, Jahreswirkung, tatsächlich verbuchte dauerhafte
-  Scope-Minderung und die gewählten Unternehmensentscheidungen.
-- Das eingestellte CO₂-Ziel steht groß im Kopf des Spiels.
-- Feld 1 zahlt bei direkter Landung das **1,2-Fache des aktuellen Jahresergebnisses** aus.
-  Beim Überqueren bleibt es beim einfachen Ergebnis. Jahre und Emissionen zählen einmal.
-- Ein Podest für die ersten drei nicht ausgestiegenen Unternehmen erscheint am Ende.
-  Bei zwei Unternehmen werden zwei Plätze dargestellt; bei vollständigem Ausstieg kein Podest.
-- Jeder Spieler erhält einen eigenen Reflexionsbericht mit seiner Strategie, Investitionen,
-  laufenden Auswirkungen, Ereignisschutz, Entscheidungen und Fragen für die Nachbesprechung.
-  Die Spielleitung kann alle Berichte auswählen; jeder Teilnehmer startet mit seinem eigenen.
+Im gemeinsamen Stapel gibt es eine Karte „Integriertes Managementsystem“ (IMS).
+Nur das ziehende Unternehmen erhält sie. Sie wirkt nicht sofort auf Kapital oder Emissionen,
+sondern wird aufbewahrt, bis dieses Unternehmen das nächste Audit erreicht.
+Ein IMS-Kennzeichen auf der Unternehmenskarte und die Unternehmensdetails zeigen den Besitz.
 
-## Erreichbarkeit des CO₂-Ziels
+Beim nächsten Audit wird der Schutz automatisch eingelöst:
 
-Die Anfangsemissionen werden bei Raumerstellung mit den verfügbaren Investitionen verglichen.
-Zu hohe Werte werden im gleichen Verhältnis reduziert und je Scope auf zwei Dezimalstellen
-abgerundet. Im Wartebereich stehen die ursprünglichen und die verwendeten Werte.
-Die Standardwerte 250 / 300 / 450 t bei Ziel 400 t bleiben unverändert.
+- Direkt auf dem Audit: keine Auditgebühr, die Karte wird verbraucht.
+- Über „Zum Audit“: Bewegung auf Feld 15 bleibt, aber keine Auditgebühr, kein Aussetzen
+  und keine Bezahlung für die Sofortberatung beim nächsten Zug.
+- Danach kommt die Karte hinter die übrigen ziehbaren Karten zurück in den Stapel.
+  Sie kann erneut von demselben oder einem anderen Unternehmen gezogen werden.
 
-Die Startprüfung reserviert zusätzlich die jeweils größten positiven Scope-Wirkungen aller
-Unternehmensentscheidungen. Während des Spiels wird jede Entscheidung erneut geprüft:
-Die Summe der nach allen noch verfügbaren Investitionen verbleibenden Scope-Emissionen darf
-das Ziel nicht überschreiten. Eine Option, die das Ziel unerreichbar machen würde, ist
-serverseitig gesperrt und entsprechend beschriftet. Kostenloses Vertagen bleibt möglich,
-ohne die Entscheidung dauerhaft zu verbrauchen. Deshalb ist kein zufälliges positives
-Ereignis erforderlich, um das Ziel rechnerisch zu erreichen.
+Während sie aufbewahrt wird, ist die Karte nicht im Stapel und kann nicht mehrfach gehalten
+oder von jemand anderem gezogen werden. Sie bleibt über Jahresabschlüsse und fremde Züge
+erhalten. Bestätigter Ausstieg legt eine gehaltene Karte ebenfalls zurück. Ohne Karte gelten
+die bisherigen Auditgebühren und die Entscheidung zwischen Beratung und Aussetzen weiter.
+Die Unternehmensdetails und der Reflexionsbericht zeigen Einsätze und erlassene Auditgebühren.
+Die Regeln sind didaktisch vereinfacht; reale Managementsysteme garantieren keine Gebührenbefreiung.
 
-Das ist eine Prüfung der Emissionspotenziale. Investitionen müssen weiterhin finanziert und
-die entsprechenden Felder erreicht werden; sie garantiert keine bestimmte Spieldauer oder
-automatischen wirtschaftlichen Erfolg. Zeitweilige Ereignisemissionen enden am nächsten
-eigenen Jahresabschluss. Es gibt keine feste Zahl von Geschäftsjahren.
+## Aufgeräumtes Brett und Zughinweis
+
+- Goldene Startkachel mit Richtungspfeil, dunklem Rand und START-Beschriftung. Auch acht
+  Figuren auf Start werden vollständig angeordnet; die Beschriftung bleibt sichtbar.
+- Unternehmenswerte stehen nur auf den Unternehmenskarten, die zusätzliche Momentaufnahme
+  des aktiven Unternehmens entfällt. Scope-Details und kumulierte Werte sind weiterhin unter
+  Unternehmen & Protokoll verfügbar. Unternehmenskarten bleiben für Investitionsdetails anklickbar.
+- Der eingestellte CO₂-Zielwert steht auf dem Brett einmal groß rechts oben.
+- Doppelte Feldnummern aus den Illustrationen entfernt; die Feldnummer am Rahmen bleibt.
+- Nur die Person am Zug erhält „Du bist dran!“ mit Unternehmensname und Los-geht’s-Schaltfläche.
+  Einmal pro Zug und Browser-Tab; ein Neuladen nach Bestätigung zeigt ihn nicht erneut.
+  Beim nächsten eigenen Zug erscheint ein neuer Hinweis. Die reine Spielleitung erhält ihn nicht.
+- Globale Ereignisse werden zuerst gelesen, danach der Zughinweis, dann gegebenenfalls das
+  Aktions-Popup. Bei einem Zugwechsel wird ein überholter Zughinweis geschlossen.
+
+## Ziel, Spielende und Finanzierung
+
+Standardwerte: 300.000 € Startkapital, 100.000 € Jahresergebnis, Scope 1 / 2 / 3:
+250 / 300 / 450 t, CO₂-Ziel 400 t/Jahr. Zu hohe Anfangsemissionen werden proportional
+reduziert und je Scope auf zwei Dezimalstellen abgerundet. Der Wartebereich erklärt die Änderung.
+Die Prüfung berücksichtigt alle verfügbaren Investitionen und eine Reserve für die größten
+positiven Scope-Wirkungen der Entscheidungen. Während der Partie sind Entscheidungen gesperrt,
+die das CO₂-Ziel mit den verbleibenden Investitionen rechnerisch unerreichbar machen würden.
+Kostenloses Vertagen bleibt möglich. Investitionen müssen weiterhin finanziert und die Felder
+erreicht werden; die Prüfung garantiert keinen automatischen wirtschaftlichen Erfolg.
+
+Sobald ein Unternehmen das CO₂-Ziel erreicht oder unterschreitet, ziehen nur die späteren
+Unternehmen der laufenden Runde nach. Bei globaler Zielerreichung gilt der laufende Spielzug
+als Nachziehgrenze. Die verbliebenen Unternehmen haben gleich viele abgeschlossene Züge.
+Niedrigster aktueller Jahres-CO₂-Wert gewinnt; bei Gleichstand entscheidet das Kapital.
+Ausgestiegene sind ausgeschlossen. Wenn niemand am Ziel bleibt, gibt es keinen Zielsieger.
+Am Ende erscheinen die ersten drei Plätze auf dem Podest und persönliche Reflexionsberichte.
+
+Direkt auf Feld 1: 1,2-faches aktuelles Jahresergebnis. Beim Überqueren: einfaches Ergebnis.
+Jahreszähler und Emissionen werden jeweils nur einmal fortgeschrieben. Negatives Kapital
+führt nicht zum Ausscheiden. Ein bestätigter Ausstieg entfernt das Unternehmen aus der
+Zugfolge und gibt bei Bedarf sofort den nächsten Zug frei. Keine feste Geschäftsjahresgrenze.
 
 ## Globale Ereignisse
 
-Der Stapel hat 23 Ereignisse: neun globale und vierzehn lokale. Alle sind verpflichtend und
+Der Stapel hat 24 Ereignisse: neun globale und fünfzehn persönliche/lokale. Alle sind verpflichtend und
 werden beim Ziehen automatisch genau einmal angewendet. Globale Ereignisse betreffen alle
 nicht ausgestiegenen Unternehmen, unabhängig davon, wer die Karte gezogen hat.
 
@@ -73,41 +97,30 @@ der persönliche Bericht berücksichtigt alle während der aktiven Teilnahme erf
 Ein Wechsel des aktiven Spielers überschreibt die Meldung nicht. Geld wird sofort verbucht;
 zeitweilige Emissionsänderungen gelten bis zum nächsten eigenen Jahresabschluss.
 
-## Reflexion und Endwertung
+## Spielleitung, Details und Reflexion
 
-Sobald ein Unternehmen das CO₂-Ziel erreicht oder unterschreitet, ziehen nur die späteren
-Unternehmen der laufenden Runde nach. Bei einem globalen Ereignis kann auch ein anderes
-Unternehmen das Ziel erreichen; die Nachziehgrenze ist dann der gerade laufende Spielzug.
-Alle verbleibenden Unternehmen haben am Ende gleich viele abgeschlossene Züge.
-Platzierung: niedrigster aktueller Jahres-CO₂-Wert, bei Gleichstand höheres Kapital.
-Ausgestiegene sind ausgeschlossen. Wenn niemand am Ziel bleibt, gibt es keinen Zielsieger.
+Reine Professoren-Spielleitung oder mitspielender Host. Zwei bis acht Unternehmen;
+nur die Spielleitung startet. QR-Code enthält den Einladungslink, keine Zugangstoken.
+Lokal müssen sich die Geräte im selben erreichbaren Netz befinden. Vor Spielbeginn beitreten.
+Nur die Person am Zug entscheidet; Felder können alle zur Information öffnen.
+Ereignis- und Parameterbereiche bleiben deaktiviert. Audit auf Feld 15, Zum Audit auf Feld 35.
 
-Die Reflexion unterscheidet nominale und tatsächlich auf die dauerhafte Scope-Basis gebuchte
-Investitionswirkungen. Die gesamte Emissionsänderung enthält zusätzlich Entscheidungen und
-Ereignisse. Vermiedene Ereigniskosten vergleichen das gleiche Ereignis mit und ohne die
-hinterlegten Schutzmaßnahmen; das ist keine vollständige Alternativrechnung der Strategie.
-Einfache Amortisationen berücksichtigen weder Zinsen noch Ereignisse.
+Unternehmen & Protokoll vereint Unternehmensübersicht, Protokoll und Weltereignis-Archiv.
+Die Karten in der Mitte öffnen getätigte Investitionen und Entscheidungen.
+Reflexionsberichte erklären die eigene Strategie, tatsächliche und nominale Investitionswirkung,
+Ereignisschutz und Audit-Schutz. Gesamtminderungen enthalten auch Entscheidungen und Ereignisse.
+Vergleiche vermiedener Ereigniskosten sind keine vollständige Alternativrechnung der Strategie.
 
-## Bestehende Funktionen
+## Aktualisierung und Prüfung
 
-300.000 € Startkapital und 100.000 € Jahresergebnis als Standard. Reine Professoren-Spielleitung
-oder mitspielender Host; zwei bis acht Unternehmen. Lokaler QR-Code mit Einladungslink,
-ohne Zugangstoken. Bei lokalem Betrieb gleiche erreichbare WLAN-/LAN-Umgebung verwenden.
-Beitreten vor Spielbeginn. Nur die Spielleitung startet und nur die Person am Zug entscheidet.
-Negatives Kapital führt nicht zum Ausscheiden. Ein bestätigter Ausstieg entfernt die Figur und
-gibt gegebenenfalls sofort den nächsten Zug frei. Ereignistab und Parameter bleiben gesperrt.
-Audit auf Feld 15, Zum Audit auf Feld 35; regelmäßig verteilte Ereignisfelder. Rechteckiges
-Brett für PC, Tablet und Handy im Querformat. Vollständige Feldtexte im antippbaren Popup.
+Alle Dateien im Projekt ersetzen, insbesondere den gesamten public-Ordner einschließlich
+der neuen clarity.css, des Clients, game-data.json und sämtlicher Feld-SVGs.
+Auch engine.js, server.js, global-events.js, feasibility.js und reflection.js mitliefern.
+Render-Startbefehl: `npm start`. Neue Räume verwenden die Regeln 1.7 und storage/v17;
+ältere Spielstände bleiben wegen der geänderten Regeln getrennt. Der Download verändert
+die bisherige Render-Seite nicht.
 
-## Aktualisieren und Prüfen
-
-Alle Dateien dieses Ordners im bestehenden Projekt ersetzen, insbesondere auch die neuen
-Module feasibility.js, global-events.js und reflection.js sowie public/experience.css.
-Den gesamten public-Ordner einschließlich game-data.json, Client und SVGs aktualisieren.
-Startbefehl auf Render: `npm start`. Neue Regeln verwenden neue Räume und storage/v16;
-ältere Spielstände werden wegen der geänderten Regeln getrennt gehalten.
-Der Download ändert die bisherige Render-Live-Version nicht.
-
-`npm test`: 50 Tests. Browserbericht in TESTBERICHT.md und TESTDARSTELLUNG.json.
-Vorschaubilder unter vorschau/. Das Paket enthält keine Spielstände oder Zugangstoken.
-Lizenz des enthaltenen QR-Generators: THIRD_PARTY_NOTICES.md.
+`npm test`: 60 erfolgreiche Regel- und HTTP-Tests. Weitere Angaben in TESTBERICHT.md,
+Konsolenergebnis in TESTERGEBNISSE.txt, Browsermessungen in TESTDARSTELLUNG.json.
+Vorschaubilder unter vorschau/. Keine Spielstände oder Zugangstoken im Paket.
+Lizenz des QR-Generators: THIRD_PARTY_NOTICES.md.

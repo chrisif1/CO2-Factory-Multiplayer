@@ -66,7 +66,7 @@ function render(){
  if(!access||!room){$('home').hidden=false;$('waiting').hidden=true;$('playing').hidden=true;return;}
  $('home').hidden=true;$('switchRoomBtn').hidden=false;
  if(!room.started){$('waiting').hidden=false;$('playing').hidden=true;renderLobby();return;}
- $('waiting').hidden=true;$('playing').hidden=false;renderHeader();renderBoard();renderPlayers();renderAction();renderLog();maybeShowFieldPopup();refreshExperience();
+ $('waiting').hidden=true;$('playing').hidden=false;renderHeader();renderBoard();renderPlayers();renderAction();renderLog();refreshExperience();maybeShowFieldPopup();
  if(view==='stats')renderStats();
  setBusy(actionBusy);
 }
@@ -87,16 +87,14 @@ function renderHeader(){
  $('turnNumber').textContent=room.finalRound?`LETZTE RUNDE ${room.finalRound.round}`:`RUNDE ${room.round||1} · ZUG ${room.turnNumber}`;
  $('turnTitle').textContent=room.gameOver?'Endwertung':`Am Zug: Spieler ${p.id+1} · ${p.name}`;
  const catchup=room.finalRound?` · ${room.finalRound.pendingIds.length} nachfolgende Unternehmen` : '';
- $('turnHint').textContent=room.gameOver?'Endwertung nach Jahres-CO₂; bei Gleichstand entscheidet das Kapital.':`CO₂-Ziel ${fmt(room.config.goal)} t/Jahr · Jahr ${p.years+1} · Feld ${p.pos+1}${catchup}`;
+ $('turnHint').textContent=room.gameOver?'Endwertung nach Jahres-CO₂; bei Gleichstand entscheidet das Kapital.':`Jahr ${p.years+1} · Feld ${p.pos+1}${catchup}`;
  $('inGameCode').textContent=room.code;
  const phaseLabel={roll:'Bereit zum Würfeln',decision:'Entscheidung erforderlich',end:'Zug abgeschlossen',detention:'CO₂-Audit',over:'Spielende'};
  $('turnPill').textContent=room.gameOver?'Spielende':room.finalRound?'Letzte Runde':phaseLabel[room.phase]||'Spiel läuft';
- $('centerPlayer').textContent=p.name;
- $('centerInstruction').textContent=room.gameOver?'Endwertung':`${myTurn()?'Dein Zug':'Gemeinsames Brett'} · Jahr ${p.years+1} · Feld ${p.pos+1}`;
- $('focusMetrics').innerHTML=`<div><span>Kapital</span><strong>${euro(p.cash)}</strong></div><div><span>Jahresergebnis</span><strong>${p.annual>=0?'+':''}${euro(p.annual)}</strong></div><div><span>CO₂e / Jahr</span><strong>${fmt(p.co2)} t</strong></div><div><span>Kumuliert</span><strong>${fmt(p.cumulative)} t</strong></div>`;
- $('miniScopes').innerHTML=(p.scope||[0,0,0]).map((v,i)=>`<span>Scope ${i+1}<b>${fmt(v)} t</b></span>`).join('');
+ $('centerPlayer').textContent=room.gameOver?'Spiel beendet':'Würfel';
+ $('centerInstruction').hidden=!room.gameOver;
  $('rollBtn').disabled=!myTurn()||room.phase!=='roll';$('nextBtn').disabled=!myTurn()||room.phase!=='end';
- $('dieFace').textContent=room.dice>0?DICE[room.dice-1]:'–';$('roleBadge').textContent=room.host&&room.config.hostOnly?'SPIELLEITUNG':`SPIELER ${room.actorId+1}`;
+ $('dieFace').textContent=room.dice>0?DICE[room.dice-1]:'–';
  $('centerPopupBtn').hidden=!myTurn()||!['decision','detention'].includes(room.phase);$('overviewToggle').textContent=`Unternehmen & Protokoll`;
  $('prominentGoal').innerHTML=`${fmt(room.config.goal,0)} <small>t/Jahr</small>`;$('resultsToggle').hidden=!room.gameOver;
 }
@@ -115,14 +113,14 @@ function renderBoard(){
  hideFieldTooltip();
  const b=$('boardGrid');b.querySelectorAll('.cell').forEach(x=>x.remove());const current=room.players[room.turn];
  DATA.fields.forEach((f,idx)=>{const [r,c]=fieldCoords(idx);const el=document.createElement('div');
- const style={'Investition':'invest','Ereigniskarte':'event','Entscheidung':'decision','Audit':'audit','Versetzung zum Audit':'goaudit','CO₂-Preis':'tax','Förderung':'bonus','Wissenstransfer':'bonus'};
+ const style={'Investition':'invest','Ereigniskarte':'event','Entscheidung':'decision','Audit':'audit','Versetzung zum Audit':'goaudit','CO₂-Preis':'tax','Geschäftsjahr':'start','Förderung':'bonus','Wissenstransfer':'bonus'};
  const desc=(f.description||'').replace(/\s+/g,' ').trim();
  const shortDesc=desc.length>120?desc.slice(0,117)+'…':desc;
- const imgSrc=f.type==='Ereigniskarte'?'/img/event.svg':`/img/${String(f.number).padStart(2,'0')}.svg`;
+ const imgSrc=f.type==='Ereigniskarte'?'/img/event.svg':`/img/${String(f.number).padStart(2,'0')}.svg?v=1.7.0`;
  el.className=`cell ${style[f.type]||''} ${current.pos===idx&&!room.gameOver?'current':''}`;el.style.gridRow=String(r+1);el.style.gridColumn=String(c+1);el.setAttribute('aria-describedby','fieldTooltip');el.addEventListener('pointerenter',()=>showFieldTooltip(el,f));el.addEventListener('pointerleave',hideFieldTooltip);el.addEventListener('focus',()=>showFieldTooltip(el,f));el.addEventListener('blur',hideFieldTooltip);el.setAttribute('tabindex','0');el.setAttribute('role','button');el.setAttribute('aria-label',`Feld ${f.number}: ${f.name} öffnen`);el.addEventListener('click',()=>openFieldPopup(true,f.number));el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openFieldPopup(true,f.number);}});
  let chips='';room.players.forEach((p,i)=>{if(p.pos===idx&&!p.withdrawn)chips+=`<span class="token${p.id===room.turn&&!room.gameOver?' current-token':''}" style="--c:${COLORS[i]}" title="Spieler ${i+1}: ${clean(p.name)}" aria-label="Spieler ${i+1}: ${clean(p.name)}">${i+1}</span>`});
  const occupants=room.players.filter(p=>p.pos===idx&&!p.withdrawn).length;el.classList.toggle('occupied',occupants>0);el.classList.toggle('crowded',occupants>4);
- el.innerHTML=`<span class="num">${f.number}</span><img class="field-img" src="${imgSrc}" alt="${clean(f.name)}"><div class="field-name">${clean(f.name)}</div><div class="tokens">${chips}</div>`;b.append(el);
+ el.innerHTML=`<span class="num">${f.number}</span><img class="field-img" src="${imgSrc}" alt="${clean(f.name)}"><div class="field-name">${f.number===1?'START':clean(f.name)}</div><div class="tokens">${chips}</div>`;b.append(el);
  });
 }
 function renderPlayers(){renderBoardPlayers();const box=$('playersList');box.textContent='';room.players.forEach((p,i)=>{
@@ -193,7 +191,7 @@ function animateEvent(e){
 function setPopupField(fieldNumber){
  const f=DATA.fields[fieldNumber-1];if(!f)return;
  $('fieldPopupNumber').textContent=`FELD ${fieldNumber}`;
- $('fieldPopupImg').src=f.type==='Ereigniskarte'?'/img/event.svg':`/img/${String(fieldNumber).padStart(2,'0')}.svg`;
+ $('fieldPopupImg').src=f.type==='Ereigniskarte'?'/img/event.svg':`/img/${String(fieldNumber).padStart(2,'0')}.svg?v=1.7.0`;
  $('fieldPopupImg').alt=f.name;
  $('fieldPopupHint').textContent=popupMode==='action'?`Spieler ${room.turn+1} · ${room.players[room.turn].name}`:'Feld ansehen · Spielstand bleibt unverändert';
 }
@@ -229,7 +227,7 @@ function closeFieldPopup(){
  modalFocusReturn=null;popupMode='action';
 }
 function maybeShowFieldPopup(){
- if(['globalDialog','companyDialog','resultsDialog'].some(id=>$(id).open))return;
+ if(['globalDialog','companyDialog','resultsDialog','turnDialog'].some(id=>$(id).open))return;
  if(popupMode==='inspect'&&!$('fieldPopup').hidden)return;
  if(!myTurn()||room.gameOver){closeFieldPopup();return;}
  if(room.phase==='roll'){closeFieldPopup();return;}
@@ -276,9 +274,9 @@ function graph(id,key){const svg=$(id),chosen=room.players.filter(p=>chartSelect
 }
 function renderBoardPlayers(){
  $('boardPlayers').style.setProperty('--score-rows',String(Math.ceil(room.players.length/2)));
- $('boardPlayerCount').textContent=`${room.players.filter(p=>!p.withdrawn).length}/${room.players.length} aktiv · Ziel ${fmt(room.config.goal,0)} t`;
+ $('boardPlayerCount').textContent=`${room.players.filter(p=>!p.withdrawn).length}/${room.players.length} aktiv`;
  const winner=room.gameOver?standings().find(p=>p.co2<=room.config.goal):null;
- $('boardPlayers').innerHTML=room.players.map((p,i)=>`<button type="button" data-company="${p.id}" class="board-player${!room.gameOver&&i===room.turn?' active':''}${p.withdrawn?' withdrawn':''}${winner?.id===p.id?' winner':''}" title="${clean(p.name)} · Kapital ${euro(p.cash)} · Jahresergebnis ${euro(p.annual)} · ${fmt(p.co2)} t CO₂e/Jahr"><span class="board-seat" style="--c:${COLORS[i]}">${i+1}</span><div><strong>${clean(p.name)}${p.withdrawn?' · ausgestiegen':''}</strong><span class="board-player-cash${p.cash<0?' debt':''}">${euro(p.cash)}</span><span class="board-player-annual${p.annual<0?' debt':''}" aria-label="Jahresergebnis ${euro(p.annual)}"><i class="annual-prefix">Jahr: </i>${p.annual>=0?'+':''}${euro(p.annual)}<em class="annual-suffix">/J</em></span><small>${fmt(p.co2,0)} t CO₂e/Jahr · ${p.withdrawn?'Ausgestiegen':p.co2<=room.config.goal?'Ziel erreicht':`Jahr ${p.years+1}`}</small></div></button>`).join('');
+ $('boardPlayers').innerHTML=room.players.map((p,i)=>`<button type="button" data-company="${p.id}" class="board-player${!room.gameOver&&i===room.turn?' active':''}${p.withdrawn?' withdrawn':''}${winner?.id===p.id?' winner':''}" title="${clean(p.name)} · Kapital ${euro(p.cash)} · Jahresergebnis ${euro(p.annual)} · ${fmt(p.co2)} t CO₂e/Jahr"><span class="board-seat" style="--c:${COLORS[i]}">${i+1}</span><div><strong>${clean(p.name)}${p.withdrawn?' · ausgestiegen':''}${p.auditPass?'<span class="ims-badge" title="Managementsystem: Audit-Schutz gespeichert" aria-label="Audit-Schutz gespeichert">IMS</span>':''}</strong><span class="board-player-cash${p.cash<0?' debt':''}">${euro(p.cash)}</span><span class="board-player-annual${p.annual<0?' debt':''}" aria-label="Jahresergebnis ${euro(p.annual)}"><i class="annual-prefix">Jahr: </i>${p.annual>=0?'+':''}${euro(p.annual)}<em class="annual-suffix">/J</em></span><small>${fmt(p.co2,0)} t CO₂e/Jahr${p.withdrawn?' · Ausgestiegen':p.co2<=room.config.goal?' · Ziel erreicht':''}</small></div></button>`).join('');
  $('boardPlayers').querySelectorAll('[data-company]').forEach(b=>b.addEventListener('click',()=>openCompany(Number(b.dataset.company))));
 }
 function renderJoinQr(){
@@ -307,8 +305,33 @@ $('overviewToggle').addEventListener('click',()=>openDashboard());$('dashboardCl
 document.querySelectorAll('[data-dashboard]').forEach(b=>b.addEventListener('click',()=>setDashboardTab(b.dataset.dashboard)));
 $('dashboardDialog').addEventListener('click',e=>{if(e.target===$('dashboardDialog')){const r=$('dashboardDialog').getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)$('dashboardDialog').close();}});
 let activeGlobal=null,globalAutomatic=false,endPresented=false,reportSelection=null;
-const globalSeenKey=()=>`co2_global_seen_v16_${room.code}`;
-function closeDetails(){for(const id of ['dashboardDialog','companyDialog','resultsDialog'])if($(id).open)$(id).close();}
+let activeTurnKey=null;const acknowledgedTurns=new Set();
+const turnKey=()=>`${room.code}:${room.actorId}:${room.turnNumber}`;
+function turnWasAcknowledged(key){try{return acknowledgedTurns.has(key)||sessionStorage.getItem('co2_turn_v17_'+key)==='seen';}catch{return acknowledgedTurns.has(key);}}
+function syncTurnPopup(){
+ const eligible=myTurn()&&['roll','detention'].includes(room.phase);
+ if(!eligible){if($('turnDialog').open)$('turnDialog').close();activeTurnKey=null;return;}
+ if($('globalDialog').open||$('resultsDialog').open)return;
+ const key=turnKey();if(turnWasAcknowledged(key))return;
+ if($('turnDialog').open&&activeTurnKey===key)return;
+ closeFieldPopup();closeDetails();setActiveTab('board');activeTurnKey=key;
+ const p=room.players[room.turn];$('turnAvatar').textContent=String(p.id+1);$('turnAvatar').style.setProperty('--c',COLORS[p.id]);$('turnPopupName').textContent=p.name;
+ $('turnPopupHint').textContent=room.phase==='detention'?'Entscheide zuerst, wie du den Audit-Aufenthalt beendest.':room.finalRound?'Dein letzter Zug in dieser Runde. Danach wird das Ergebnis ausgewertet.':'Würfle und entscheide über den nächsten Schritt für dein Unternehmen.';
+ $('turnDialog').showModal();
+}
+function acknowledgeTurn(){
+ if(activeTurnKey){acknowledgedTurns.add(activeTurnKey);try{sessionStorage.setItem('co2_turn_v17_'+activeTurnKey,'seen');}catch{}}
+ activeTurnKey=null;$('turnDialog').close();refreshExperience();maybeShowFieldPopup();
+ if(!$('globalDialog').open&&$('fieldPopup').hidden&&room?.phase==='roll')$('rollBtn').focus({preventScroll:true});
+}
+$('turnReady').addEventListener('click',acknowledgeTurn);
+$('turnDialog').addEventListener('cancel',e=>{e.preventDefault();acknowledgeTurn();});
+function auditPassDetails(p){
+ if(!p.auditPass&&!p.auditPassUses)return '';
+ return `<section class="audit-pass-card"><span aria-hidden="true">🛡</span><div><strong>Integriertes Managementsystem</strong><p>${p.auditPass?'Audit-Schutz gespeichert. Beim nächsten Audit automatisch keine Auditgebühr und kein Aussetzen. Danach wird die Karte zurückgelegt.':'Der Audit-Schutz wurde bereits eingesetzt.'}${p.auditPassUses?` Bereits ${p.auditPassUses}× eingesetzt · ${euro(p.auditPassSavings)} Auditgebühren vermieden.`:''}</p></div></section>`;
+}
+const globalSeenKey=()=>`co2_global_seen_v17_${room.code}`;
+function closeDetails(){for(const id of ['dashboardDialog','companyDialog','resultsDialog','turnDialog'])if($(id).open)$(id).close();}
 function investmentList(p){
  const records=p.investments||[];
  const items=p.owned.map(n=>{const f=DATA.fields.find(x=>x.number===n),actual=records.find(x=>x.fieldNumber===n)?.scope||f.scope;return `<article class="investment-item"><div><strong>${clean(f.name)}</strong><span>Feld ${n} · ${euro(Math.max(0,-f.capital))} investiert</span></div><div><b>${f.annual>=0?'+':''}${euro(f.annual)}/Jahr</b><span>Beim Kauf: ${actual.map((v,i)=>`S${i+1} ${v>0?'+':''}${fmt(v,1)} t`).join(' · ')}</span></div></article>`;});
@@ -318,7 +341,7 @@ function openCompany(id){
  const p=room.players.find(x=>x.id===id);if(!p)return;
  closeFieldPopup();closeDetails();$('companyTitle').textContent=`Spieler ${id+1} · ${p.name}`;
  const cost=p.owned.reduce((sum,n)=>sum+Math.max(0,-DATA.fields[n-1].capital),0);
- $('companyContent').innerHTML=`<div class="detail-metrics"><div><span>Kapital</span><strong>${euro(p.cash)}</strong></div><div><span>Jahresergebnis</span><strong>${euro(p.annual)}</strong></div><div><span>CO₂e / Jahr</span><strong>${fmt(p.co2)} t</strong></div><div><span>Investiert</span><strong>${euro(cost)}</strong></div></div><h3>Getätigte Investitionen (${p.owned.length})</h3>${investmentList(p)}<h3>Unternehmensentscheidungen</h3>${(p.decisionHistory||[]).map(d=>`<p class="decision-entry"><strong>${clean(DATA.fields[d.fieldNumber-1].name)}</strong> · ${clean(d.name)}<br><small>Kapital ${euro(d.cash)} · Jahresergebnis ${euro(d.annual)} · ${d.scope.map((v,i)=>`S${i+1} ${v>0?'+':''}${fmt(v)} t`).join(' / ')}</small></p>`).join('')||'<p class="helper">Noch keine Unternehmensentscheidung getroffen.</p>'}${room.gameOver?'<button type="button" id="companyReflection" class="primary wide">Persönlichen Reflexionsbericht öffnen</button>':''}`;
+ $('companyContent').innerHTML=`<div class="detail-metrics"><div><span>Kapital</span><strong>${euro(p.cash)}</strong></div><div><span>Jahresergebnis</span><strong>${euro(p.annual)}</strong></div><div><span>CO₂e / Jahr</span><strong>${fmt(p.co2)} t</strong></div><div><span>Investiert</span><strong>${euro(cost)}</strong></div></div>${auditPassDetails(p)}<h3>Getätigte Investitionen (${p.owned.length})</h3>${investmentList(p)}<h3>Unternehmensentscheidungen</h3>${(p.decisionHistory||[]).map(d=>`<p class="decision-entry"><strong>${clean(DATA.fields[d.fieldNumber-1].name)}</strong> · ${clean(d.name)}<br><small>Kapital ${euro(d.cash)} · Jahresergebnis ${euro(d.annual)} · ${d.scope.map((v,i)=>`S${i+1} ${v>0?'+':''}${fmt(v)} t`).join(' / ')}</small></p>`).join('')||'<p class="helper">Noch keine Unternehmensentscheidung getroffen.</p>'}${room.gameOver?'<button type="button" id="companyReflection" class="primary wide">Persönlichen Reflexionsbericht öffnen</button>':''}`;
  $('companyDialog').showModal();$('companyReflection')?.addEventListener('click',()=>showResults(id));
 }
 $('companyClose').addEventListener('click',()=>$('companyDialog').close());
@@ -349,7 +372,8 @@ function refreshExperience(){
  if(!room?.started)return;
  const seen=Number(safeLocalGet(globalSeenKey()))||0,next=(room.globalEvents||[]).find(e=>e.id>seen);
  if(!$('globalDialog').open&&next){showGlobal(next,true);return;}
- if(room.gameOver&&!endPresented&&!$('globalDialog').open){endPresented=true;showResults();}
+ if(room.gameOver&&!endPresented&&!$('globalDialog').open){endPresented=true;showResults();return;}
+ syncTurnPopup();
  if($('companyDialog').open){/* Die Detailansicht bleibt während des Lesens stabil. */}
  if($('dashboardDialog').open)renderGlobalArchive();
 }
@@ -357,19 +381,19 @@ function showResults(playerId=null){
  if(!room?.gameOver)return;closeFieldPopup();closeDetails();
  const ranked=standings(),top=ranked.slice(0,3),leader=ranked.find(p=>p.co2<=room.config.goal);
  $('podium').innerHTML=top.map((p,i)=>`<article class="podium-place place-${i+1}"><span class="medal" aria-hidden="true">${['🥇','🥈','🥉'][i]}</span><strong>${clean(p.name)}</strong><span>${fmt(p.co2,1)} t CO₂e/Jahr</span><small>${euro(p.cash)}${p.co2<=room.config.goal?' · Ziel erreicht':''}</small><div class="podium-block">${i+1}<small>PLATZ</small></div></article>`).join('')||'<p>Alle Unternehmen sind ausgestiegen. Es gibt keine Platzierung.</p>';
- $('rankingExplanation').textContent=`Ziel: ${fmt(room.config.goal)} t/Jahr. Platzierung nach aktuellem Jahres-CO₂, bei Gleichstand nach Kapital. Ausgestiegene sind ausgeschlossen.${leader?'':' Kein verbliebenes Unternehmen hat das Ziel erreicht; die Platzierung zeigt daher keinen Zielsieger.'}`;
+ $('rankingExplanation').textContent=`Platzierung nach aktuellem Jahres-CO₂, bei Gleichstand nach Kapital. Ausgestiegene sind ausgeschlossen.${leader?'':' Kein verbliebenes Unternehmen hat das Ziel erreicht; die Platzierung zeigt daher keinen Zielsieger.'}`;
  const select=$('reflectionPlayer');select.innerHTML=room.players.map(p=>`<option value="${p.id}">${clean(p.name)}</option>`).join('');
  reportSelection=playerId??room.actorId??ranked[0]?.id??room.players[0]?.id;select.value=String(reportSelection);renderReflection();$('resultsDialog').showModal();
 }
 function renderReflection(){
  const report=room.reflections?.find(r=>r.playerId===Number($('reflectionPlayer').value));if(!report)return;
  const p=room.players.find(x=>x.id===report.playerId);
- $('reflectionContent').innerHTML=`<div class="reflection-intro"><span class="eyebrow">DEINE STRATEGIE · ${clean(report.name)}</span><h3>${report.goalReached?'Klimaziel erreicht':'Dein Weg zum Klimaziel'}</h3><p>${fmt(report.initial)} → <strong>${fmt(report.current)} t CO₂e/Jahr</strong> · Ziel ${fmt(report.goal)} t/Jahr</p></div><div class="detail-metrics"><div><span>Investiert</span><strong>${euro(report.cost)}</strong></div><div><span>Jährliche Investitionswirkung</span><strong>${report.annual>0?'+':''}${euro(report.annual)}</strong></div><div><span>Vermiedene Ereigniskosten</span><strong>${euro(report.avoidedCosts)}</strong></div><div><span>Verbleibendes Kapital</span><strong>${euro(p.cash)}</strong></div></div><h3>Was du aus deiner Partie mitnehmen kannst</h3><div class="reflection-insights">${report.insights.map(t=>`<p>${clean(t)}</p>`).join('')}</div><h3>Deine Investitionen im Rückblick</h3>${investmentList(p)}<h3>Deine Unternehmensentscheidungen</h3>${report.decisions.map(d=>`<p class="decision-entry"><strong>${clean(DATA.fields[d.fieldNumber-1].name)}</strong> · ${clean(d.name)}<br><small>Jahresergebnis ${euro(d.annual)} · ${d.scope.map((v,i)=>`S${i+1} ${v>0?'+':''}${fmt(v)} t`).join(' / ')}</small></p>`).join('')||'<p class="helper">Keine Entscheidungen erfasst.</p>'}<h3>Wie globale Ereignisse dich getroffen haben</h3>${report.events.map(e=>`<p class="reflection-event"><strong>${clean(e.title)}</strong> · ${euro(e.cash)}<br><small>${e.protections.length?'Wirksam: '+e.protections.map(clean).join(', '):'Keine passende Schutzinvestition'} · ${e.scope.map((v,i)=>`S${i+1} ${v>0?'+':''}${fmt(v,2)} t`).join(' / ')}</small></p>`).join('')||'<p class="helper">In deiner aktiven Spielzeit gab es keine globalen Ereignisse.</p>'}<div class="reflection-questions"><h3>Fragen für deine Reflexion</h3><ol>${report.questions.map(q=>`<li>${clean(q)}</li>`).join('')}</ol></div><p class="helper">Persönliches Feedback aus deinen tatsächlichen Spielentscheidungen. Vereinfachte Spielannahmen; keine vollständige Investitionsrechnung für einen realen Betrieb.</p>`;
+ $('reflectionContent').innerHTML=`<div class="reflection-intro"><span class="eyebrow">DEINE STRATEGIE · ${clean(report.name)}</span><h3>${report.goalReached?'Klimaziel erreicht':'Dein Weg zum Klimaziel'}</h3><p>${fmt(report.initial)} → <strong>${fmt(report.current)} t CO₂e/Jahr</strong></p></div><div class="detail-metrics"><div><span>Investiert</span><strong>${euro(report.cost)}</strong></div><div><span>Jährliche Investitionswirkung</span><strong>${report.annual>0?'+':''}${euro(report.annual)}</strong></div><div><span>Vermiedene Ereigniskosten</span><strong>${euro(report.avoidedCosts)}</strong></div><div><span>Verbleibendes Kapital</span><strong>${euro(p.cash)}</strong></div></div><h3>Was du aus deiner Partie mitnehmen kannst</h3><div class="reflection-insights">${report.insights.map(t=>`<p>${clean(t)}</p>`).join('')}</div>${auditPassDetails(p)}<h3>Deine Investitionen im Rückblick</h3>${investmentList(p)}<h3>Deine Unternehmensentscheidungen</h3>${report.decisions.map(d=>`<p class="decision-entry"><strong>${clean(DATA.fields[d.fieldNumber-1].name)}</strong> · ${clean(d.name)}<br><small>Jahresergebnis ${euro(d.annual)} · ${d.scope.map((v,i)=>`S${i+1} ${v>0?'+':''}${fmt(v)} t`).join(' / ')}</small></p>`).join('')||'<p class="helper">Keine Entscheidungen erfasst.</p>'}<h3>Wie globale Ereignisse dich getroffen haben</h3>${report.events.map(e=>`<p class="reflection-event"><strong>${clean(e.title)}</strong> · ${euro(e.cash)}<br><small>${e.protections.length?'Wirksam: '+e.protections.map(clean).join(', '):'Keine passende Schutzinvestition'} · ${e.scope.map((v,i)=>`S${i+1} ${v>0?'+':''}${fmt(v,2)} t`).join(' / ')}</small></p>`).join('')||'<p class="helper">In deiner aktiven Spielzeit gab es keine globalen Ereignisse.</p>'}<div class="reflection-questions"><h3>Fragen für deine Reflexion</h3><ol>${report.questions.map(q=>`<li>${clean(q)}</li>`).join('')}</ol></div><p class="helper">Persönliches Feedback aus deinen tatsächlichen Spielentscheidungen. Vereinfachte Spielannahmen; keine vollständige Investitionsrechnung für einen realen Betrieb.</p>`;
 }
 $('reflectionPlayer').addEventListener('change',renderReflection);$('resultsClose').addEventListener('click',()=>$('resultsDialog').close());$('resultsToggle').addEventListener('click',()=>showResults());
 async function initialize(){
  await initializeJoinBase();
- try{DATA=await (await fetch('/game-data.json?v=1.6.0')).json();}catch{showHomeError('Spieldaten konnten nicht geladen werden. Bitte Server prüfen.');return;}
+ try{DATA=await (await fetch('/game-data.json?v=1.7.0')).json();}catch{showHomeError('Spieldaten konnten nicht geladen werden. Bitte Server prüfen.');return;}
  const fromUrl=new URLSearchParams(location.search).get('room')?.trim().toUpperCase();
  if(fromUrl&&/^[A-HJ-NP-Z2-9]{6}$/.test(fromUrl)){$('codeInput').value=fromUrl;switchEntry(false)}
  try{const saved=JSON.parse(safeLocalGet(STORE)||'null');

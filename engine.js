@@ -6,6 +6,7 @@ const {fitStarting,allowedOption}=require('./feasibility');
 const DATA = require('./public/game-data.json');
 const FIELDS = DATA.fields;
 const CARDS = DATA.cards;
+const IMS_CARD=24;
 const AUDIT_INDEX=FIELDS.findIndex(f=>f.type==='Audit');
 const PV_FIELD=FIELDS.find(f=>f.sourceNumber===6).number;
 const MAINTENANCE_FIELD=FIELDS.find(f=>f.sourceNumber===24).number;
@@ -27,14 +28,14 @@ const safeName = (s,fallback) => String(s||'').trim().replace(/[\u0000-\u001f\u0
 function createRoom(code, name, input={}){
  const cfg={hostOnly:input.hostOnly===true,maxPlayers: Math.trunc(number(input.maxPlayers,8,2,8)), initialCash:number(input.initialCash,300000,0,1e11), annualIncome:number(input.annualIncome,100000,-1e10,1e10), starting:[number(input.s1,250,0,1e7),number(input.s2,300,0,1e7),number(input.s3,450,0,1e7)],goal:number(input.goal,400,0,1e8)};
  Object.assign(cfg,fitStarting(cfg.starting,cfg.goal,FIELDS));
- const hostToken=token();const room={code,rulesVersion:'1.6',round:1,finalRound:null,finishReason:null,createdAt:Date.now(),updatedAt:Date.now(),revision:1,started:false,gameOver:false,config:cfg,hostToken,hostName:safeName(name,'Spielleitung'),players:[],turn:0,turnNumber:1,dice:0,phase:'lobby',pending:null,deck:shuffle(Array.from({length:CARDS.length},(_,i)=>i+1)),cursor:0,globalEvents:[],globalSequence:0,params:{...DEFAULT_PARAMS},logs:[],trends:[],history:[],lastEvent:null,landing:null};
+ const hostToken=token();const room={code,rulesVersion:'1.7',round:1,finalRound:null,finishReason:null,createdAt:Date.now(),updatedAt:Date.now(),revision:1,started:false,gameOver:false,config:cfg,hostToken,hostName:safeName(name,'Spielleitung'),players:[],turn:0,turnNumber:1,dice:0,phase:'lobby',pending:null,deck:shuffle(Array.from({length:CARDS.length},(_,i)=>i+1)),cursor:0,globalEvents:[],globalSequence:0,params:{...DEFAULT_PARAMS},logs:[],trends:[],history:[],lastEvent:null,landing:null};
  if(!cfg.hostOnly){const player=joinRoom(room,name);player.token=hostToken;}return room;
 }
 function joinRoom(room,name){
  if(room.started)throw Error('Das Spiel hat bereits begonnen.');
  if(room.players.length>=room.config.maxPlayers)throw Error('Der Spielraum ist voll.');
  const id=room.players.length, cfg=room.config;
- const p={id,token:token(),name:safeName(name,`Unternehmen ${id+1}`),pos:0,cash:cfg.initialCash,annual:cfg.annualIncome,base:cfg.starting.slice(),temp:[0,0,0],years:0,cumulative:0,owned:[],investments:[],decisions:[],decisionHistory:[],eventExperience:[],detained:false,bankrupt:false,finished:false,turns:0,goalReachedTurn:null};
+ const p={id,token:token(),name:safeName(name,`Unternehmen ${id+1}`),pos:0,cash:cfg.initialCash,annual:cfg.annualIncome,base:cfg.starting.slice(),temp:[0,0,0],years:0,cumulative:0,owned:[],investments:[],decisions:[],decisionHistory:[],eventExperience:[],auditPass:false,auditPassUses:0,auditPassSavings:0,detained:false,bankrupt:false,finished:false,turns:0,goalReachedTurn:null};
  room.players.push(p);room.trends[id]=[];record(room,p,'Spielbeginn');change(room,'join',`${p.name} ist dem Spiel beigetreten.`,{playerId:id});return p;
 }
 function change(room,kind,message,details={}){
@@ -59,9 +60,21 @@ function yearClose(room,p,multiplier=1){
  checkBankrupt(p);record(room,p,`Jahresabschluss ${p.years}`);
  return {emitted,year:p.years,annual:p.annual,multiplier,payout};
 }
+function returnAuditPass(room,p){
+ if(!p.auditPass)return false;
+ p.auditPass=false;
+ // Insert behind every currently drawable card, preserving the next card.
+ if(!room.deck.includes(IMS_CARD)){const at=room.cursor;room.deck.splice(at,0,IMS_CARD);room.cursor=(at+1)%room.deck.length;}
+ return true;
+}
 function audit(room,p){
- const boundary=room.config.goal,penalty=co2Charge(room,100,footprint(p)-boundary);p.cash-=penalty;
- checkBankrupt(p);record(room,p,'CO₂-Audit');return {boundary,penalty};
+ const boundary=room.config.goal,penalty=co2Charge(room,100,footprint(p)-boundary);
+ if(returnAuditPass(room,p)){
+  p.auditPassUses++;p.auditPassSavings=money(p.auditPassSavings+penalty);p.detained=false;
+  record(room,p,'Audit-Schutz eingelöst');return {boundary,penalty:0,protected:true,saved:penalty};
+ }
+ p.cash-=penalty;
+ checkBankrupt(p);record(room,p,'CO₂-Audit');return {boundary,penalty,protected:false};
 }
 function ranking(room){
  return room.players.filter(p=>!p.withdrawn).slice().sort((a,b)=>footprint(a)-footprint(b)||b.cash-a.cash||a.id-b.id);
@@ -102,6 +115,7 @@ function eventEffect(room,id,p){
   case 17:case 18:if(!p.owned.includes(PV_FIELD)){e.valid=false;e.note='Keine PV-Anlage gekauft: Karte ohne Wirkung.';break;}if(x(12)<=0){e.valid=false;e.note='PV-Jahresertrag 0: keine Wirkung.';break;}const s=id===17?-1:1;e.scope[1]=s*x(12)*x(41)*x(15)/1000;e.scope[2]=s*x(12)*x(41)*x(16)/1000;e.term='temporary';break;
   case 19:if(x(42)<=0||x(43)<=0){e.valid=false;e.note='Keine wirksame Kältemittelleckage hinterlegt.';break;}e.scope[0]=x(42)*x(43)/1000;e.term='temporary';break;
   case 20:e.scope[2]=-x(14)*x(44)*(x(22)-x(23))/1000;e.term='permanent';break;
+  case IMS_CARD:e.term='held';e.valid=!p.auditPass;e.note='Persönlich aufbewahren: Beim nächsten Audit automatisch keine Auditgebühr und kein Aussetzen. Danach geht die Karte zurück in den Stapel.';break;
  }
  return e;
 }
@@ -132,7 +146,7 @@ function action(room,actorToken,input={},options={}){
    if(host)room.config.hostOnly=true;
    change(room,'leave',`${actor.name} hat den Spielraum verlassen.`);return;
   }
-  actor.withdrawn=true;actor.finished=true;actor.detained=false;
+  returnAuditPass(room,actor);actor.withdrawn=true;actor.finished=true;actor.detained=false;
   change(room,'withdraw',`${actor.name} ist ausgestiegen und scheidet aus.`,{playerId:actor.id});
   if(actor.id===room.turn||!room.players.some(p=>!p.finished&&!p.withdrawn))advanceTurn(room);
   return;
@@ -176,11 +190,13 @@ function action(room,actorToken,input={},options={}){
     case 'Investition':room.phase='decision';room.pending={kind:'invest',index:pos};break;
     case 'Entscheidung':if(!p.decisions.includes(field.number)){room.phase='decision';room.pending={kind:'choose',index:pos};}break;
     case 'Ereigniskarte':{
-      eventId=room.deck[room.cursor];room.cursor=(room.cursor+1)%room.deck.length;
+      eventId=room.deck[room.cursor];
+      if(eventId===IMS_CARD){room.deck.splice(room.cursor,1);room.cursor%=room.deck.length;}
+      else room.cursor=(room.cursor+1)%room.deck.length;
       const card=CARDS[eventId-1],targets=card.global?room.players.filter(t=>!t.withdrawn):[p],results=[];
       for(const target of targets){
        const e=eventEffect(room,eventId,target),before=scopes(target);let actual=[0,0,0];
-       if(e.valid){target.cash+=e.cash;changeScope(target,e.scope,e.term==='permanent');actual=scopes(target).map((n,i)=>money(n-before[i]));}
+       if(e.valid){target.cash+=e.cash;changeScope(target,e.scope,e.term==='permanent');actual=scopes(target).map((n,i)=>money(n-before[i]));if(eventId===IMS_CARD)target.auditPass=true;}
        const result={playerId:target.id,name:target.name,cash:e.valid?e.cash:0,scope:actual,term:e.term,valid:e.valid,note:e.note,baselineCash:e.baselineCash??e.cash,baselineScope:e.baselineScope??e.scope,factor:e.factor??1,protections:e.protections||[]};
        results.push(result);if(target.id===p.id)eventResult=result;
        checkBankrupt(target);
@@ -192,8 +208,8 @@ function action(room,actorToken,input={},options={}){
       details=`${card.global?'Globales Ereignis - ':''}${card.title}: automatisch angewendet.`;
       break;
     }
-    case 'Audit':{const a=audit(room,p);details=`Auditgebühr ${money(a.penalty)} € bei Grenze ${a.boundary} t.`;break;}
-    case 'Versetzung zum Audit':{p.pos=AUDIT_INDEX;const a=audit(room,p);p.detained=true;details=`Zum Audit versetzt: ${money(a.penalty)} € Gebühr.`;break;}
+    case 'Audit':{const a=audit(room,p);details=a.protected?'Integriertes Managementsystem eingelöst: keine Auditgebühr. Die Karte ist wieder im Stapel.':`Auditgebühr ${money(a.penalty)} €.`;break;}
+    case 'Versetzung zum Audit':{p.pos=AUDIT_INDEX;const a=audit(room,p);p.detained=!a.protected;details=a.protected?'Integriertes Managementsystem eingelöst: keine Auditgebühr, keine Sofortberatung und kein Aussetzen. Die Karte ist wieder im Stapel.':`Zum Audit versetzt: ${money(a.penalty)} € Gebühr.`;break;}
     case 'CO₂-Preis':{const cost=co2Charge(room,100,footprint(p));p.cash-=cost;checkBankrupt(p);record(room,p,'CO₂-Preis');details=`CO₂-Abgabe ${money(cost)} € (Satz: ${money(100*co2Factor(room))}/t).`;break;}
     case 'Förderung':p.cash+=60000;record(room,p,'Innovationsförderung');details='+60.000 € Förderung.';break;
     case 'Wissenstransfer':p.cash+=20000;record(room,p,'Wissenstransfer');details='+20.000 € Wissenstransfer.';break;

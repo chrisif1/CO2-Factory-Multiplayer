@@ -1,0 +1,7 @@
+V1.7: Persönliche Managementsystem-Karte als gespeicherter Audit-Schutz.
+Wird beim nächsten Audit verbraucht; verhindert Gebühr und Audit-Aufenthalt.
+Danach zurück im Stapel; auch Ausstieg gibt die Karte frei.
+Goldene Startkachel, aufgeräumte Mitte, CO2-Ziel nur einmal groß rechts oben.
+Du bist dran für den aktiven Spieler, einmal pro Zug; geordnete Popup-Anzeige.
+Alle Dateien und den gesamten public-Ordner inklusive clarity.css und SVGs aktualisieren.
+Neue Räume und getrennter Speicher storage/v17.

@@ -12,8 +12,12 @@
       "allFields": true,
       "cards": true,
       "cardText": true,
-      "focus": true,
-      "goal": true
+      "goal": true,
+      "goalOccurrences": 1,
+      "companyMetrics": 8,
+      "oldSnapshots": 0,
+      "startLabel": "START",
+      "startBackground": "linear-gradient(145deg, rgb(255, 245, 183), rgb(237, 197, 110))"
     },
     {
       "viewport": [
@@ -27,8 +31,12 @@
       "allFields": true,
       "cards": true,
       "cardText": true,
-      "focus": true,
-      "goal": true
+      "goal": true,
+      "goalOccurrences": 1,
+      "companyMetrics": 8,
+      "oldSnapshots": 0,
+      "startLabel": "START",
+      "startBackground": "linear-gradient(145deg, rgb(255, 245, 183), rgb(237, 197, 110))"
     },
     {
       "viewport": [
@@ -42,8 +50,12 @@
       "allFields": true,
       "cards": true,
       "cardText": true,
-      "focus": true,
-      "goal": true
+      "goal": true,
+      "goalOccurrences": 1,
+      "companyMetrics": 8,
+      "oldSnapshots": 0,
+      "startLabel": "START",
+      "startBackground": "linear-gradient(145deg, rgb(255, 245, 183), rgb(237, 197, 110))"
     },
     {
       "viewport": [
@@ -57,8 +69,12 @@
       "allFields": true,
       "cards": true,
       "cardText": true,
-      "focus": true,
-      "goal": true
+      "goal": true,
+      "goalOccurrences": 1,
+      "companyMetrics": 8,
+      "oldSnapshots": 0,
+      "startLabel": "START",
+      "startBackground": "linear-gradient(145deg, rgb(255, 245, 183), rgb(237, 197, 110))"
     },
     {
       "viewport": [
@@ -72,30 +88,31 @@
       "allFields": true,
       "cards": true,
       "cardText": true,
-      "focus": true,
-      "goal": true
+      "goal": true,
+      "goalOccurrences": 1,
+      "companyMetrics": 8,
+      "oldSnapshots": 0,
+      "startLabel": "START",
+      "startBackground": "linear-gradient(145deg, rgb(255, 245, 183), rgb(237, 197, 110))"
     }
   ],
   "errors": [],
-  "mergedOverview": true,
-  "sharedEvent": true,
-  "eventArchive": true,
-  "reducedMotion": true,
-  "bonus": true,
-  "choiceSafeguard": true,
-  "animationThemes": [
-    "carbon",
-    "power",
-    "cold",
-    "heat",
-    "transport",
-    "sun",
-    "grid",
-    "materials",
-    "rain"
+  "cleanBoard": true,
+  "startWithEight": [
+    {
+      "visible": true,
+      "labelFits": true,
+      "tokensFit": true
+    },
+    {
+      "visible": true,
+      "labelFits": true,
+      "tokensFit": true
+    }
   ],
-  "personalReflection": true,
-  "stickyClose": true,
-  "resultsReopen": true,
-  "startingCorrection": true
+  "oncePerTurn": true,
+  "liveTurnChanges": true,
+  "personalCard": true,
+  "popupOrdering": true,
+  "endgame": true
 }
