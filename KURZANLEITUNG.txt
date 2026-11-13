@@ -1,17 +1,18 @@
-CO2 Factory V1.7
+CO2 Factory V1.8
 
 START-WINDOWS.bat bzw. npm start. Browser: http://localhost:3000
 Spielleitung ohne mitzuspielen wählen, Teilnehmer scannen den QR-Code.
-Standard: 300.000 Euro Kapital und 100.000 Euro Jahresergebnis.
-CO2-Ziel steht einmal groß rechts oben. Zu hohe Startwerte werden passend reduziert.
-Zielgefährdende Entscheidungen sind gesperrt; Vertagen bleibt kostenlos möglich.
-Integriertes Managementsystem ziehen: persönliche Karte bis zum nächsten Audit aufbewahren.
-Dort automatisch keine Auditgebühr und kein Aussetzen; danach wieder im Stapel ziehbar.
-IMS-Kennzeichen zeigt gespeicherten Schutz; Unternehmenskarte anklicken für Details.
-Du bist dran erscheint nur beim aktiven Spieler; Los geht's bestätigt den Zughinweis.
-Startfeld ist goldfarben. Direkt getroffen: 1,2-faches Ergebnis; beim Überqueren einfach.
-Globale Ereignisse gelten automatisch für alle aktiven Unternehmen.
-Unternehmen & Protokoll enthält Details und das Weltereignis-Archiv.
+Beim Erstellen zeigt die Anzeige eine geschätzte Spieldauer für die gewählten Startwerte.
+Im Wartebereich zählt ab zwei beigetretenen Unternehmen die aktuelle Teilnehmerzahl.
+Schätzung: 20–40 Sekunden je Zug, etwa 3 Minuten Vorbereitung; Diskussionen können verlängern.
+Ein Pluszeichen bedeutet, dass die Spanne nach oben offen ist.
+Das goldene Feld heißt Geschäftsjahr. Direkt getroffen: 1,2-faches Ergebnis, sonst einfach.
+Besetzte Felder zeigen das Piktogramm neben den Spielern. Antippen öffnet alle Feldinformationen.
+Managementsystem-Karte bis zum nächsten Audit aufbewahren: keine Gebühr und kein Aussetzen.
+CO2-Ziel einmal rechts oben. Unternehmenskarte anklicken für getätigte Investitionen.
+Du bist dran erscheint nur beim aktiven Spieler. Globale Ereignisse werden zuerst angezeigt.
 Nach Zielerreichung ziehen die folgenden Spieler der laufenden Runde nach.
-Am Ende: Podest und persönliche Reflexionsberichte.
-Wer Spiel verlassen bestätigt, scheidet aus; eine gehaltene IMS-Karte wird zurückgelegt.
+Am Ende: Podest und persönliche Reflexionsberichte. Bestätigter Ausstieg gibt den Zug weiter.
+V1.7-Spielstände bleiben kompatibel. Nach Übernahme der neuen Dateien den Server neu starten.
+Vier politische Szenarien: Förderpaket, Grenzausgleich, Kreislaufvorgaben und öffentliche
+Klimabeschaffung. Vorherige Investitionen verändern die Zuschüsse und Belastungen.

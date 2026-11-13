@@ -5,6 +5,7 @@ const path=require('node:path');
 const os=require('node:os');
 const crypto=require('node:crypto');
 const E=require('./engine');
+const {estimateDuration}=require('./duration-estimate');
 const PORT=Number(process.env.PORT)||3000;
 const HOST=process.env.HOST||'0.0.0.0';
 const BASE=path.join(__dirname,'public');
@@ -14,7 +15,7 @@ const rooms=new Map();
 for(const name of fs.readdirSync(STORE)){
  if(!/^[A-HJ-NP-Z2-9]{6}\.json$/.test(name))continue;
  try{const data=JSON.parse(fs.readFileSync(path.join(STORE,name),'utf8'));
- if(data?.rulesVersion==='1.7'&&data?.code===name.slice(0,6)&&Array.isArray(data.players)&&data.players.length<=8&&data.hostToken)rooms.set(data.code,data);
+ if(['1.7','1.8'].includes(data?.rulesVersion)&&data?.code===name.slice(0,6)&&Array.isArray(data.players)&&data.players.length<=8&&data.hostToken){if(E.upgradeRoom(data))persist(data);rooms.set(data.code,data);}
  }catch(err){console.error('Spielstand konnte nicht geladen werden:',name,err.message)}
 }
 function persist(room){
@@ -31,13 +32,13 @@ function body(req){return new Promise((resolve,reject)=>{
  req.on('error',reject);
  })}
 const limiter=new Map();
-function limited(req){
- const ip=req.socket.remoteAddress||'unknown',now=Date.now();
- const x=limiter.get(ip)||{time:now,count:0};if(now-x.time>60000){x.time=now;x.count=0}x.count++;limiter.set(ip,x);return x.count>30;
+function limited(req,limit=30,group='rooms'){
+ const ip=group+':'+(req.socket.remoteAddress||'unknown'),now=Date.now();
+ const x=limiter.get(ip)||{time:now,count:0};if(now-x.time>60000){x.time=now;x.count=0}x.count++;limiter.set(ip,x);return x.count>limit;
 }
 function staticFile(req,res,url){
  let file=url.pathname==='/'?'/index.html':url.pathname;
- if(!/^\/(?:index\.html|style\.css|refinements\.css|client\.js|qrcode\.js|landscape\.css|goal\.css|experience\.css|clarity\.css|game-data\.json|img\/(?:\d{2}|event)\.svg)$/.test(file))return fault(res,404,'Datei nicht gefunden.');
+ if(!/^\/(?:index\.html|style\.css|refinements\.css|client\.js|qrcode\.js|landscape\.css|goal\.css|experience\.css|clarity\.css|duration\.css|game-data\.json|img\/(?:\d{2}|event)\.svg)$/.test(file))return fault(res,404,'Datei nicht gefunden.');
  const fullname=path.resolve(BASE,'.'+file);if(!fullname.startsWith(BASE+path.sep))return fault(res,404,'Datei nicht gefunden.');
  const mime=file.endsWith('.html')?'text/html; charset=utf-8':file.endsWith('.css')?'text/css; charset=utf-8':file.endsWith('.js')?'text/javascript; charset=utf-8':file.endsWith('.json')?'application/json; charset=utf-8':file.endsWith('.svg')?'image/svg+xml':'image/png';
  fs.readFile(fullname,(err,data)=>{
@@ -57,6 +58,10 @@ const server=http.createServer(async(req,res)=>{
    return send(res,200,{lanOrigins:[...new Set(lanOrigins)]});
   }
   if(req.method==='GET'&&pathname==='/api/health')return send(res,200,{ok:true,rooms:rooms.size});
+  if(req.method==='POST'&&pathname==='/api/estimate'){
+   if(limited(req,90,'estimates'))return fault(res,429,'Zu viele Schätzungen. Bitte kurz warten.');
+   const input=await body(req);return send(res,200,estimateDuration(input.config||{},input.players));
+  }
   if(req.method==='POST'&&pathname==='/api/rooms'){
    if(limited(req))return fault(res,429,'Zu viele neue Spielräume. Später erneut versuchen.');
    if(rooms.size>=100)return fault(res,503,'Maximale Anzahl aktiver Räume erreicht.');

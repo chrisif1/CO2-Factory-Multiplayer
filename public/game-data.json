@@ -1276,6 +1276,86 @@
       "reason": "Strukturierte Dokumentation, klare Zuständigkeiten und laufende Verbesserung unterstützen die Auditfähigkeit. Reale Managementsysteme garantieren keine Gebührenbefreiung.",
       "source": "",
       "global": false
+    },
+    {
+      "number": 25,
+      "title": "Förderpaket für Energieeffizienz",
+      "action": "Ein fiktives politisches Förderpaket erstattet allen Unternehmen 10 % ihrer bereits getätigten Investitionen in LED, Druckluft, PV, Wärmerückgewinnung, effiziente Maschinen und Antriebe, Wärmepumpe sowie Dämmung. Höchstens 40.000 € je Unternehmen. Ohne passende Investition kein Zuschuss.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Automatisch für alle aktiven Unternehmen; Wirkung abhängig von bestehenden Investitionen und aktueller Bilanz.",
+      "duration": "Einmalige sofortige Geldwirkung. Keine physische CO₂-Änderung.",
+      "formula": "Transparente didaktische Spielannahme; individuelle Berechnung in der Ereignisanzeige.",
+      "assumptions": "Fiktives politisches Szenario, keine Aussage über geltende Gesetze oder tatsächliche Förderansprüche.",
+      "reason": "Ein fiktives politisches Förderpaket erstattet allen Unternehmen 10 % ihrer bereits getätigten Investitionen in LED, Druckluft, PV, Wärmerückgewinnung, effiziente Maschinen und Antriebe, Wärmepumpe sowie Dämmung. Höchstens 40.000 € je Unternehmen. Ohne passende Investition kein Zuschuss.",
+      "source": "",
+      "theme": "funding",
+      "global": true
+    },
+    {
+      "number": 26,
+      "title": "CO₂-Grenzausgleich beschlossen",
+      "action": "Ein fiktiver CO₂-Grenzausgleich belastet alle Unternehmen nach ihren aktuellen Scope-3-Emissionen. Klimaarme Lieferanten und emissionsarmer Stahl verringern die Kosten. Die Abgabe skaliert mit dem Startkapital.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Automatisch für alle aktiven Unternehmen; Wirkung abhängig von bestehenden Investitionen und aktueller Bilanz.",
+      "duration": "Einmalige sofortige Geldwirkung. Keine physische CO₂-Änderung.",
+      "formula": "Transparente didaktische Spielannahme; individuelle Berechnung in der Ereignisanzeige.",
+      "assumptions": "Fiktives politisches Szenario, keine Aussage über geltende Gesetze oder tatsächliche Förderansprüche.",
+      "reason": "Ein fiktiver CO₂-Grenzausgleich belastet alle Unternehmen nach ihren aktuellen Scope-3-Emissionen. Klimaarme Lieferanten und emissionsarmer Stahl verringern die Kosten. Die Abgabe skaliert mit dem Startkapital.",
+      "source": "",
+      "theme": "border",
+      "global": true
+    },
+    {
+      "number": 27,
+      "title": "Neue Kreislaufvorgaben",
+      "action": "Fiktive politische Kreislaufvorgaben verursachen 20.000 € Umstellungs- und Nachweiskosten je Unternehmen. Recyclingmaterial, Mehrwegverpackung und materialarmes Design senken die Belastung.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Automatisch für alle aktiven Unternehmen; Wirkung abhängig von bestehenden Investitionen und aktueller Bilanz.",
+      "duration": "Einmalige sofortige Geldwirkung. Keine physische CO₂-Änderung.",
+      "formula": "Transparente didaktische Spielannahme; individuelle Berechnung in der Ereignisanzeige.",
+      "assumptions": "Fiktives politisches Szenario, keine Aussage über geltende Gesetze oder tatsächliche Förderansprüche.",
+      "reason": "Fiktive politische Kreislaufvorgaben verursachen 20.000 € Umstellungs- und Nachweiskosten je Unternehmen. Recyclingmaterial, Mehrwegverpackung und materialarmes Design senken die Belastung.",
+      "source": "",
+      "theme": "circular-policy",
+      "global": true
+    },
+    {
+      "number": 28,
+      "title": "Öffentliche Aufträge mit Klimakriterien",
+      "action": "Ein fiktives öffentliches Beschaffungsprogramm vergibt 20.000 € Auftragsbonus an Unternehmen mit höchstens 600 t CO₂e/Jahr. Bereits vorhandene klimaarme Lieferanten erhöhen den Bonus um weitere 10.000 €.",
+      "capital": 0,
+      "price": 0,
+      "scope": [
+        0,
+        0,
+        0
+      ],
+      "conditions": "Automatisch für alle aktiven Unternehmen; Wirkung abhängig von bestehenden Investitionen und aktueller Bilanz.",
+      "duration": "Einmalige sofortige Geldwirkung. Keine physische CO₂-Änderung.",
+      "formula": "Transparente didaktische Spielannahme; individuelle Berechnung in der Ereignisanzeige.",
+      "assumptions": "Fiktives politisches Szenario, keine Aussage über geltende Gesetze oder tatsächliche Förderansprüche.",
+      "reason": "Ein fiktives öffentliches Beschaffungsprogramm vergibt 20.000 € Auftragsbonus an Unternehmen mit höchstens 600 t CO₂e/Jahr. Bereits vorhandene klimaarme Lieferanten erhöhen den Bonus um weitere 10.000 €.",
+      "source": "",
+      "theme": "public-contract",
+      "global": true
     }
   ],
   "parameters": {

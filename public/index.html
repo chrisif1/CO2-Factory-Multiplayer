@@ -4,22 +4,23 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0a5f57">
-<title>CO₂ Factory – Multiplayer V1.7</title>
-<link rel="stylesheet" href="/style.css?v=1.7.0">
-<link rel="stylesheet" href="/refinements.css?v=1.7.0">
-<link rel="stylesheet" href="/landscape.css?v=1.7.0">
-<link rel="stylesheet" href="/goal.css?v=1.7.0">
-<link rel="stylesheet" href="/experience.css?v=1.7.0">
-<link rel="stylesheet" href="/clarity.css?v=1.7.0">
-<script src="/qrcode.js?v=1.7.0" defer></script>
-<script src="/client.js?v=1.7.0" defer></script>
+<title>CO₂ Factory – Multiplayer V1.8</title>
+<link rel="stylesheet" href="/style.css?v=1.8.0">
+<link rel="stylesheet" href="/refinements.css?v=1.8.0">
+<link rel="stylesheet" href="/landscape.css?v=1.8.0">
+<link rel="stylesheet" href="/goal.css?v=1.8.0">
+<link rel="stylesheet" href="/experience.css?v=1.8.0">
+<link rel="stylesheet" href="/clarity.css?v=1.8.0">
+<link rel="stylesheet" href="/duration.css?v=1.8.0">
+<script src="/qrcode.js?v=1.8.0" defer></script>
+<script src="/client.js?v=1.8.0" defer></script>
 </head>
 <body>
 <div id="fieldTooltip" class="field-tooltip" role="tooltip" hidden></div>
 <div class="layout">
   <header class="top">
     <div class="identity">
-      <div class="brand"><span>CO₂ FACTORY</span><small>Das Unternehmensplanspiel · Multiplayer V1.7</small></div>
+      <div class="brand"><span>CO₂ FACTORY</span><small>Das Unternehmensplanspiel · Multiplayer V1.8</small></div>
     </div>
     <div class="top-controls"><span class="connection" id="connectIndicator"><i></i> Spielbereit</span><button type="button" class="subtle" id="switchRoomBtn" hidden>Spiel verlassen</button></div>
   </header>
@@ -29,7 +30,7 @@
       <div class="eyebrow">GEMEINSAM STATT NACHEINANDER</div>
       <h1>Eine Fabrik.<br><em>Viele Entscheidungen.</em></h1>
       <p>Bis zu acht Unternehmen treten in einem gemeinsamen Spielraum an. Jeder würfelt und investiert auf seinem eigenen Gerät – alle sehen live dasselbe Brett.</p>
-      <div class="features"><span>● 40 Spielfelder</span><span>● 24 Ereigniskarten</span><span>● 2–8 Unternehmen</span><span>● WLAN & Internet</span></div>
+      <div class="features"><span>● 40 Spielfelder</span><span>● 28 Ereigniskarten</span><span>● 2–8 Unternehmen</span><span>● WLAN & Internet</span></div>
       <div class="hero-graphic"><div class="disc">CO₂<span>↓</span></div><div><strong>Investiere clever.</strong><small>Verringere Scope 1, 2 und 3 und behalte dein Kapital im Blick.</small></div></div>
     </div>
     <div class="panel entry">
@@ -39,6 +40,7 @@
         <label>Deine Rolle<select name="mode" id="hostMode"><option value="host" selected>Spielleitung – ohne mitzuspielen</option><option value="player">Spielleitung – selbst mitspielen</option></select></label><label><span id="hostNameLabel">Name der Spielleitung</span><input id="hostNameInput" name="name" maxlength="36" value="Professor" required></label><p class="helper" id="hostModeHint">Du leitest das Spiel und verfolgst alle Unternehmen, ohne eine eigene Spielfigur.</p>
         <div class="two"><label>Max. Spielerzahl<select name="maxPlayers"><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option selected>8</option></select></label></div>
         <details class="advance"><summary>Erweiterte Startwerte</summary><div class="two"><label>Startkapital (€)<input name="initialCash" type="number" min="0" max="100000000000" value="300000"></label><label>Jahresergebnis (€)<input name="annualIncome" type="number" value="100000"></label><label>Scope 1 (t)<input name="s1" type="number" min="0" value="250"></label><label>Scope 2 (t)<input name="s2" type="number" min="0" value="300"></label><label>Scope 3 (t)<input name="s3" type="number" min="0" value="450"></label><label>CO₂-Ziel (t/Jahr)<input name="goal" type="number" min="0" value="400"></label></div></details>
+        <div class="duration-estimate" role="status" aria-live="polite" aria-atomic="true"><div><span class="eyebrow">VORAUSSICHTLICHE SPIELDAUER</span><strong id="durationValue">Wird geschätzt …</strong></div><p id="durationDetail"></p><p id="durationNote" class="duration-note"></p></div>
         <button class="primary wide" type="submit">Spielraum erstellen <span>→</span></button>
       </form>
       <form id="joinForm" class="form-stack" hidden>
@@ -56,7 +58,7 @@
     <div class="eyebrow">SPIELRAUM BEREIT</div>
     <div class="lobby-title"><div><h1>Wartebereich</h1><p>Teile die Adresse und den Code mit deinen Mitspielern.</p></div><div class="room-code"><small>RAUMCODE</small><strong id="roomCode">------</strong></div></div>
     <div class="join-share"><div class="qr-block"><div id="joinQr" aria-label="QR-Code zum Beitreten"></div><strong>Scannen &amp; beitreten</strong><small id="qrHint">Mit der Handykamera öffnen</small></div><div class="share-details"><p id="hostRoleInfo" class="host-role-info"></p><div class="share-row"><input id="shareUrl" readonly aria-label="Einladungslink"><button type="button" id="copyInvite">Link kopieren</button></div><label id="joinOriginWrap" hidden>Adresse für Mitspieler<select id="joinOrigin"></select></label><p class="helper">QR-Code scannen, Unternehmensnamen eingeben und beitreten. Der Raumcode bleibt als Alternative verfügbar.</p></div></div>
-    <div class="lobby-grid"><div><h3 id="playerCountTitle">Spieler im Raum</h3><div id="lobbyPlayers" class="lobby-players"></div></div><div class="lobby-aside"><h3>Spielkonfiguration</h3><div id="lobbyConfig"></div><p class="helper">Die Spielleitung startet, sobald mindestens zwei Unternehmen beigetreten sind. Jeder Spieler steuert nur seine eigenen Züge.</p><button class="primary wide" id="beginBtn" type="button" hidden>Spiel starten</button><div id="waitHostText" class="muted" hidden>Warten auf die Spielleitung …</div></div></div>
+    <div class="lobby-grid"><div><h3 id="playerCountTitle">Spieler im Raum</h3><div id="lobbyPlayers" class="lobby-players"></div></div><div class="lobby-aside"><h3>Spielkonfiguration</h3><div id="lobbyConfig"></div><div class="duration-estimate"><span class="eyebrow">VORAUSSICHTLICHE SPIELDAUER</span><strong id="lobbyDurationValue">Wird geschätzt …</strong><p id="lobbyDurationDetail"></p><p id="lobbyDurationNote" class="duration-note"></p></div><p class="helper">Die Spielleitung startet, sobald mindestens zwei Unternehmen beigetreten sind. Jeder Spieler steuert nur seine eigenen Züge.</p><button class="primary wide" id="beginBtn" type="button" hidden>Spiel starten</button><div id="waitHostText" class="muted" hidden>Warten auf die Spielleitung …</div></div></div>
   </section>
 
   <div id="playing" hidden>

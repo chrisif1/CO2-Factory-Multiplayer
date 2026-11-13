@@ -28,7 +28,7 @@ const safeName = (s,fallback) => String(s||'').trim().replace(/[\u0000-\u001f\u0
 function createRoom(code, name, input={}){
  const cfg={hostOnly:input.hostOnly===true,maxPlayers: Math.trunc(number(input.maxPlayers,8,2,8)), initialCash:number(input.initialCash,300000,0,1e11), annualIncome:number(input.annualIncome,100000,-1e10,1e10), starting:[number(input.s1,250,0,1e7),number(input.s2,300,0,1e7),number(input.s3,450,0,1e7)],goal:number(input.goal,400,0,1e8)};
  Object.assign(cfg,fitStarting(cfg.starting,cfg.goal,FIELDS));
- const hostToken=token();const room={code,rulesVersion:'1.7',round:1,finalRound:null,finishReason:null,createdAt:Date.now(),updatedAt:Date.now(),revision:1,started:false,gameOver:false,config:cfg,hostToken,hostName:safeName(name,'Spielleitung'),players:[],turn:0,turnNumber:1,dice:0,phase:'lobby',pending:null,deck:shuffle(Array.from({length:CARDS.length},(_,i)=>i+1)),cursor:0,globalEvents:[],globalSequence:0,params:{...DEFAULT_PARAMS},logs:[],trends:[],history:[],lastEvent:null,landing:null};
+ const hostToken=token();const room={code,rulesVersion:'1.8',round:1,finalRound:null,finishReason:null,createdAt:Date.now(),updatedAt:Date.now(),revision:1,started:false,gameOver:false,config:cfg,hostToken,hostName:safeName(name,'Spielleitung'),players:[],turn:0,turnNumber:1,dice:0,phase:'lobby',pending:null,deck:shuffle(Array.from({length:CARDS.length},(_,i)=>i+1)),cursor:0,globalEvents:[],globalSequence:0,params:{...DEFAULT_PARAMS},logs:[],trends:[],history:[],lastEvent:null,landing:null};
  if(!cfg.hostOnly){const player=joinRoom(room,name);player.token=hostToken;}return room;
 }
 function joinRoom(room,name){
@@ -37,6 +37,11 @@ function joinRoom(room,name){
  const id=room.players.length, cfg=room.config;
  const p={id,token:token(),name:safeName(name,`Unternehmen ${id+1}`),pos:0,cash:cfg.initialCash,annual:cfg.annualIncome,base:cfg.starting.slice(),temp:[0,0,0],years:0,cumulative:0,owned:[],investments:[],decisions:[],decisionHistory:[],eventExperience:[],auditPass:false,auditPassUses:0,auditPassSavings:0,detained:false,bankrupt:false,finished:false,turns:0,goalReachedTurn:null};
  room.players.push(p);room.trends[id]=[];record(room,p,'Spielbeginn');change(room,'join',`${p.name} ist dem Spiel beigetreten.`,{playerId:id});return p;
+}
+function upgradeRoom(room){
+ if(room.rulesVersion!=='1.7')return false;
+ for(const id of [25,26,27,28])if(!room.deck.includes(id)){const at=room.cursor;room.deck.splice(at,0,id);room.cursor=(at+1)%room.deck.length;}
+ room.rulesVersion='1.8';change(room,'update','Vier politische Szenarien wurden dem Ereignisstapel hinzugefügt.');return true;
 }
 function change(room,kind,message,details={}){
  room.revision++;room.updatedAt=Date.now();room.lastEvent={id:room.revision,kind,message,...details};
@@ -197,7 +202,7 @@ function action(room,actorToken,input={},options={}){
       for(const target of targets){
        const e=eventEffect(room,eventId,target),before=scopes(target);let actual=[0,0,0];
        if(e.valid){target.cash+=e.cash;changeScope(target,e.scope,e.term==='permanent');actual=scopes(target).map((n,i)=>money(n-before[i]));if(eventId===IMS_CARD)target.auditPass=true;}
-       const result={playerId:target.id,name:target.name,cash:e.valid?e.cash:0,scope:actual,term:e.term,valid:e.valid,note:e.note,baselineCash:e.baselineCash??e.cash,baselineScope:e.baselineScope??e.scope,factor:e.factor??1,protections:e.protections||[]};
+       const result={playerId:target.id,name:target.name,cash:e.valid?e.cash:0,bonusCash:e.bonusCash||0,scope:actual,term:e.term,valid:e.valid,note:e.note,baselineCash:e.baselineCash??e.cash,baselineScope:e.baselineScope??e.scope,factor:e.factor??1,protections:e.protections||[]};
        results.push(result);if(target.id===p.id)eventResult=result;
        checkBankrupt(target);
        room.history.push({player:target.name,playerId:target.id,card:eventId,global:!!card.global,year:target.years+1,ignored:!e.valid,cash:result.cash,scope:actual,term:e.term});
@@ -256,5 +261,5 @@ function publicRoom(room,who){
  if(room.pending){pending={...room.pending};if(pending.kind==='choose')pending.blockedOptions=FIELDS[pending.index].options.map(o=>!allowedOption(room,current,o,FIELDS));if(pending.kind==='event')pending.effect=eventEffect(room,pending.card,current);}
  return {code:room.code,revision:room.revision,started:room.started,gameOver:room.gameOver,config:room.config,round:room.round,finalRound:room.finalRound,finishReason:room.finishReason,ranking:ranking(room).map(p=>p.id),players,turn:room.turn,turnNumber:room.turnNumber,dice:room.dice,phase:room.phase,pending,params:room.params,co2Factor:co2Factor(room),auditReleaseFee:auditReleaseFee(room),logs:room.logs,trends:room.trends,history:room.history,globalEvents:room.globalEvents,reflections:room.gameOver?room.players.map(p=>reflection(room,p,FIELDS,footprint)):[],lastEvent:room.lastEvent,landing:room.landing||null,actorId:actor?.id??null,hostName:room.hostName||room.players[0]?.name||'Spielleitung',host:who===room.hostToken};
 }
-module.exports={DATA,FIELDS,CARDS,DEFAULT_PARAMS,createRoom,joinRoom,action,publicRoom,eventEffect,scopes,footprint,yearClose,co2Factor,co2Charge,auditReleaseFee,checkGoal,ranking,reflection:(room,p)=>reflection(room,p,FIELDS,footprint)};
+module.exports={DATA,FIELDS,CARDS,DEFAULT_PARAMS,createRoom,joinRoom,upgradeRoom,action,publicRoom,eventEffect,scopes,footprint,yearClose,co2Factor,co2Charge,auditReleaseFee,checkGoal,ranking,reflection:(room,p)=>reflection(room,p,FIELDS,footprint)};
 

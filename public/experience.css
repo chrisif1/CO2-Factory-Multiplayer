@@ -38,3 +38,20 @@ button.board-player:hover{background:#fff8df;border-color:#ad842b}button.board-p
 @media(max-height:350px){body.is-playing .nav-tabs button{font-size:9px;padding:3px 5px}.goal-banner strong{font-size:18px}.goal-banner{padding:2px 7px}body.is-playing .summary-right{gap:4px}body.is-playing .center-kicker{display:none}.detail-metrics{gap:6px}.detail-metrics>div{padding:8px}}
 @media(prefers-reduced-motion:reduce){.global-scene i{animation:none!important;opacity:.15}button.board-player{transition:none}}
 @media(max-height:600px){.detail-dialog>.dashboard-heading,.results-dialog>.dashboard-heading{top:-16px}}
+
+/* Fictional political scenarios: grants, border levy, circular rules and public tenders. */
+[data-theme=funding]{--event-color:#b99534;--event-bg:#edf5cc}
+[data-theme=funding] .global-scene i{width:25px;height:25px;border-radius:50%;border:2px solid #b99534;background:#eacb74;animation:rise 6s linear infinite}
+[data-theme=funding] .global-scene i::after{content:'€';display:grid;place-items:center;height:100%;font-size:15px;font-weight:900;color:#80601d}
+[data-theme=border]{--event-color:#6582a2;--event-bg:#e3edf8}
+[data-theme=border] .global-scene i{width:28px;height:22px;border-radius:3px;background:#7395bc;top:calc(4% + var(--i) * 5%);animation:travel 6s linear infinite}
+[data-theme=border] .global-scene i::after{content:'CO₂';font-size:9px;font-weight:900;color:#fff;display:grid;place-items:center;height:100%}
+[data-theme=border] .global-scene::after{content:'';position:absolute;left:50%;top:0;bottom:0;border-left:3px dashed #7395bc33}
+[data-theme=circular-policy]{--event-color:#428565;--event-bg:#e0f0e5}
+[data-theme=circular-policy] .global-scene i{width:28px;height:28px;background:transparent;top:calc(3% + var(--i) * 5%);animation:policyOrbit 6s ease-in-out infinite}
+[data-theme=circular-policy] .global-scene i::after{content:'♻';font-size:30px;color:#428565}
+[data-theme=public-contract]{--event-color:#497f84;--event-bg:#e0f2ef}
+[data-theme=public-contract] .global-scene i{width:24px;height:32px;border-radius:3px;border:2px solid #4b9290;background:#fff;animation:policyDocument 6s linear infinite}
+[data-theme=public-contract] .global-scene i::after{content:'✓';font-size:19px;font-weight:900;display:grid;place-items:center;height:100%;color:#217257}
+@keyframes policyOrbit{50%{transform:rotate(180deg) scale(1.2);opacity:.35}100%{transform:rotate(360deg)}}
+@keyframes policyDocument{from{transform:translateY(80vh) rotate(-12deg)}to{transform:translateY(-12vh) rotate(12deg)}}

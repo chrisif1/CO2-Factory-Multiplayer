@@ -14,6 +14,9 @@ test('HTTP: Browserassets, 2 Clients, Spielstart, Autorisierung, persistierter R
   let alive=false;for(let i=0;i<70;i++){try{const v=await fetch(`http://127.0.0.1:${port}/api/health`);if(v.ok){alive=true;break}}catch{}await wait(80)}
   assert.ok(alive,'Server muss starten');
   const url=`http://127.0.0.1:${port}`;
+  const beforeEstimate=await (await fetch(url+'/api/health')).json();
+  const estimated=await fetch(url+'/api/estimate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({config:{maxPlayers:2,goal:950},players:2})});
+  assert.equal(estimated.status,200);const duration=await estimated.json();assert.equal(duration.players,2);assert.ok(duration.maxMinutes>=duration.minMinutes);assert.equal((await (await fetch(url+'/api/health')).json()).rooms,beforeEstimate.rooms);
   const html=await fetch(url+'/');assert.equal(html.status,200);assert.match(await html.text(),/CO₂ FACTORY/);
   const svg=await fetch(url+'/img/06.svg');assert.equal(svg.status,200);
   const eventImg=await fetch(url+'/img/event.svg');assert.equal(eventImg.status,200);

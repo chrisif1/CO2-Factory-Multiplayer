@@ -1,4 +1,4 @@
-# CO₂ Factory Multiplayer V1.7
+# CO₂ Factory Multiplayer V1.8
 
 ## Starten
 
@@ -27,20 +27,46 @@ die bisherigen Auditgebühren und die Entscheidung zwischen Beratung und Aussetz
 Die Unternehmensdetails und der Reflexionsbericht zeigen Einsätze und erlassene Auditgebühren.
 Die Regeln sind didaktisch vereinfacht; reale Managementsysteme garantieren keine Gebührenbefreiung.
 
-## Aufgeräumtes Brett und Zughinweis
+## Spieldauer beim Erstellen
 
-- Goldene Startkachel mit Richtungspfeil, dunklem Rand und START-Beschriftung. Auch acht
-  Figuren auf Start werden vollständig angeordnet; die Beschriftung bleibt sichtbar.
-- Unternehmenswerte stehen nur auf den Unternehmenskarten, die zusätzliche Momentaufnahme
-  des aktiven Unternehmens entfällt. Scope-Details und kumulierte Werte sind weiterhin unter
-  Unternehmen & Protokoll verfügbar. Unternehmenskarten bleiben für Investitionsdetails anklickbar.
-- Der eingestellte CO₂-Zielwert steht auf dem Brett einmal groß rechts oben.
-- Doppelte Feldnummern aus den Illustrationen entfernt; die Feldnummer am Rahmen bleibt.
-- Nur die Person am Zug erhält „Du bist dran!“ mit Unternehmensname und Los-geht’s-Schaltfläche.
-  Einmal pro Zug und Browser-Tab; ein Neuladen nach Bestätigung zeigt ihn nicht erneut.
-  Beim nächsten eigenen Zug erscheint ein neuer Hinweis. Die reine Spielleitung erhält ihn nicht.
-- Globale Ereignisse werden zuerst gelesen, danach der Zughinweis, dann gegebenenfalls das
-  Aktions-Popup. Bei einem Zugwechsel wird ein überholter Zughinweis geschlossen.
+Die voraussichtliche Dauer steht direkt im Erstellungsformular. Sie aktualisiert sich bei
+Änderung der Spielerzahl, der Scope-Startwerte und des CO₂-Ziels. Startkapital und Jahresergebnis
+werden ebenfalls berücksichtigt, weil sie die Finanzierung der Investitionen beeinflussen.
+Vor Erstellung wird volle Belegung mit der eingestellten Unternehmenszahl angenommen;
+die reine Spielleitung zählt nicht als Unternehmen. Im Wartebereich gilt ab zwei beigetretenen
+Unternehmen die tatsächliche Teilnehmerzahl, darunter die eingestellte volle Belegung.
+
+Grundlage sind zehn reproduzierbare Beispielpartien mit der tatsächlichen Spielengine,
+Würfeln, Ereignissen, Audits, Entscheidungen und Investitionen. Die Beispielstrategie bevorzugt
+klimafreundliche Entscheidungen und bezahlbare Investitionen, berücksichtigt aber das laufende
+Ergebnis bei Maßnahmen mit Mehrkosten. Dieselbe Erreichbarkeitsprüfung wie im echten Raum
+passt zu hohe Startemissionen an; die Schätzung zeigt die wirksamen Werte.
+
+Zeitannahme: 20–40 Sekunden je abgeschlossenem Zug und etwa drei Minuten Vorbereitung.
+Die Ergebnisse werden als grobe, auf fünf Minuten gerundete Spanne angezeigt. Würfelglück,
+Investitionsentscheidungen, Erfahrung und Diskussionen können die Dauer stark verändern.
+Ein Pluszeichen kennzeichnet eine nach oben offene Spanne. Werden innerhalb des begrenzten
+Simulationshorizonts kaum Partien beendet, wird keine feste obere Grenze behauptet.
+Ist das Ziel bereits beim Start erreicht, zeigt die Anzeige null Spielminuten.
+Die Zahlen sind eine modellbasierte Orientierung, keine empirisch gemessene Spielzeitgarantie.
+
+Schätzungen verändern keinen echten Raum und benötigen keinen Spielerzugang. Wiederholte
+Werte werden zwischengespeichert. Ein Fehler bei der Schätzung verhindert die Raumerstellung
+nicht. Die Berechnung wird nur im Erstellungsformular und Wartebereich angefragt.
+
+## Geschäftsjahr, Piktogramme und Zughinweis
+
+- Die goldene Kachel heißt wieder **Geschäftsjahr** und behält den Richtungspfeil.
+- Besetzte Felder reservieren getrennte Bereiche für Piktogramm und Figuren. Das Motiv wird
+  auch bei mehreren Figuren und bei acht Figuren auf dem Geschäftsjahr-Feld angezeigt.
+  Die Marker werden bei engem Platz kompakter angeordnet, statt das Motiv zu verdecken.
+- Auf schmalen Feldern werden Namen gekürzt oder auf besetzten Feldern ausgeblendet;
+  vollständige Namen und Informationen stehen im anklickbaren Feld-Popup.
+- Unternehmenswerte stehen auf den Unternehmenskarten. Scope-Details und kumulierte Werte
+  bleiben unter Unternehmen & Protokoll verfügbar. Das CO₂-Ziel steht einmal groß rechts oben.
+- Nur die Person am Zug erhält „Du bist dran!“, einmal pro Zug und Browser-Tab. Neuladen nach
+  Bestätigung wiederholt den Hinweis nicht. Die reine Spielleitung erhält ihn nicht.
+  Reihenfolge: globale Ereignisse, persönlicher Zughinweis, gegebenenfalls Aktions-Popup.
 
 ## Ziel, Spielende und Finanzierung
 
@@ -67,7 +93,7 @@ Zugfolge und gibt bei Bedarf sofort den nächsten Zug frei. Keine feste Geschäf
 
 ## Globale Ereignisse
 
-Der Stapel hat 24 Ereignisse: neun globale und fünfzehn persönliche/lokale. Alle sind verpflichtend und
+Der Stapel hat 28 Ereignisse: dreizehn globale und fünfzehn persönliche/lokale. Alle sind verpflichtend und
 werden beim Ziehen automatisch genau einmal angewendet. Globale Ereignisse betreffen alle
 nicht ausgestiegenen Unternehmen, unabhängig davon, wer die Karte gezogen hat.
 
@@ -97,6 +123,23 @@ der persönliche Bericht berücksichtigt alle während der aktiven Teilnahme erf
 Ein Wechsel des aktiven Spielers überschreibt die Meldung nicht. Geld wird sofort verbucht;
 zeitweilige Emissionsänderungen gelten bis zum nächsten eigenen Jahresabschluss.
 
+## Politische globale Ereignisse
+
+Vier zusätzliche Karten sind fiktive politische Szenarien. Sie beschreiben keine geltenden
+Gesetze oder tatsächlichen Förderansprüche. Alle wirken automatisch auf aktive Unternehmen.
+
+| Szenario | Spielwirkung |
+|---|---|
+| Förderpaket für Energieeffizienz | 10 % der bereits bezahlten Investitionen in LED, Druckluft, PV, Wärmerückgewinnung, effiziente Maschinen/Antriebe, Wärmepumpe und Dämmung. Höchstens 40.000 € je Ereignis; ohne passende Investition kein Zuschuss. |
+| CO₂-Grenzausgleich beschlossen | Aktuelle Scope-3-Tonnen × 50 €/t × Startkapitalfaktor. Klimaarme Lieferanten senken die Restkosten um 50 %, emissionsarmer Stahl um weitere 40 %. |
+| Neue Kreislaufvorgaben | 20.000 € Umstellungskosten. Recyclingmaterial −70 %, Mehrweg −20 %, materialarmes Design −30 % der jeweils verbleibenden Kosten. |
+| Öffentliche Aufträge mit Klimakriterien | Bei höchstens 600 t CO₂e/Jahr: 20.000 € Bonus. Mit klimaarmen Lieferanten 30.000 €. Oberhalb der Grenze kein Bonus. |
+
+Keine dieser Geldwirkungen verändert physische Emissionen. Die individuelle Anzeige erklärt
+Zuschüsse und vermiedene Kosten. Eigene Animationen für Fördergeld, Grenzübertritt, Kreislauf
+und öffentliche Aufträge; alle Ereignisse erscheinen im Archiv und persönlichen Lernbericht.
+Die Zeitschätzung verwendet auch diese Karten. Frühere Audit-, Ziel- und Zugregeln bleiben erhalten.
+
 ## Spielleitung, Details und Reflexion
 
 Reine Professoren-Spielleitung oder mitspielender Host. Zwei bis acht Unternehmen;
@@ -114,13 +157,13 @@ Vergleiche vermiedener Ereigniskosten sind keine vollständige Alternativrechnun
 ## Aktualisierung und Prüfung
 
 Alle Dateien im Projekt ersetzen, insbesondere den gesamten public-Ordner einschließlich
-der neuen clarity.css, des Clients, game-data.json und sämtlicher Feld-SVGs.
-Auch engine.js, server.js, global-events.js, feasibility.js und reflection.js mitliefern.
-Render-Startbefehl: `npm start`. Neue Räume verwenden die Regeln 1.7 und storage/v17;
-ältere Spielstände bleiben wegen der geänderten Regeln getrennt. Der Download verändert
+der clarity.css und duration.css, des Clients, game-data.json und sämtlicher Feld-SVGs.
+Auch engine.js, server.js, duration-estimate.js, global-events.js, feasibility.js und reflection.js mitliefern.
+Render-Startbefehl: `npm start`. Version 1.8 verwendet weiterhin storage/v17. Laufende V1.7-Räume erhalten beim Neustart die vier politischen Karten einmalig am Stapelende. Zugfolge und gehaltener IMS-Schutz bleiben erhalten.
+Server nach dem Update neu starten, damit der Schätzungs-Endpunkt geladen wird. Der Download verändert
 die bisherige Render-Seite nicht.
 
-`npm test`: 60 erfolgreiche Regel- und HTTP-Tests. Weitere Angaben in TESTBERICHT.md,
+`npm test`: 73 erfolgreiche Regel- und HTTP-Tests. Weitere Angaben in TESTBERICHT.md,
 Konsolenergebnis in TESTERGEBNISSE.txt, Browsermessungen in TESTDARSTELLUNG.json.
 Vorschaubilder unter vorschau/. Keine Spielstände oder Zugangstoken im Paket.
 Lizenz des QR-Generators: THIRD_PARTY_NOTICES.md.

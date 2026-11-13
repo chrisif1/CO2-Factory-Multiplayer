@@ -7,8 +7,8 @@ function land(r,source){const p=r.players[r.turn];p.pos=(field(source).number+38
 function global(r,id){r.deck[r.cursor]=id;land(r,3);}
 function buy(r,source){land(r,source);E.action(r,r.players[r.turn].token,{type:'invest',choice:'buy'});r.phase='roll';}
 
-test('Neun globale und fünfzehn lokale Ereignisse bilden den vollständigen Stapel',()=>{
- const r=start();assert.equal(E.CARDS.length,24);assert.equal(E.CARDS.filter(c=>c.global).length,9);assert.equal(new Set(r.deck).size,24);assert.equal(r.deck.length,24);
+test('Dreizehn globale und fünfzehn lokale Ereignisse bilden den vollständigen Stapel',()=>{
+ const r=start();assert.equal(E.CARDS.length,28);assert.equal(E.CARDS.filter(c=>c.global).length,13);assert.equal(new Set(r.deck).size,28);assert.equal(r.deck.length,28);
 });
 test('Strompreiserhöhung trifft alle; vorherige PV schützt vollständig, LED teilweise',()=>{
  const r=start(),[a,b,c]=r.players;b.owned.push(field(6).number);c.owned.push(field(2).number);

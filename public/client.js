@@ -21,6 +21,32 @@ async function api(url,method='GET',body=null,tokenOverride=null){
  return data;
 }
 const endpoint=()=>`/api/rooms/${access.code}`;
+const estimateRequests=new Map();let estimateTimer=null;
+function scheduleDurationEstimate(delay=450){
+ if(estimateTimer)clearTimeout(estimateTimer);
+ estimateTimer=setTimeout(()=>{
+  const values=Object.fromEntries(new FormData($('createForm'))),names=['initialCash','annualIncome','s1','s2','s3','goal'];
+  if(names.some(name=>values[name]===''||!$('createForm').elements.namedItem(name).checkValidity())){
+   const state=estimateRequests.get('duration');state?.controller.abort();estimateRequests.delete('duration');$('durationValue').textContent='Startwerte vervollständigen';$('durationDetail').textContent='Gib gültige Start- und Zielwerte ein, um die Dauer zu schätzen.';$('durationNote').textContent='';return;
+  }
+  requestDurationEstimate('duration',Object.fromEntries(names.concat('maxPlayers').map(name=>[name,Number(values[name])])),Number(values.maxPlayers),'voll');
+ },delay);
+}
+async function requestDurationEstimate(prefix,config,players,mode){
+ const key=JSON.stringify([config.initialCash,config.annualIncome,config.starting||[config.s1,config.s2,config.s3],config.goal,players,mode]),old=estimateRequests.get(prefix);if(old?.key===key)return;
+ old?.controller.abort();const state={key,controller:new AbortController()};estimateRequests.set(prefix,state);
+ const value=$(prefix+'Value'),detail=$(prefix+'Detail'),note=$(prefix+'Note');value.textContent='Wird geschätzt …';note.textContent='';
+ const normalized=config.starting?{...config,s1:config.starting[0],s2:config.starting[1],s3:config.starting[2]}:config;
+ try{
+  const response=await fetch('/api/estimate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({config:normalized,players}),signal:state.controller.signal});if(!response.ok)throw Error('Schätzung nicht verfügbar');const estimate=await response.json();if(estimateRequests.get(prefix)!==state)return;
+  value.textContent=estimate.status==='alreadyReached'?'0 Min. · Ziel bereits erreicht':estimate.status==='uncertain'?`über ${fmt(estimate.minMinutes,0)} Min. möglich`:`ca. ${fmt(estimate.minMinutes,0)}–${fmt(estimate.maxMinutes,0)}${estimate.status==='extended'?'+':''} Min.`;
+  detail.textContent=`${mode==='aktuell'?'Aktuell':'Bei voller Belegung:'} ${estimate.players} Unternehmen · CO₂ ${fmt(estimate.initial,1)} → ${fmt(estimate.goal,1)} t/Jahr.`;
+  note.textContent=estimate.status==='alreadyReached'?'Mit diesen Startwerten wird das Spielziel bereits ohne Spielzüge erreicht.':estimate.status==='uncertain'?'Mit diesen Werten kann die Partie sehr lange dauern; eine obere Grenze ist nicht verlässlich schätzbar. Annahme: 20–40 Sekunden pro Zug. Kapital und Jahresergebnis beeinflussen den Investitionsspielraum.':'Grobe Orientierung bei klimafreundlichen Investitionen: 20–40 Sekunden pro Zug und etwa 3 Minuten Vorbereitung. Würfelglück, Entscheidungen und Diskussionen verändern die Dauer.';
+  if(estimate.status==='extended')note.textContent+=' Die Spanne ist nach oben offen: Wenn Geld für Investitionen fehlt, kann die Partie länger dauern.';
+  if(estimate.adjusted)note.textContent+=' Die zu hohen CO₂-Startwerte wurden für ein erreichbares Ziel angepasst.';
+ }catch(err){if(err.name==='AbortError'||estimateRequests.get(prefix)!==state)return;value.textContent='Schätzung gerade nicht verfügbar';detail.textContent='Die Partie kann trotzdem erstellt werden.';note.textContent='Ändere einen Startwert, um es erneut zu versuchen.';estimateRequests.delete(prefix);}
+}
+$('createForm').addEventListener('input',()=>scheduleDurationEstimate());$('createForm').addEventListener('change',()=>scheduleDurationEstimate());
 function setActiveTab(next){if(!['board','stats'].includes(next))return;view=next;for(const b of document.querySelectorAll('[data-view]'))b.classList.toggle('active',b.dataset.view===next);
  for(const tab of ['board','stats'])$(tab+'View').hidden=tab!==next;
  if(room){if(next==='stats')renderStats();}}
@@ -53,7 +79,7 @@ async function leave(){
  finally{actionBusy=false;}
  closeFieldPopup();closeDetails();if($('globalDialog').open)$('globalDialog').close();activeGlobal=null;globalAutomatic=false;endPresented=false;lastOpenedPopupKey=null;access=null;room=null;lastSeen=-1;safeLocalSet(STORE,'');history.replaceState(null,'','/');setActiveTab('board');
  $('home').hidden=false;$('waiting').hidden=true;$('playing').hidden=true;$('switchRoomBtn').hidden=true;document.body.classList.remove('is-playing');
- toast(playing?'Du bist ausgestiegen. Die übrigen Unternehmen spielen weiter.':'Spielraum verlassen.');
+ scheduleDurationEstimate(0);toast(playing?'Du bist ausgestiegen. Die übrigen Unternehmen spielen weiter.':'Spielraum verlassen.');
 }
 $('switchRoomBtn').addEventListener('click',leave);
 async function poll(){if(!access||pollBusy)return;pollBusy=true;try{const session=access;const r=await api(endpoint());if(access!==session||room&&r.revision<room.revision)return;connected(true);if(!room||r.revision!==room.revision){const previous=lastSeen;room=r;lastSeen=r.lastEvent?.id??lastSeen;render();if(previous>=0&&r.lastEvent&&r.lastEvent.id>previous)animateEvent(r.lastEvent);}else room=r;
@@ -63,7 +89,7 @@ function setBusy(b){$('rollBtn').disabled=b||!myTurn()||room?.phase!=='roll';$('
 function myTurn(){return room&&room.started&&!room.gameOver&&room.players[room.turn]?.id===room.actorId;}
 function render(){
  document.body.classList.toggle('is-playing',!!access&&!!room?.started);
- if(!access||!room){$('home').hidden=false;$('waiting').hidden=true;$('playing').hidden=true;return;}
+ if(!access||!room){$('home').hidden=false;$('waiting').hidden=true;$('playing').hidden=true;scheduleDurationEstimate(0);return;}
  $('home').hidden=true;$('switchRoomBtn').hidden=false;
  if(!room.started){$('waiting').hidden=false;$('playing').hidden=true;renderLobby();return;}
  $('waiting').hidden=true;$('playing').hidden=false;renderHeader();renderBoard();renderPlayers();renderAction();renderLog();refreshExperience();maybeShowFieldPopup();
@@ -75,6 +101,7 @@ function renderLobby(){const c=room.config;$('roomCode').textContent=room.code;$
  if(room.host&&(room.config.hostOnly||i!==0)){const kick=document.createElement('button');kick.className='subtle';kick.type='button';kick.textContent='Entfernen';kick.addEventListener('click',()=>postAction({type:'kick',playerId:p.id}));row.append(kick)}box.append(row)});
  $('lobbyConfig').innerHTML=`<dl><dt>Spielende</dt><dd>CO₂-Ziel + Runde nachziehen</dd><dt>Maximale Spielerzahl</dt><dd>${c.maxPlayers}</dd><dt>Startkapital</dt><dd>${euro(c.initialCash)}</dd><dt>CO₂-Ziel</dt><dd>${fmt(c.goal)} t</dd></dl>`;
  if(c.feasibility){const f=c.feasibility;const info=document.createElement('p');info.className='feasibility-note';info.textContent=f.adjusted?`Startemissionen angepasst: ${f.requested.map(n=>fmt(n)).join(' / ')} → ${c.starting.map(n=>fmt(n)).join(' / ')} t (Scope 1 / 2 / 3). Das Ziel bleibt mit den verfügbaren Investitionen erreichbar.`:`Ziel geprüft: Mit den verfügbaren Investitionen sind rechnerisch bis zu ${fmt(f.minimum)} t/Jahr möglich. Entscheidungen, die das Ziel unerreichbar machen würden, sind gesperrt.`;$('lobbyConfig').append(info);}
+ requestDurationEstimate('lobbyDuration',c,room.players.length>=2?room.players.length:c.maxPlayers,room.players.length>=2?'aktuell':'voll');
  $('beginBtn').hidden=!room.host;$('beginBtn').disabled=room.players.length<2;$('waitHostText').hidden=!!room.host;
 }
 $('copyInvite').addEventListener('click',async()=>{const val=$('shareUrl').value;try{await navigator.clipboard.writeText(val);toast('Einladungslink kopiert.')}catch{$('shareUrl').focus();$('shareUrl').select();toast('Link markieren und mit Strg+C kopieren.')}});
@@ -116,11 +143,11 @@ function renderBoard(){
  const style={'Investition':'invest','Ereigniskarte':'event','Entscheidung':'decision','Audit':'audit','Versetzung zum Audit':'goaudit','CO₂-Preis':'tax','Geschäftsjahr':'start','Förderung':'bonus','Wissenstransfer':'bonus'};
  const desc=(f.description||'').replace(/\s+/g,' ').trim();
  const shortDesc=desc.length>120?desc.slice(0,117)+'…':desc;
- const imgSrc=f.type==='Ereigniskarte'?'/img/event.svg':`/img/${String(f.number).padStart(2,'0')}.svg?v=1.7.0`;
+ const imgSrc=f.type==='Ereigniskarte'?'/img/event.svg':`/img/${String(f.number).padStart(2,'0')}.svg?v=1.8.0`;
  el.className=`cell ${style[f.type]||''} ${current.pos===idx&&!room.gameOver?'current':''}`;el.style.gridRow=String(r+1);el.style.gridColumn=String(c+1);el.setAttribute('aria-describedby','fieldTooltip');el.addEventListener('pointerenter',()=>showFieldTooltip(el,f));el.addEventListener('pointerleave',hideFieldTooltip);el.addEventListener('focus',()=>showFieldTooltip(el,f));el.addEventListener('blur',hideFieldTooltip);el.setAttribute('tabindex','0');el.setAttribute('role','button');el.setAttribute('aria-label',`Feld ${f.number}: ${f.name} öffnen`);el.addEventListener('click',()=>openFieldPopup(true,f.number));el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openFieldPopup(true,f.number);}});
  let chips='';room.players.forEach((p,i)=>{if(p.pos===idx&&!p.withdrawn)chips+=`<span class="token${p.id===room.turn&&!room.gameOver?' current-token':''}" style="--c:${COLORS[i]}" title="Spieler ${i+1}: ${clean(p.name)}" aria-label="Spieler ${i+1}: ${clean(p.name)}">${i+1}</span>`});
- const occupants=room.players.filter(p=>p.pos===idx&&!p.withdrawn).length;el.classList.toggle('occupied',occupants>0);el.classList.toggle('crowded',occupants>4);
- el.innerHTML=`<span class="num">${f.number}</span><img class="field-img" src="${imgSrc}" alt="${clean(f.name)}"><div class="field-name">${f.number===1?'START':clean(f.name)}</div><div class="tokens">${chips}</div>`;b.append(el);
+ const occupants=room.players.filter(p=>p.pos===idx&&!p.withdrawn).length;el.classList.toggle('occupied',occupants>0);el.classList.toggle('crowded',occupants>4);el.dataset.occupants=String(occupants);
+ el.innerHTML=`<span class="num">${f.number}</span><svg class="field-img" viewBox="${f.type==='Ereigniskarte'?'0 0 320 220':f.number===1?'0 0 192 112':'42 5 110 90'}" role="img" aria-label="${clean(f.name)}" focusable="false"><image href="${imgSrc}" width="${f.type==='Ereigniskarte'?320:192}" height="${f.type==='Ereigniskarte'?220:112}"/></svg><div class="field-name">${clean(f.name)}</div><div class="tokens">${chips}</div>`;b.append(el);
  });
 }
 function renderPlayers(){renderBoardPlayers();const box=$('playersList');box.textContent='';room.players.forEach((p,i)=>{
@@ -191,7 +218,7 @@ function animateEvent(e){
 function setPopupField(fieldNumber){
  const f=DATA.fields[fieldNumber-1];if(!f)return;
  $('fieldPopupNumber').textContent=`FELD ${fieldNumber}`;
- $('fieldPopupImg').src=f.type==='Ereigniskarte'?'/img/event.svg':`/img/${String(fieldNumber).padStart(2,'0')}.svg?v=1.7.0`;
+ $('fieldPopupImg').src=f.type==='Ereigniskarte'?'/img/event.svg':`/img/${String(fieldNumber).padStart(2,'0')}.svg?v=1.8.0`;
  $('fieldPopupImg').alt=f.name;
  $('fieldPopupHint').textContent=popupMode==='action'?`Spieler ${room.turn+1} · ${room.players[room.turn].name}`:'Feld ansehen · Spielstand bleibt unverändert';
 }
@@ -353,9 +380,11 @@ function renderGlobalArchive(){
 function showGlobal(e,automatic=true){
  if(!e)return;closeFieldPopup();closeDetails();activeGlobal=e;globalAutomatic=automatic;
  const dialog=$('globalDialog');dialog.dataset.theme=e.theme;
+ dialog.querySelector('.global-duration').textContent=e.results.some(r=>r.term==='temporary')?'Geldwirkung sofort. Zeitweilige Emissionsänderungen gelten bis zum nächsten eigenen Jahresabschluss.':'Einmalige Geldwirkung. Keine Änderung der physischen CO₂-Emissionen.';
+ dialog.querySelector('.global-eyebrow').textContent=e.card>=25?'POLITISCHES SZENARIO · ALLE AKTIVEN UNTERNEHMEN':'GLOBAL · ALLE AKTIVEN UNTERNEHMEN';
  $('globalTitle').textContent=e.title;$('globalIcon').textContent=e.icon;$('globalDescription').textContent=e.description;$('globalLesson').textContent=e.lesson;
  $('globalScene').innerHTML=Array.from({length:18},(_,i)=>`<i style="--i:${i};--x:${(i*37+7)%100}%;--delay:${-(i%6)*.38}s"></i>`).join('');
- $('globalResults').innerHTML=e.results.map(r=>`<article class="global-result${r.playerId===room.actorId?' personal':''}"><div class="global-company"><span class="board-seat" style="--c:${COLORS[r.playerId]}">${r.playerId+1}</span><strong>${clean(r.name)}${r.playerId===room.actorId?' · Du':''}</strong><b class="${r.cash<0?'loss':'gain'}">${r.cash>0?'+':''}${euro(r.cash)}</b></div><p>${r.scope.map((v,i)=>`S${i+1} ${v>0?'+':''}${fmt(v,2)} t`).join(' · ')}</p><p class="protection">${r.protections.length?`Wirksame Investitionen: ${r.protections.map(clean).join(', ')}`:'Keine passende Schutzinvestition'}${r.factor===0&&e.card===2?' · Vollständig geschützt':''}</p><details><summary>Warum dieser Effekt?</summary><p>${clean(r.note)}</p><p>Vergleich ohne Schutz: ${euro(r.baselineCash)} · Wirkungsfaktor ${fmt(r.factor,3)}. Emissionswerte oben berücksichtigen die Untergrenze null.</p></details></article>`).join('');
+ $('globalResults').innerHTML=e.results.map(r=>`<article class="global-result${r.playerId===room.actorId?' personal':''}"><div class="global-company"><span class="board-seat" style="--c:${COLORS[r.playerId]}">${r.playerId+1}</span><strong>${clean(r.name)}${r.playerId===room.actorId?' · Du':''}</strong><b class="${r.cash<0?'loss':'gain'}">${r.cash>0?'+':''}${euro(r.cash)}</b></div><p>${r.scope.map((v,i)=>`S${i+1} ${v>0?'+':''}${fmt(v,2)} t`).join(' · ')}</p><p class="protection">${r.protections.length?`Wirksame Investitionen: ${r.protections.map(clean).join(', ')}`:e.card===25?'Keine förderfähige Investition vorhanden':e.card===28?(r.cash>0?'CO₂-Kriterium erfüllt':'CO₂-Kriterium noch nicht erfüllt'):'Keine passende Schutzinvestition'}${r.factor===0&&e.card===2?' · Vollständig geschützt':''}</p><details><summary>Warum dieser Effekt?</summary><p>${clean(r.note)}</p><p>Vergleich ohne passende Investitionen: ${euro(r.baselineCash)}${r.bonusCash?` · Zuschuss/Auftragsbonus: +${euro(r.bonusCash)}`:` · Wirkungsfaktor ${fmt(r.factor,3)}`}. Emissionswerte oben berücksichtigen die Untergrenze null.</p></details></article>`).join('');
  $('globalContinue').textContent=automatic?'Verstanden · weiter zum Spiel':'Zurück zur Übersicht';
  if(!dialog.open)dialog.showModal();dialog.scrollTop=0;
 }
@@ -393,7 +422,7 @@ function renderReflection(){
 $('reflectionPlayer').addEventListener('change',renderReflection);$('resultsClose').addEventListener('click',()=>$('resultsDialog').close());$('resultsToggle').addEventListener('click',()=>showResults());
 async function initialize(){
  await initializeJoinBase();
- try{DATA=await (await fetch('/game-data.json?v=1.7.0')).json();}catch{showHomeError('Spieldaten konnten nicht geladen werden. Bitte Server prüfen.');return;}
+ try{DATA=await (await fetch('/game-data.json?v=1.8.0')).json();}catch{showHomeError('Spieldaten konnten nicht geladen werden. Bitte Server prüfen.');return;}
  const fromUrl=new URLSearchParams(location.search).get('room')?.trim().toUpperCase();
  if(fromUrl&&/^[A-HJ-NP-Z2-9]{6}$/.test(fromUrl)){$('codeInput').value=fromUrl;switchEntry(false)}
  try{const saved=JSON.parse(safeLocalGet(STORE)||'null');
@@ -401,6 +430,7 @@ async function initialize(){
    access=saved;const res=await api(`/api/rooms/${saved.code}`);room=res;lastSeen=res.lastEvent?.id??-1;$('switchRoomBtn').hidden=false;render();connected(true);
   }
  }catch(e){if(access){access=null;safeLocalSet(STORE,'')}if(fromUrl)switchEntry(false)}
+ if(!access||!room)scheduleDurationEstimate(0);
  setInterval(poll,1250);
 }
 initialize();

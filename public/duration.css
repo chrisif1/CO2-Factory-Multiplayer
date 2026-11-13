@@ -1,0 +1,20 @@
+/* V1.8: estimates in setup, and separate space for pictograms and figures. */
+.duration-estimate{padding:15px 17px;border:1px solid #a5c7b5;border-radius:12px;background:linear-gradient(125deg,#e7f4e8,#f7fbf3);margin:4px 0}
+.duration-estimate strong{display:block;font-size:25px;color:#174d3e;line-height:1.25;margin-top:5px}.duration-estimate p{font-size:12px;line-height:1.55;margin:7px 0 0;color:#3b5f51}.duration-estimate .duration-note{font-size:11px;color:#5b7168}.lobby-aside .duration-estimate{margin:15px 0}
+body.is-playing .cell.start .field-name{font-size:clamp(7px,.7vw,11px);letter-spacing:0;text-transform:none;line-height:1.05}
+body.is-playing .cell.occupied .field-name,body.is-playing .cell.start.occupied .field-name{display:none}
+body.is-playing .cell.occupied .field-img,body.is-playing .cell.start.occupied .field-img,body.is-playing .cell.start.crowded .field-img{display:block;position:absolute;left:2px;top:11px;width:calc(50% - 3px);height:calc(100% - 14px);min-height:0;flex:none;background:transparent;z-index:1}
+body.is-playing .cell.occupied .tokens,body.is-playing .cell.start.crowded .tokens{display:grid;grid-template-columns:repeat(var(--marker-columns,1),var(--piece-size));grid-auto-rows:var(--piece-size);justify-content:center;align-content:center;align-items:center;gap:1px;position:absolute;left:auto;right:3px;top:50%;bottom:auto;transform:translateY(-50%);width:max-content;height:auto;max-width:none;min-height:0;padding:0;z-index:2}
+body.is-playing .cell.occupied:not([data-occupants="1"]),body.is-playing .cell.start.crowded{--piece-size:min(16px,calc((100vw - 140px) / 90),calc((100dvh - 176px) / 32));--marker-columns:2}
+body.is-playing .cell.occupied:not([data-occupants="1"]) .token{font-size:calc(var(--piece-size) * .7);border-width:1px}
+body.is-playing .cell.occupied .token.current-token{box-shadow:0 0 0 1px #123b32,0 0 0 2px #f9d56b}
+@media(max-height:430px){
+ body.is-playing .cell.occupied[data-occupants="1"]{--piece-size:clamp(10px,1.7vw,15px)}
+ body.is-playing .cell.occupied .field-img,body.is-playing .cell.start.occupied .field-img{left:1px;top:7px;width:calc(50% - 2px);height:calc(100% - 9px)}
+ body.is-playing .cell.occupied .tokens,body.is-playing .cell.start.crowded .tokens{right:1px}
+}
+@media(max-width:600px){.duration-estimate{padding:12px}.duration-estimate strong{font-size:22px}}
+@media(min-height:500px){
+ body.is-playing .cell.occupied:not(.crowded) .field-name,body.is-playing .cell.start.occupied:not(.crowded) .field-name{display:-webkit-box;position:absolute;left:2px;right:2px;top:auto;bottom:2px;padding:0;font-size:8px;line-height:1.05;letter-spacing:0;-webkit-line-clamp:1;text-align:center}
+ body.is-playing .cell.occupied:not(.crowded) .field-img{height:calc(100% - 26px)}
+}

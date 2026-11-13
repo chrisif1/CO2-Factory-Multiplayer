@@ -1,0 +1,7 @@
+V1.8: dynamische Spieldauer-Schätzung bei Raumerstellung und im Wartebereich.
+Berücksichtigt Unternehmen, CO2-Start/Ziel, Kapital und Ergebnis; nach oben offene Spannen.
+Geschäftsjahr statt Start. Piktogramme bleiben neben den Spielern sichtbar.
+duration-estimate.js und public/duration.css sind neu; Server und gesamten public-Ordner ersetzen.
+Vier politische Szenarien erweitern den Stapel auf 28 Karten, davon 13 global.
+Server neu starten. storage/v17 bleibt erhalten; alte Räume werden einmalig erweitert.
+Gehaltener IMS-Schutz und Zugfolge bleiben erhalten.

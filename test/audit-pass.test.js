@@ -9,7 +9,7 @@ function end(r){E.action(r,r.players[r.turn].token,{type:'end'});}
 test('Managementsystem ist persönlich, ohne sofortige Kosten oder CO₂-Wirkung und nur einmal im Stapel',()=>{
  const r=start(),p=r.players[0],before=[p.cash,p.annual,E.footprint(p)];drawPass(r);
  assert.equal(p.auditPass,true);assert.deepEqual([p.cash,p.annual,E.footprint(p)],before);assert.equal(r.deck.includes(24),false);
- assert.equal(r.deck.length,23);assert.ok(r.cursor<r.deck.length);assert.ok(r.players.slice(1).every(p=>!p.auditPass));assert.equal(r.history.length,1);assert.equal(r.history[0].global,false);assert.equal(r.landing.eventResult.term,'held');
+ assert.equal(r.deck.length,E.CARDS.length-1);assert.ok(r.cursor<r.deck.length);assert.ok(r.players.slice(1).every(p=>!p.auditPass));assert.equal(r.history.length,1);assert.equal(r.history[0].global,false);assert.equal(r.landing.eventResult.term,'held');
 });
 test('Gespeicherte Karte bleibt über eigene Jahresabschlüsse und andere Spielerzüge erhalten',()=>{
  const r=start();drawPass(r);const p=r.players[0];E.yearClose(r,p);assert.equal(p.auditPass,true);end(r);
@@ -31,8 +31,8 @@ test('Ein Verbrauch schützt nicht vor dem nächsten Audit; später ist die Kart
  drawPass(r);assert.equal(p.auditPass,true);assert.equal(r.deck.includes(24),false);r.phase='roll';land(r,34);assert.equal(p.auditPassUses,2);assert.equal(p.auditPassSavings,36000);assert.equal(p.cash,282000);
 });
 test('Zurückgelegte Karte liegt hinter allen anderen noch ziehbaren Karten',()=>{
- const r=start();r.deck=Array.from({length:24},(_,i)=>i+1);r.cursor=23;drawPass(r);r.phase='roll';land(r,34);
- const order=r.deck.slice(r.cursor).concat(r.deck.slice(0,r.cursor));assert.equal(order.at(-1),24);assert.equal(order.length,24);assert.equal(new Set(order).size,24);
+ const r=start();r.deck=Array.from({length:E.CARDS.length},(_,i)=>i+1);r.cursor=23;drawPass(r);r.phase='roll';land(r,34);
+ const order=r.deck.slice(r.cursor).concat(r.deck.slice(0,r.cursor));assert.equal(order.at(-1),24);assert.equal(order.length,E.CARDS.length);assert.equal(new Set(order).size,E.CARDS.length);
 });
 test('Ausstieg gibt eine aufbewahrte Karte frei und ein anderes Unternehmen kann sie erhalten',()=>{
  const r=start();drawPass(r);const p=r.players[0];E.action(r,p.token,{type:'leave'});assert.equal(p.auditPass,false);assert.equal(r.turn,1);assert.ok(r.deck.includes(24));drawPass(r);assert.equal(r.players[1].auditPass,true);assert.equal(r.players[0].auditPassUses,0);
